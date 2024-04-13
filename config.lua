@@ -24,7 +24,7 @@ cfg.disablefreepunch = {
 }
 
 cfg.forcedfirstperson = {
-    twopov = false,                      -- true para forçar apenas 2 tipos de VISÕES (PRIMEIRA PESSOA E TERCEIRA PESSOA) - ao invés daquelas 4 opções de câmera padrão
+    twopov = true,                      -- true para forçar apenas 2 tipos de VISÕES (PRIMEIRA PESSOA E TERCEIRA PESSOA) - ao invés daquelas 4 opções de câmera padrão
     invehicle = {
         ativar = false,                  -- true se quiser ativar forçar primeira pessoa no carro
         hold = true,                    -- true se quiser que só fique em primeira pessoa segurando a arma
