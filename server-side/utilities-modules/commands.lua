@@ -57,3 +57,10 @@ lib.addCommand('generatecarlist', {
         SaveResourceFile(cache.resource, 'data/items.lua', table.concat(vehicleData), -1)
     end
 end)
+
+lib.addCommand('tuning', {
+    help = 'Tune seu veículo',
+    restricted = 'group.admin'
+}, function(source)
+    TriggerClientEvent("vehtuning", source)
+end)
