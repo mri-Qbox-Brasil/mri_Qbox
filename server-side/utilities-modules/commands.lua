@@ -15,34 +15,35 @@ lib.addCommand('god', {
     TriggerClientEvent("mri_Qbox:ExecuteCommand",source,"revive",args.id)
 end)
 
--- lib.addCommand({'item'}, {
--- 	help = 'Gives an item to a player with the given id',
--- 	params = {
--- 		{ name = 'target', type = 'playerId', help = 'The player to receive the item' },
--- 		{ name = 'item', type = 'string', help = 'The name of the item' },
--- 		{ name = 'count', type = 'number', help = 'The amount of the item to give', optional = true },
--- 		{ name = 'type', help = 'Sets the "type" metadata to the value', optional = true },
--- 	},
--- 	-- restricted = 'group.admin',
--- }, function(source, args)
--- 	local item = Items(args.item)
+lib.addCommand({'item'}, {
+	help = 'Dá o item para o player id',
+	params = {
+        { name = 'item', type = 'string', help = 'O nome do item' },
+        { name = 'count', type = 'number', help = 'A quantidade de item para enviar', optional = true },
+		{ name = 'target', type = 'playerId', help = 'O player que irá receber o item', optional = true },
+		{ name = 'type', help = 'Define o "type" de metadados do item', optional = true },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	local item = true --Items(args.item)
 
--- 	if item then
--- 		local inventory = Inventory(args.target) --[[@as OxInventory]]
--- 		local count = args.count or 1
--- 		local success, response = Inventory.AddItem(inventory, item.name, count, args.type and { type = tonumber(args.type) or args.type })
+	if item then
+        -- local inventory = Inventory(args.target) --[[@as OxInventory]]
+        local inventory = args.target or source
+        local count = args.count or 1
+        local success, response = exports.ox_inventory:AddItem(inventory, args.item, count, args.type and { type = tonumber(args.type) or args.type })
 
--- 		if not success then
--- 			return Citizen.Trace(('Failed to give %sx %s to player %s (%s)'):format(count, item.name, args.target, response))
--- 		end
+        if not success then
+            return Citizen.Trace(('Failed to give %sx %s to player %s (%s)'):format(count, item.name, args.target, response))
+        end
 
--- 		source = Inventory(source) or { label = 'console', owner = 'console' }
+        -- source = Inventory(source) or { label = 'console', owner = 'console' }
 
--- 		if server.loglevel > 0 then
--- 			lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, count, item.name, inventory.label))
--- 		end
--- 	end
--- end)
+        -- if server.loglevel > 0 then
+        --     lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, count, item.name, inventory.label))
+        -- end
+	end
+end)
 
 lib.addCommand('generatecarlist', {
     help = 'Generate and save vehicle data for available models on the client',

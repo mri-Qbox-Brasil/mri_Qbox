@@ -27,5 +27,4 @@ files {
 	"web-side/**/*"
 }
 
-
 lua54 "yes"

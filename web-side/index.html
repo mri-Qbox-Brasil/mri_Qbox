@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>#alternative</title>
+        <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
+    </head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap%27');
+
+        #drift .content{
+            position: fixed;
+            bottom: 5%;
+            left: 50%;
+            transform: translate(-50%, -5%);
+            width: 15%;
+            height: 8%;
+            border-radius: 5px;
+            background: rgb(32, 38, 45, .8);
+            border: solid #53ff6f 1px;
+        }
+
+
+        #drift .left{
+            position: relative;
+            float: left;
+            height: 100%;
+            width: 30%;
+            background-color: #40C057;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #drift .left img{
+            margin-top: 20%;
+            width: 70%;
+        }
+
+        #drift .right{
+            position: relative;
+            float: left;
+            width: 70%;
+            height: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #drift .right .contador{
+            position: absolute;
+            color: rgba(255, 255, 255);
+            font-family: Orbitron;
+            font-size: 3vh;
+            margin-top: -1%;
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+
+        #drift .right .tag{
+            margin-top: 20%;
+            position: relative;
+            color: rgba(255,255,255,0.6);
+
+            font-size: .7vh;
+            letter-spacing: .4vw;
+
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 400;
+        }
+    </style>
+    <body>
+        <section id="drift" v-if="driftCountn > 0">
+            <div class="content">
+                <div class="left">
+                    <img src="icones/drift.svg" alt="">
+                </div>
+                <div class="right">
+                    <p class="contador" v-html="driftCount"></p>
+                    <p class="tag">DRIFT POINTS</p>
+                </div>
+            </div>
+        </section>
+        <script src="core.js"></script>
+    </body>
+</html>
