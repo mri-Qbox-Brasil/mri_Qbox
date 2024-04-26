@@ -50,7 +50,7 @@ end
 local stopped = false
 
 Citizen.CreateThread( function()
-	while true do
+	while cfg.drift.points do
 		local sleep = 1000
 		PlayerPed = PlayerPedId()
 		tick = GetGameTimer()
@@ -120,11 +120,37 @@ end)
 
 
 Citizen.CreateThread( function()
-    while true do
+    while cfg.drift.points do
         if not IsPedInAnyVehicle(PlayerPedId()) and stopped == false then
             SendNUIMessage({ drift = 0})
             stopped = true
         end
         Citizen.Wait(1000)
+    end
+end)
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+-- DRIFT
+-----------------------------------------------------------------------------------------------------------------------------------------
+local kmh, mph = 3.6, 2.23693629
+local carSpeed = 0
+local speed = kmh
+local speedLimit = cfg.drift.speed
+Citizen.CreateThread(function()
+    while cfg.drift.toggle do
+        Citizen.Wait(500)
+        if IsPedInAnyVehicle(PlayerPedId(),false) then
+            carSpeed = GetEntitySpeed(GetVehiclePedIsIn(PlayerPedId())) * speed
+            if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(),false),-1) == PlayerPedId() then
+                if (carSpeed <= speedLimit) then  
+                    if IsControlPressed(0, 21) then
+                        SetVehicleReduceGrip(GetVehiclePedIsIn(PlayerPedId(),false),true)
+                    else
+                        SetVehicleReduceGrip(GetVehiclePedIsIn(PlayerPedId(),false),false)
+                    end
+                end
+            end
+        end
     end
 end)

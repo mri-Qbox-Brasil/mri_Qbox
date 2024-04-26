@@ -24,10 +24,10 @@ cfg.disablefreepunch = {
 }
 
 cfg.forcedfirstperson = {
-    twopov = true,                      -- true para forçar apenas 2 tipos de VISÕES (PRIMEIRA PESSOA E TERCEIRA PESSOA) - ao invés daquelas 4 opções de câmera padrão
+    twopov = false,                      -- true para forçar apenas 2 tipos de VISÕES (PRIMEIRA PESSOA E TERCEIRA PESSOA) - ao invés daquelas 4 opções de câmera padrão
     invehicle = {
         ativar = false,                  -- true se quiser ativar forçar primeira pessoa no carro
-        hold = true,                    -- true se quiser que só fique em primeira pessoa segurando a arma
+        hold = false,                    -- true se quiser que só fique em primeira pessoa se estiver segurando a arma
     }
 }
 
@@ -74,21 +74,27 @@ cfg.realisticrecoil = {
 ---- VEHICLES-MODULES
 -----------------------------------------------------------------------------------------
 cfg.wheelbreak = {
-    toggle = false,                      -- true para ativar as rodas quebrarem/soltarem ao bater o veículo
+    toggle = false,                     -- true para ativar as rodas quebrarem/soltarem ao bater o veículo
     speed = 150,                        -- velocidade em km/h que a roda vai quebrar/soltar (100 = hardcore)
 }
 
 cfg.savewheelpos = {
-    toggle = false,                      -- true para ativar a roda ficar parada em um ângulo específico ao sair do veículo
+    toggle = false,                     -- true para ativar a roda ficar parada em um ângulo específico ao sair do veículo
 }
 
 cfg.disableaircontrol = {
-    toggle = false,                      -- true para ativar a roda ficar parada em um ângulo específico ao sair do veículo
+    toggle = false,                     -- true para ativar a roda ficar parada em um ângulo específico ao sair do veículo
 }
 
 cfg.carexplosion = {
-    toggle = false,                      -- true para ativar a Explosão de veículos ao cair de uma certa altura
+    toggle = false,                     -- true para ativar a Explosão de veículos ao cair de uma certa altura
     height = 40,                        -- qual altura você quer para ativar a explosão
+}
+
+cfg.drift = {
+    toggle = true,                      -- ativar drift usando shift
+    points = false,                      -- ativar drift points nui
+    speed = 80,                         -- velocidade máxima que pode usar o drift
 }
 
 return cfg
