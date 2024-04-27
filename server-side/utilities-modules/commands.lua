@@ -12,7 +12,7 @@ lib.addCommand('god', {
         { name = 'id', help = "Digite o id do player", type = 'playerId', optional = true },
     }
 }, function(source,args)
-    TriggerClientEvent("mri_Qbox:ExecuteCommand",source,"revive",args.id)
+    TriggerClientEvent("mri_Qbox:ExecuteCommand",source,"revive", args.id)
 end)
 
 lib.addCommand({'item'}, {
@@ -43,20 +43,6 @@ lib.addCommand({'item'}, {
         --     lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, count, item.name, inventory.label))
         -- end
 	end
-end)
-
-lib.addCommand('generatecarlist', {
-    help = 'Generate and save vehicle data for available models on the client',
-    params = {
-        { name = 'processAll', help = 'Include vehicles with existing data (in the event of updated vehicle stats)', optional = true }
-    },
-    restricted = 'group.admin'
-}, function(source, args)
-    local vehicleData = lib.callback.await('Renewed-Vehicleparser:client:parsevehicles', source, args.processAll)
-
-    if vehicleData and next(vehicleData) then
-        SaveResourceFile(cache.resource, 'data/items.lua', table.concat(vehicleData), -1)
-    end
 end)
 
 lib.addCommand('tuning', {

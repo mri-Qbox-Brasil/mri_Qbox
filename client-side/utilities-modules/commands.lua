@@ -1,5 +1,10 @@
 RegisterNetEvent("mri_Qbox:ExecuteCommand", function(command,args)
-    ExecuteCommand(command, args)
+    -- print(args)
+    if not args then
+        ExecuteCommand(command)
+    else
+        ExecuteCommand(command.." "..args)
+    end
 end)
 
 RegisterNetEvent("vehtuning", function()
