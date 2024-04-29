@@ -49,5 +49,12 @@ lib.addCommand('tuning', {
     help = 'Tune seu veículo',
     restricted = 'group.admin'
 }, function(source)
-    TriggerClientEvent("vehtuning", source)
+    lib.callback("vehtuning", source)
+end)
+
+lib.addCommand('menu_admin', {
+    help = 'Abrir menu Admin (atalho F10)',
+    restricted = 'group.admin'
+}, function(source)
+    lib.callback('AbrirMenuAdmin', source)
 end)
