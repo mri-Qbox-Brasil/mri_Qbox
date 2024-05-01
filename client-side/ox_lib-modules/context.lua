@@ -7,20 +7,34 @@ function AbrirMenuJogador()
         options = {
             {
                 title = 'Ver ID',
+                icon = 'id-badge',
+                description = 'Exibir seu ID de jogador.',
                 onSelect = function()
                     ExecuteCommand('id')
                 end
             },
             {
-                title = 'Ver trabalho',
+                title = 'Ver Emprego',
+                icon = 'user-shield',
+                description = 'Exibir dados do seu emprego.',
                 onSelect = function()
                     ExecuteCommand('job')
                 end
             },
             {
-                title = 'Ver gangue',
+                title = 'Ver Facção',
+                icon = 'gun',
+                description = 'Exibir dados da sua facção.',
                 onSelect = function()
                     ExecuteCommand('gang')
+                end
+            },
+            {
+                title = 'Ver Habilidades',
+                description = 'Exibir seu progresso em habilidades do servidor.',
+                icon = 'book-tanakh',
+                onSelect = function()
+                    ExecuteCommand('rep')
                 end
             }
         }
@@ -43,6 +57,14 @@ function AbrirMenuAdmin()
 
                 onSelect = function()
                     ExecuteCommand('adm')
+                end
+            },
+            {
+                title = 'Customizar Veículo',
+                description = 'Tune seu veículo atual',
+                icon = 'palette',
+                onSelect = function()
+                    ExecuteCommand('customs')
                 end
             },
             {

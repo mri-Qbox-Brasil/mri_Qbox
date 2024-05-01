@@ -58,3 +58,10 @@ lib.addCommand('menu_admin', {
 }, function(source)
     lib.callback('AbrirMenuAdmin', source)
 end)
+
+lib.addCommand('customs', {
+    help = 'Tunar seu veículo atual',
+    restricted = 'group.admin'
+}, function(source)
+    lib.callback('mri_Qbox:customs:client', source)
+end)

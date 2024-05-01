@@ -56,9 +56,16 @@ if cfg.realisticrecoil.verticalRecoil then
 end
 
 Citizen.CreateThread(function()
-    while cfg.realisticrecoil.hideCrosshair do
+    while true do
         Citizen.Wait(0)
-        HideHudComponentThisFrame(14)
+        HideHudComponentThisFrame(6)
+        HideHudComponentThisFrame(7)
+        HideHudComponentThisFrame(8)
+        HideHudComponentThisFrame(9)
+
+        if cfg.realisticrecoil.hideCrosshair then
+            HideHudComponentThisFrame(14)
+        end
     end
 end)
 
