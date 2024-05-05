@@ -14,7 +14,7 @@ function App()
     })
     exports.ox_target:addModel(cfg.dumpsters.TrashCans.Model, {
         icon = 'fas fa-dumpster',
-        label = "Vasculhar",
+        label = "Abrir",
         onSelect = function(data)
             local entity = data.entity
             local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
