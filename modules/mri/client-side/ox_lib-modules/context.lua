@@ -18,7 +18,7 @@ function AbrirMenuJogador()
         grade = PlayerData.gang.grade.name
     }
     
-    local imageUrl = 'https://media.discordapp.net/attachments/1227489601925550150/1236525641973764096/Brasil_96_x_96_px_2.png?ex=663853be&is=6637023e&hm=5cd23b016faf02f1b3fc70018f603562ef88526e3a21deeffecfc6f2f4e2c2ab&=&format=webp&quality=lossless&width=24&height=24'
+    local imageUrl = 'https://media.discordapp.net/attachments/1227489601925550150/1236525641973764096/Brasil_96_x_96_px_2.png?ex=663f93fe&is=663e427e&hm=afd1c2a4814d090fd4312d39aaf90bc71991a38be3450f5b0c532743e19bec7f&=&format=webp&quality=lossless&width=24&height=24'
     lib.registerContext({
         id = 'menu_jogador',
         title = '![logo]('..imageUrl..') mri Qbox Brasil',
