@@ -6,23 +6,41 @@ description 'Atualizações para mri-Qbox'
 
 game "gta5"
 ui_page "web-side/index.html"
-client_scripts {
+
+shared_scripts {
 	'@ox_lib/init.lua',
 	'@qbx_core/modules/playerdata.lua',
 	"config.lua",
-	"client-side/*",
-	"client-side/**/*"
-}
-server_scripts {
-	'@ox_lib/init.lua',
-	"config.lua",
-	"server-side/*",
-	"server-side/**/*"
-}
-shared_scripts {
+
+	"**/**/config.lua",
+	
+	"**/**/shared-side/*",
+	"**/**/shared-side/**/*",
+
 	"shared-side/*",
 	"shared-side/**/*"
 }
+
+client_scripts {
+	"**/**/client/*",
+
+	"**/**/client-side/*",
+	"**/**/client-side/**/*",
+
+	"client-side/*",
+	"client-side/**/*"
+}
+
+server_scripts {
+	"**/**/server/*",
+
+	"modules/**/server-side/*",
+	"modules/**/server-side/**/*",
+
+	"server-side/*",
+	"server-side/**/*"
+}
+
 files {
 	"web-side/*",
 	"web-side/**/*"
