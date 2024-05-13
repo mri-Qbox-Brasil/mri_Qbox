@@ -10,7 +10,7 @@ cfg.entervehicle = {
 }
 
 cfg.dumpsters = {
-    toggle = true,                      -- true para ativar as lixeiras para abrir no olhinho
+    toggle = false,                      -- true para ativar as lixeiras para abrir no olhinho
     TrashCans = {
         Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}, -- modelo da lixeira
     }
