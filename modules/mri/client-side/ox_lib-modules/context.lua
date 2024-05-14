@@ -1,4 +1,11 @@
-local color = '#51CF66'
+local ColorScheme = {
+    primary = '#51CF66',
+    success = '#51CF66',
+    info = '#668CFF',
+    warning = '#FFD700',
+    danger = '#FF6347'
+}
+GlobalState:set('UIColors', ColorScheme, true)
 local imageUrl = 'https://cfx-nui-mri_Qbox/web-side/icones/logo24.png'
 
 -- Função para abrir o menu do jogador
@@ -27,7 +34,7 @@ function AbrirMenuJogador()
             {
                 title = 'Identificação',
                 icon = 'fas fa-address-card',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 description =   '**ID**: '..PlayerData.source..' | '..
                                 '**RG**: '..PlayerData.citizenid..'                                                                                                '..
@@ -39,7 +46,7 @@ function AbrirMenuJogador()
             {
                 title = 'Emprego',
                 icon = 'fas fa-briefcase',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 description = jobData.label..' | '..jobData.grade,
                 onSelect = function()
@@ -49,7 +56,7 @@ function AbrirMenuJogador()
             {
                 title = 'Gangue',
                 icon = 'gun',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 description = gangData.label..' | '..gangData.grade,
                 onSelect = function()
@@ -60,7 +67,7 @@ function AbrirMenuJogador()
                 title = 'Ver Habilidades',
                 description = 'Exibir seu progresso em habilidades do servidor.',
                 icon = 'book-tanakh',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 -- menu = 'skill_menu',
@@ -85,7 +92,7 @@ Citizen.CreateThread(function()
                 title = 'Abrir Painel',
                 description = 'Painel da Administração do Servidor',
                 icon = 'fa-solid fa-user-tie',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 onSelect = function()
                     ExecuteCommand('adm')
@@ -95,7 +102,7 @@ Citizen.CreateThread(function()
                 title = 'Customizar Veículo',
                 description = 'Tune seu veículo atual',
                 icon = 'palette',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 onSelect = function()
                     ExecuteCommand('customs')
@@ -105,7 +112,7 @@ Citizen.CreateThread(function()
                 title = 'Gerenciamento',
                 description = 'Acesso a opções de gerenciamento do servidor',
                 icon = 'fa-solid fa-cogs',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 menu = 'menu_gerencial'
             }
@@ -122,7 +129,7 @@ Citizen.CreateThread(function()
                 title = 'Portas',
                 description = 'Crie ou gerencie as trancas de portas e portões do servidor.',
                 icon = 'door-closed',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -133,7 +140,7 @@ Citizen.CreateThread(function()
                 title = 'Blips',
                 description = 'Crie ou gerencie todos os blips, você pode copiar as configurações de um já criado.  ',
                 icon = 'location-dot',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -144,7 +151,7 @@ Citizen.CreateThread(function()
                 title = 'Baús',
                 description = 'Crie ou gerencie os baús do servidor, você pode restringir por permissões ou senha.',
                 icon = 'box',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -155,7 +162,7 @@ Citizen.CreateThread(function()
                 title = 'NPC',
                 description = 'Crie ou gerencie os NPCs do servidor, você pode colocar animações nos NPCs.',
                 icon = 'users-gear',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -166,7 +173,7 @@ Citizen.CreateThread(function()
                 title = 'Props',
                 description = 'Crie ou gerencie os props criados do servidor, você pode editar e criar cenários.',
                 icon = 'tree',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -177,7 +184,7 @@ Citizen.CreateThread(function()
                 title = 'Elevador',
                 description = 'Crie ou gerencie os elevadores criados, você pode criar quantos andares forem necessários.',
                 icon = 'elevator',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -188,7 +195,7 @@ Citizen.CreateThread(function()
                 title = 'Outdoors/Posters',
                 description = 'Crie ou gerencie os outdoors ou imagens criados do servidor, você pode adicionar ou remover.',
                 icon = 'panorama',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -199,7 +206,7 @@ Citizen.CreateThread(function()
                 title = 'Garagens',
                 description = 'Crie ou gerencie as garagens criadas do servidor, você pode definir todas as opções in game.',
                 icon = 'warehouse',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -210,7 +217,7 @@ Citizen.CreateThread(function()
                 title = 'Crafting',
                 description = 'Crie ou gerencie mesas de fabricação do servidor, você pode usar props para a mesa.',
                 icon = 'tools',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -221,7 +228,7 @@ Citizen.CreateThread(function()
                 title = 'Jobs',
                 description = 'Crie ou gerencie jobs in game.',
                 icon = 'briefcase',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -232,7 +239,7 @@ Citizen.CreateThread(function()
                 title = 'Spotlight',
                 description = 'Crie ou gerencie luzes in game',
                 icon = 'lightbulb',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -253,7 +260,7 @@ function MenuGarages()
                 title = 'Criar garagem',
                 description = 'Crie uma nova garagem.',
                 icon = 'square-plus',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -264,7 +271,7 @@ function MenuGarages()
                 title = 'Ver lista',
                 description = 'Veja todas as garagens criadas.',
                 icon = 'list',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -286,7 +293,7 @@ function MenuCrafting()
                 title = 'Criar nova mesa',
                 description = 'Crie uma mesa de fabricação nova.',
                 icon = 'square-plus',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -297,7 +304,7 @@ function MenuCrafting()
                 title = 'Ver lista',
                 description = 'Veja todas as mesas de fabricação criadas.',
                 icon = 'list',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -319,7 +326,7 @@ function MenuJobs()
                 title = 'Criar novo job',
                 description = 'Crie um job.',
                 icon = 'square-plus',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -330,7 +337,7 @@ function MenuJobs()
                 title = 'Ver lista',
                 description = 'Veja todos jobs criados.',
                 icon = 'list',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -352,7 +359,7 @@ function MenuSpotlight()
                 title = 'Criar novo spotlight',
                 description = 'Crie um spotlight.',
                 icon = 'square-plus',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
@@ -363,7 +370,7 @@ function MenuSpotlight()
                 title = 'Deletar',
                 description = 'Delete algum spotlight',
                 icon = 'x',
-                iconColor = color,
+                iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
