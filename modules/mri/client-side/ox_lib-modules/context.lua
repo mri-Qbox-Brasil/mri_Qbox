@@ -126,6 +126,17 @@ Citizen.CreateThread(function()
         title = '**Gerenciamento**',
         options = {
             {
+                title = 'Clima',
+                description = 'Administre o clima do Servidor',
+                icon = 'cloud',
+                iconColor = ColorScheme.primary,
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = function()
+                    ExecuteCommand('weather')
+                end
+            },
+            {
                 title = 'Portas',
                 description = 'Crie ou gerencie as trancas de portas e portões do servidor.',
                 icon = 'door-closed',
