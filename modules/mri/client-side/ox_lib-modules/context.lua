@@ -192,7 +192,7 @@ Citizen.CreateThread(function()
     lib.registerContext({
         id = 'menu_gerencial',
         menu = 'menu_admin',
-        title = '**Gerenciamento**',
+        title = 'Gerenciamento',
         options = {
             {
                 title = 'Portas',
