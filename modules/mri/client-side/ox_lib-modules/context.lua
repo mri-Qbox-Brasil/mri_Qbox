@@ -29,7 +29,8 @@ function AbrirMenuJogador()
 
     lib.registerContext({
         id = 'menu_jogador',
-        title = '![logo]('..imageUrl..') **mri Qbox Brasil**',
+        title = '![logo]('..imageUrl..') Olá '..PlayerData.charinfo.firstname,
+        description = 'BEM VINDO À MRI QBOX',
         options = {
             {
                 title = 'Identificação',
@@ -70,7 +71,6 @@ function AbrirMenuJogador()
                 iconColor = ColorScheme.primary,
                 iconAnimation = 'fade',
                 arrow = true,
-                -- menu = 'skill_menu',
                 onSelect = function()
                     ExecuteCommand('rep')
                 end
@@ -82,11 +82,71 @@ function AbrirMenuJogador()
     lib.showContext('menu_jogador')
 end
 
+function AbrirMenuTime()
+    local freezeTime = GlobalState.freezeTime or 0
+    lib.registerContext({
+        id = 'menu_time',
+        title = 'Gerenciar Horário',
+        menu = 'menu_admin',
+        options = {
+            {
+                title = 'Alterar horário',
+                description = 'Modificar a hora atual para todos os jogadores.                   '
+                ..'```Atalho: /time [hora] [minutos]```',
+                icon = 'clock',
+                iconColor = ColorScheme.primary,
+                iconAnimation = 'fade',
+                onSelect = function()
+                    local input = lib.inputDialog('Alterar horário',{
+                        { type = "number", label = 'Hora', default = 12, min = 0, max = 24},
+                        { type = "number", label = 'Minutos', default = 0, min = 0, max = 59},
+                    })
+
+                    ExecuteCommand('time '..input[1]..' '..input[2])
+                end
+            },
+            {
+                title = 'Escala do tempo',
+                description = 'Modificar quanto será 1 minuto no jogo.                   '
+                ..'Valor atual: '..GlobalState.timeScale..'                                                         '
+                ..'```Atalho: /timescale [milissegundos]```',
+                icon = 'stopwatch',
+                iconColor = ColorScheme.primary,
+                iconAnimation = 'fade',
+                onSelect = function()
+                    local input = lib.inputDialog('Escala do tempo',{
+                        { type = "number", label = 'Modificar', description = 'Quanto será 1 minuto no jogo (Ex.: 3000, a cada 3 segundos irá passar 1 minuto no relógio do jogo)', default = 3000, min = 3000},
+                    })
+
+                    ExecuteCommand('timescale '..input[1]..' '..input[2])
+                end
+            },
+            {
+                title = 'Congelar/Descongelar',
+                description = 'Congele ou descongele o tempo.                                  '
+                ..'Valor atual: '..freezeTime..'                                                                   '
+                ..'```Atalho: /freezetime [1 ou 0]```',
+                icon = 'snowflake',
+                iconColor = ColorScheme.primary,
+                iconAnimation = 'fade',
+                onSelect = function()
+                    if freezetime == 0 then freezetime = 1 else freezetime = 0 end
+                    ExecuteCommand('freezetime '..freezeTime)
+                end
+            },
+
+        }
+    })
+
+    lib.showContext('menu_time')
+end
+
 Citizen.CreateThread(function()
     -- Menu admin (F10)
     lib.registerContext({
         id = 'menu_admin',
-        title = '![logo]('..imageUrl..') **Administração**',
+        title = '![logo]('..imageUrl..') Administração',
+        description = 'Gerenciamento do servidor',
         options = {
             {
                 title = 'Abrir Painel',
@@ -109,6 +169,28 @@ Citizen.CreateThread(function()
                 end
             },
             {
+                title = 'Relógio',
+                description = 'Altere o horário do servidor',
+                icon = 'clock',
+                iconColor = ColorScheme.primary,
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = function()
+                    AbrirMenuTime()
+                end
+            },
+            {
+                title = 'Clima',
+                description = 'Gerenciar o clima do Servidor',
+                icon = 'cloud',
+                iconColor = ColorScheme.primary,
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = function()
+                    ExecuteCommand('weather')
+                end
+            },
+            {
                 title = 'Gerenciamento',
                 description = 'Acesso a opções de gerenciamento do servidor',
                 icon = 'fa-solid fa-cogs',
@@ -125,17 +207,6 @@ Citizen.CreateThread(function()
         menu = 'menu_admin',
         title = '**Gerenciamento**',
         options = {
-            {
-                title = 'Clima',
-                description = 'Administre o clima do Servidor',
-                icon = 'cloud',
-                iconColor = ColorScheme.primary,
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('weather')
-                end
-            },
             {
                 title = 'Portas',
                 description = 'Crie ou gerencie as trancas de portas e portões do servidor.',
