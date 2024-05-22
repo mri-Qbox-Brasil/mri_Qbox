@@ -111,7 +111,7 @@ function AbrirMenuTime()
                         { type = "number", label = 'Modificar', description = 'Quanto será 1 minuto no jogo (Ex.: 3000, a cada 3 segundos irá passar 1 minuto no relógio do jogo)', default = 3000, min = 3000},
                     })
 
-                    ExecuteCommand('timescale '..input[1]..' '..input[2])
+                    ExecuteCommand('timescale '..input[1])
                 end
             },
             {
