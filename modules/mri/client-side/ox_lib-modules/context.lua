@@ -61,15 +61,35 @@ function AbrirMenuJogador()
                 end
             },
             {
-                title = 'Ver Habilidades',
-                description = 'Exibir seu progresso em habilidades do servidor.',
-                icon = 'book-tanakh',
+                title = 'Ver Reputação',
+                description = 'Exibir o nível de reputação do seu personagem.',
+                icon = 'book',
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
                     ExecuteCommand('rep')
                 end
-            }
+            },
+            {
+                title = 'Ver Habilidades',
+                description = 'Exibir o nível de habilidades do seu personagem.',
+                icon = 'book-tanakh',
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = function()
+                    ExecuteCommand('skill')
+                end
+            },
+            {
+                title = 'Waypoints',
+                description = 'Configurações do sistema de waypoints (ponto de referência).',
+                icon = 'location-dot',
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = function()
+                    ExecuteCommand('waypointsettings')
+                end
+            },
         }
     })
 
