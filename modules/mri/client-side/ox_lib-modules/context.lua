@@ -82,6 +82,36 @@ function AbrirMenuJogador()
             },
             {
                 title = 'Waypoints',
+                description = 'Gerenciar opções de waypoints (ponto de referência).',
+                icon = 'location-dot',
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = AbrirMenuWaypoints
+            },
+        }
+    })
+
+    -- Exibe o menu do jogador
+    lib.showContext('menu_jogador')
+end
+
+function AbrirMenuWaypoints()
+    lib.registerContext({
+        id = 'menu_waypoints',
+        menu = 'menu_jogador',
+        title = 'Gerenciar Waypoints',
+        options = {
+            {
+                title = 'Limpar Marcadores',
+                description = 'Limpar todos os waypoints.',
+                icon = 'trash',
+                iconAnimation = 'fade',
+                onSelect = function()
+                    ExecuteCommand('clearwaypoints')
+                end
+            },
+            {
+                title = 'Configurações',
                 description = 'Configurações do sistema de waypoints (ponto de referência).',
                 icon = 'location-dot',
                 iconAnimation = 'fade',
@@ -92,9 +122,7 @@ function AbrirMenuJogador()
             },
         }
     })
-
-    -- Exibe o menu do jogador
-    lib.showContext('menu_jogador')
+    lib.showContext('menu_waypoints')
 end
 
 function AbrirMenuTime()
