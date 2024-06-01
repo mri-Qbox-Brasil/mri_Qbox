@@ -67,3 +67,9 @@ RegisterCommand("addskill", function(source, args)
     print(json.encode(args))
     exports["cw-rep"]:updateSkill(args[1], args[2])
 end)
+
+RegisterCommand("menu", function(source, args)
+    if args and args[1] then
+        exports.qbx_management:OpenBossMenu(args[1])
+    end
+end)
