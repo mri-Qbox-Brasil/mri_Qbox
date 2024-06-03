@@ -333,8 +333,8 @@ Citizen.CreateThread(function()
                 end
             },
             {
-                title = 'Jobs',
-                description = 'Crie ou gerencie jobs in game.',
+                title = 'Grupos',
+                description = 'Crie ou gerencie grupos, trabalhos e facções (Jobs e Gangs) in game.',
                 icon = 'briefcase',
                 iconAnimation = 'fade',
                 arrow = true,
@@ -422,11 +422,11 @@ function MenuJobs()
     lib.registerContext({
         id = 'menu_jobs',
         menu = 'menu_gerencial',
-        title = 'Gerenciar Jobs',
+        title = 'Gerenciar Grupos',
         options = {
             {
-                title = 'Criar novo job',
-                description = 'Crie um job.',
+                title = 'Criar novo grupo',
+                description = 'Crie um job ou gang',
                 icon = 'square-plus',
                 iconAnimation = 'fade',
                 arrow = true,
@@ -436,7 +436,7 @@ function MenuJobs()
             },
             {
                 title = 'Ver lista',
-                description = 'Veja todos jobs criados.',
+                description = 'Veja todos grupos criados.',
                 icon = 'list',
                 iconAnimation = 'fade',
                 arrow = true,
