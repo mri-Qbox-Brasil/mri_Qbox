@@ -7,16 +7,29 @@ local ColorScheme = {
 GlobalState:set('UIColors', ColorScheme, true)
 local imageUrl = 'https://cfx-nui-mri_Qbox/web-side/icones/logo24.png'
 
+local function GetPlayerInformation(data)
+    return '**ID**: '..data.source..' | '..
+    '**RG**: '..data.citizenid..'                                                                                                '..
+    '**Nome**: '..data.name
+end
+
+local function AddPlayerMenuItem(table, title, icon, iconAnimation, description, onSelectFunction, onSelectArg)
+    return {
+        title = title,
+        icon = icon,
+        iconAnimation = iconAnimation,
+        description = description,
+        onSelect = function()
+            onSelectFunction(onSelectArg)
+        end
+    }
+end
+
 -- Função para abrir o menu do jogador
 function AbrirMenuJogador()
     -- Registro do menu "Jogador"
     local PlayerData = QBX.PlayerData
 
-    local playerData = {
-        name = PlayerData.charinfo.firstname..' '..PlayerData.charinfo.lastname,
-        id = PlayerData.citizenid,
-        source = cache.serverId
-    }
     local jobData = {
         label = PlayerData.job.label,
         grade = PlayerData.job.grade.name
@@ -26,69 +39,25 @@ function AbrirMenuJogador()
         grade = PlayerData.gang.grade.name
     }
 
+    local options = {}
+    table.insert(options, AddPlayerMenuItem('Identificação', 'fas fa-address-card', 'fade', GetPlayerInformation(PlayerData), ExecuteCommand, 'id'))
+    table.insert(options, AddPlayerMenuItem('Emprego', 'fas fa-briefcase', 'fade', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
+    if PlayerData.job.isboss then
+        table.insert(options, AddPlayerMenuItem('Gerenciar Emprego', 'users', 'fade', 'Configurações do Emprego.', ExecuteCommand, '+tablet:job'))
+    end
+    table.insert(options, AddPlayerMenuItem('Gangue', 'gun', 'fade', gangData.label..' | '..gangData.grade, ExecuteCommand, 'gang'))
+    if PlayerData.gang.isboss then
+        table.insert(options, AddPlayerMenuItem('Gerenciar Gangue', 'users', 'fade', 'Configurações da gangue.', ExecuteCommand, '+tablet:gang'))
+    end
+    table.insert(options, AddPlayerMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
+    table.insert(options, AddPlayerMenuItem('Ver Habilidades', 'book', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
+    table.insert(options, AddPlayerMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', ExecuteCommand, 'waypointsettings'))
+
     lib.registerContext({
         id = 'menu_jogador',
         title = '![logo]('..imageUrl..') Olá '..PlayerData.charinfo.firstname,
         description = 'BEM VINDO À MRI QBOX',
-        options = {
-            {
-                title = 'Identificação',
-                icon = 'fas fa-address-card',
-                iconAnimation = 'fade',
-                description =   '**ID**: '..PlayerData.source..' | '..
-                                '**RG**: '..PlayerData.citizenid..'                                                                                                '..
-                                '**Nome**: '..playerData.name,
-                onSelect = function()
-                    ExecuteCommand('id')
-                end
-            },
-            {
-                title = 'Emprego',
-                icon = 'fas fa-briefcase',
-                iconAnimation = 'fade',
-                description = jobData.label..' | '..jobData.grade,
-                onSelect = function()
-                    ExecuteCommand('job')
-                end
-            },
-            {
-                title = 'Gangue',
-                icon = 'gun',
-                iconAnimation = 'fade',
-                description = gangData.label..' | '..gangData.grade,
-                onSelect = function()
-                    ExecuteCommand('gang')
-                end
-            },
-            {
-                title = 'Ver Reputação',
-                description = 'Exibir o nível de reputação do seu personagem.',
-                icon = 'book',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('rep')
-                end
-            },
-            {
-                title = 'Ver Habilidades',
-                description = 'Exibir o nível de habilidades do seu personagem.',
-                icon = 'book-tanakh',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('skill')
-                end
-            },
-            {
-                title = 'Waypoints',
-                description = 'Gerenciar opções de waypoints (ponto de referência).',
-                icon = 'location-dot',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = AbrirMenuWaypoints
-            },
-        }
+        options = options
     })
 
     -- Exibe o menu do jogador
