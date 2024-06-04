@@ -1,6 +1,6 @@
 if cfg.entervehicle.toggle then
 exports.ox_target:addGlobalVehicle({
-    {
+        {
         name = 'ox_target:driverF_ENTER',
         icon = 'fa-solid fa-right-to-bracket',
         label = "Porta dianteira do motorista",
@@ -8,7 +8,13 @@ exports.ox_target:addGlobalVehicle({
         distance = 2,
         onSelect = function(data)
             local vehicle = data.entity
-            TaskEnterVehicle(PlayerPedId(), vehicle, 10000, -1, 1.0, 1, 0)
+            local isVehicleShopEntity = Entity(vehicle).state.isVehicleShopEntity
+            
+            if isVehicleShopEntity and isVehicleShopEntity ~= "" then
+                exports.qbx_core:Notify("Você não pode entrar em carros da concessionária")
+            else
+                TaskEnterVehicle(PlayerPedId(), vehicle, 10000, -1, 1.0, 1, 0)
+            end
         end
     },
     {
