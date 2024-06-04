@@ -13,7 +13,7 @@ local function GetPlayerInformation(data)
     '**Nome**: '..data.name
 end
 
-local function AddPlayerMenuItem(table, title, icon, iconAnimation, description, onSelectFunction, onSelectArg)
+local function AddPlayerMenuItem(title, icon, iconAnimation, description, onSelectFunction, onSelectArg)
     return {
         title = title,
         icon = icon,
