@@ -13,14 +13,19 @@ local function GetPlayerInformation(data)
     '**Nome**: '..data.name
 end
 
-local function AddPlayerMenuItem(title, icon, iconAnimation, description, onSelectFunction, onSelectArg)
+local function AddPlayerMenuItem(title, icon, iconAnimation, description, onSelectFunction, onSelectArg, arrow)
     return {
         title = title,
         icon = icon,
         iconAnimation = iconAnimation,
         description = description,
+        arrow = arrow or false,
         onSelect = function()
-            onSelectFunction(onSelectArg)
+            if onSelectArg then
+                onSelectFunction(onSelectArg)
+            else
+                onSelectFunction()
+            end
         end
     }
 end
@@ -51,7 +56,7 @@ function AbrirMenuJogador()
     end
     table.insert(options, AddPlayerMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
     table.insert(options, AddPlayerMenuItem('Ver Habilidades', 'book', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
-    table.insert(options, AddPlayerMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', ExecuteCommand, 'waypointsettings'))
+    table.insert(options, AddPlayerMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
 
     lib.registerContext({
         id = 'menu_jogador',
