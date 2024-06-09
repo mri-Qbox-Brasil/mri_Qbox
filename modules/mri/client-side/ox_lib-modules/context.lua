@@ -201,24 +201,12 @@ function OpenAdminMenu()
             description = 'Acesso a opções de gerenciamento do servidor',
             icon = 'fa-solid fa-cogs',
             iconAnimation = 'fade',
-            menu = 'menu_gerencial'
+            arrow = true,
+            onSelect = function()
+                OpenManageMenu()
+            end
         }
     }
-
-    -- Verificar se o resource 'mri_Qvinewood' foi iniciado
-    if GetResourceState('mri_Qvinewood') == 'started' then
-        options[#options + 1] = {
-            {
-                title = 'Vinewood',
-                description = 'Edite a sua placa de vinewood in game!',
-                icon = 'fa-solid fa-cogs',
-                iconAnimation = 'fade',
-                onSelect = function()
-                    ExecuteCommand('vinewood')
-                end
-            }
-        }
-    end
 
     lib.registerContext({
         id = 'menu_admin',
@@ -227,124 +215,145 @@ function OpenAdminMenu()
         options = options
     })
 
+    lib.showContext('menu_admin')
+end
+
+function OpenManageMenu()
     -- Menu gerenciamento
+    local options = {
+        {
+            title = 'Portas',
+            description = 'Crie ou gerencie as trancas de portas e portões do servidor.',
+            icon = 'door-closed',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('doorlock')
+            end
+        },
+        {
+            title = 'Blips',
+            description = 'Crie ou gerencie todos os blips, você pode copiar as configurações de um já criado.  ',
+            icon = 'location-dot',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('blip')
+            end
+        },
+        {
+            title = 'Baús',
+            description = 'Crie ou gerencie os baús do servidor, você pode restringir por permissões ou senha.',
+            icon = 'box',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('bau')
+            end
+        },
+        {
+            title = 'NPC',
+            description = 'Crie ou gerencie os NPCs do servidor, você pode colocar animações nos NPCs.',
+            icon = 'users-gear',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('npc')
+            end
+        },
+        {
+            title = 'Props',
+            description = 'Crie ou gerencie os props criados do servidor, você pode editar e criar cenários.',
+            icon = 'tree',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('objectspawner')
+            end
+        },
+        {
+            title = 'Elevador',
+            description = 'Crie ou gerencie os elevadores criados, você pode criar quantos andares forem necessários.',
+            icon = 'elevator',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('elevador')
+            end
+        },
+        {
+            title = 'Outdoors/Posters',
+            description = 'Crie ou gerencie os outdoors ou imagens criados do servidor, você pode adicionar ou remover.',
+            icon = 'panorama',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                MenuPosters()
+            end
+        },
+        {
+            title = 'Garagens',
+            description = 'Crie ou gerencie as garagens criadas do servidor, você pode definir todas as opções in game.',
+            icon = 'warehouse',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                MenuGarages()
+            end
+        },
+        {
+            title = 'Crafting',
+            description = 'Crie ou gerencie mesas de fabricação do servidor, você pode usar props para a mesa.',
+            icon = 'tools',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                MenuCrafting()
+            end
+        },
+        {
+            title = 'Grupos',
+            description = 'Crie ou gerencie grupos, trabalhos e facções (Jobs e Gangs) in game.',
+            icon = 'briefcase',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                MenuJobs()
+            end
+        },
+        {
+            title = 'Spotlight',
+            description = 'Crie ou gerencie luzes in game',
+            icon = 'lightbulb',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                MenuSpotlight()
+            end
+        }
+    }
+
+    -- Verificar se o resource 'mri_Qvinewood' foi iniciado
+    if GetResourceState('mri_Qvinewood') == 'started' then
+        options[#options + 1] = {
+            title = 'Vinewood',
+            description = 'Edite a sua placa de vinewood in game!',
+            icon = 'fa-solid fa-cogs',
+            iconAnimation = 'fade',
+            onSelect = function()
+                ExecuteCommand('vinewood')
+            end
+        }
+    end
+
     lib.registerContext({
         id = 'menu_gerencial',
         menu = 'menu_admin',
         title = 'Gerenciamento',
-        options = {
-            {
-                title = 'Portas',
-                description = 'Crie ou gerencie as trancas de portas e portões do servidor.',
-                icon = 'door-closed',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('doorlock')
-                end
-            },
-            {
-                title = 'Blips',
-                description = 'Crie ou gerencie todos os blips, você pode copiar as configurações de um já criado.  ',
-                icon = 'location-dot',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('blip')
-                end
-            },
-            {
-                title = 'Baús',
-                description = 'Crie ou gerencie os baús do servidor, você pode restringir por permissões ou senha.',
-                icon = 'box',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('bau')
-                end
-            },
-            {
-                title = 'NPC',
-                description = 'Crie ou gerencie os NPCs do servidor, você pode colocar animações nos NPCs.',
-                icon = 'users-gear',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('npc')
-                end
-            },
-            {
-                title = 'Props',
-                description = 'Crie ou gerencie os props criados do servidor, você pode editar e criar cenários.',
-                icon = 'tree',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('objectspawner')
-                end
-            },
-            {
-                title = 'Elevador',
-                description = 'Crie ou gerencie os elevadores criados, você pode criar quantos andares forem necessários.',
-                icon = 'elevator',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('elevador')
-                end
-            },
-            {
-                title = 'Outdoors/Posters',
-                description = 'Crie ou gerencie os outdoors ou imagens criados do servidor, você pode adicionar ou remover.',
-                icon = 'panorama',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    MenuPosters()
-                end
-            },
-            {
-                title = 'Garagens',
-                description = 'Crie ou gerencie as garagens criadas do servidor, você pode definir todas as opções in game.',
-                icon = 'warehouse',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    MenuGarages()
-                end
-            },
-            {
-                title = 'Crafting',
-                description = 'Crie ou gerencie mesas de fabricação do servidor, você pode usar props para a mesa.',
-                icon = 'tools',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    MenuCrafting()
-                end
-            },
-            {
-                title = 'Grupos',
-                description = 'Crie ou gerencie grupos, trabalhos e facções (Jobs e Gangs) in game.',
-                icon = 'briefcase',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    MenuJobs()
-                end
-            },
-            {
-                title = 'Spotlight',
-                description = 'Crie ou gerencie luzes in game',
-                icon = 'lightbulb',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    MenuSpotlight()
-                end
-            }
-        }
+        options = options
     })
+
+    lib.showContext('menu_gerencial')
 end
 
 function MenuPosters()
