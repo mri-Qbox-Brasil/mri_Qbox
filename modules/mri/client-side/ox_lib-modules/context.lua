@@ -6,7 +6,6 @@ local ColorScheme = {
 }
 GlobalState:set('UIColors', ColorScheme, true)
 local imageUrl = 'https://cfx-nui-mri_Qbox/web-side/icones/logo24.png'
-
 local function GetPlayerInformation(data)
     return '**ID**: '..data.source..' | '..
     '**RG**: '..data.citizenid..'                                                                                                '..
@@ -278,7 +277,7 @@ Citizen.CreateThread(function()
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
-                    ExecuteCommand('poster')
+                    MenuPosters()
                 end
             },
             {
@@ -324,6 +323,37 @@ Citizen.CreateThread(function()
         }
     })
 end)
+
+function MenuPosters()
+    lib.registerContext({
+        id = 'menu_posters',
+        menu = 'menu_gerencial',
+        title = 'Gerenciar Posters',
+        options = {
+            {
+                title = 'Criar poster',
+                description = 'Criar um novo Poster.',
+                icon = 'square-plus',
+                iconAnimation = 'fade',
+                arrow = false,
+                onSelect = function()
+                    ExecuteCommand('poster')
+                end
+            },
+            {
+                title = 'Edite ou exclua posters ao seu redor',
+                description = 'IMPORTANTE: Ative e aproxime-se do poster',
+                icon = 'list-check',
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = function()
+                    ExecuteCommand('draw_dev on')
+                end
+            },
+        }
+    })
+    lib.showContext('menu_posters')
+end
 
 function MenuGarages()
     lib.registerContext({
