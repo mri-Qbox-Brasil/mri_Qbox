@@ -6,6 +6,7 @@ local ColorScheme = {
 }
 GlobalState:set('UIColors', ColorScheme, true)
 local imageUrl = 'https://cfx-nui-mri_Qbox/web-side/icones/logo24.png'
+
 local function GetPlayerInformation(data)
     return '**ID**: '..data.source..' | '..
     '**RG**: '..data.citizenid..'                                                                                                '..
@@ -154,59 +155,76 @@ function AbrirMenuTime()
     lib.showContext('menu_time')
 end
 
-Citizen.CreateThread(function()
+function OpenAdminMenu()
     -- Menu admin (F10)
+    local options = {
+        {
+            title = 'Abrir Painel',
+            description = 'Painel da Administração do Servidor',
+            icon = 'fa-solid fa-user-tie',
+            iconAnimation = 'fade',
+            onSelect = function()
+                ExecuteCommand('adm')
+            end
+        },
+        {
+            title = 'Customizar Veículo',
+            description = 'Tune seu veículo atual',
+            icon = 'palette',
+            iconAnimation = 'fade',
+            onSelect = function()
+                ExecuteCommand('customs')
+            end
+        },
+        {
+            title = 'Relógio',
+            description = 'Altere o horário do servidor',
+            icon = 'clock',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                AbrirMenuTime()
+            end
+        },
+        {
+            title = 'Clima',
+            description = 'Gerenciar o clima do Servidor',
+            icon = 'cloud',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('weather')
+            end
+        },
+        {
+            title = 'Gerenciamento',
+            description = 'Acesso a opções de gerenciamento do servidor',
+            icon = 'fa-solid fa-cogs',
+            iconAnimation = 'fade',
+            menu = 'menu_gerencial'
+        }
+    }
+
+    -- Verificar se o resource 'mri_Qvinewood' foi iniciado
+    if GetResourceState('mri_Qvinewood') == 'started' then
+        options[#options + 1] = {
+            {
+                title = 'Vinewood',
+                description = 'Edite a sua placa de vinewood in game!',
+                icon = 'fa-solid fa-cogs',
+                iconAnimation = 'fade',
+                onSelect = function()
+                    ExecuteCommand('vinewood')
+                end
+            }
+        }
+    end
+
     lib.registerContext({
         id = 'menu_admin',
         title = '![logo]('..imageUrl..') Administração',
         description = 'Gerenciamento do servidor',
-        options = {
-            {
-                title = 'Abrir Painel',
-                description = 'Painel da Administração do Servidor',
-                icon = 'fa-solid fa-user-tie',
-                iconAnimation = 'fade',
-                onSelect = function()
-                    ExecuteCommand('adm')
-                end
-            },
-            {
-                title = 'Customizar Veículo',
-                description = 'Tune seu veículo atual',
-                icon = 'palette',
-                iconAnimation = 'fade',
-                onSelect = function()
-                    ExecuteCommand('customs')
-                end
-            },
-            {
-                title = 'Relógio',
-                description = 'Altere o horário do servidor',
-                icon = 'clock',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    AbrirMenuTime()
-                end
-            },
-            {
-                title = 'Clima',
-                description = 'Gerenciar o clima do Servidor',
-                icon = 'cloud',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('weather')
-                end
-            },
-            {
-                title = 'Gerenciamento',
-                description = 'Acesso a opções de gerenciamento do servidor',
-                icon = 'fa-solid fa-cogs',
-                iconAnimation = 'fade',
-                menu = 'menu_gerencial'
-            }
-        }
+        options = options
     })
 
     -- Menu gerenciamento
@@ -327,7 +345,7 @@ Citizen.CreateThread(function()
             }
         }
     })
-end)
+end
 
 function MenuPosters()
     lib.registerContext({
@@ -486,7 +504,7 @@ end
 
 -- Callbacks
 lib.callback.register('AbrirMenuAdmin', function()
-    lib.showContext('menu_admin')
+    OpenAdminMenu()
 end)
 
 -- Keybinds
