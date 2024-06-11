@@ -1,3 +1,4 @@
+local Utils = lib.load('modules/mri/client-side/ox_lib-modules/utils')
 local ColorScheme = {
     success = '#51CF66',
     info = '#668CFF',
@@ -7,13 +8,28 @@ local ColorScheme = {
 GlobalState:set('UIColors', ColorScheme, true)
 local imageUrl = 'https://cfx-nui-mri_Qbox/web-side/icones/logo24.png'
 
-local function GetPlayerInformation(data)
-    return '**ID**: '..data.source..' | '..
-    '**RG**: '..data.citizenid..'                                                                                                '..
-    '**Nome**: '..data.name
+local playerMenu = {}
+local managementMenu = {}
+
+local function getSpaces(qtd)
+    local result = ''
+    for i = 1, qtd do
+        result = result ..' '
+    end
+    return result
 end
 
-local function AddPlayerMenuItem(title, icon, iconAnimation, description, onSelectFunction, onSelectArg, arrow)
+local function getPlayerInformation(data)
+    return string.format(
+        '**ID**: %s | **RG**: %s %s **Nome**: %s',
+        data.source,
+        data.citizenid,
+        getSpaces(130),
+        data.name
+    )
+end
+
+local function addMenuItem(title, icon, iconAnimation, description, onSelectFunction, onSelectArg, arrow)
     return {
         title = title,
         icon = icon,
@@ -30,6 +46,53 @@ local function AddPlayerMenuItem(title, icon, iconAnimation, description, onSele
     }
 end
 
+local function locateMenuItem(menu, title)
+    for k, v in pairs(menu) do
+        if v.title == title then
+            return k
+        end
+    end
+    return 0
+end
+
+local function addManageMenu(item)
+    local index = locateMenuItem(managementMenu, item.title)
+    if index == 0 then
+        index = #managementMenu + 1
+    end
+    managementMenu[index] = addMenuItem(item.title, item.icon, item.iconAnimation, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
+end
+
+exports('AddManageMenu', addManageMenu)
+
+local function removeManageMenu(title)
+    local index = locateMenuItem(managementMenu, item.title)
+    if index > 0 then
+        managementMenu[index] = nil
+    end
+end
+
+exports('RemoveManageMenu', removeManageMenu)
+
+local function addPlayerMenu(item)
+    local index = locateMenuItem(playerMenu, item.title)
+    if index == 0 then
+        index = playerMenu + 1
+    end
+    playerMenu[index] = addMenuItem(item.title, item.icon, item.iconAnimation, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
+end
+
+exports('AddPlayerMenu', addPlayerMenu)
+
+local function removePlayerMenu(title)
+    local index = locateMenuItem(playerMenu, item.title)
+    if index > 0 then
+        playerMenu[index] = nil
+    end
+end
+
+exports('RemovePlayerMenu', removePlayerMenu)
+
 -- Função para abrir o menu do jogador
 function AbrirMenuJogador()
     -- Registro do menu "Jogador"
@@ -44,19 +107,19 @@ function AbrirMenuJogador()
         grade = PlayerData.gang.grade.name
     }
 
-    local options = {}
-    table.insert(options, AddPlayerMenuItem('Identificação', 'fas fa-address-card', 'fade', GetPlayerInformation(PlayerData), ExecuteCommand, 'id'))
-    table.insert(options, AddPlayerMenuItem('Emprego', 'fas fa-briefcase', 'fade', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
+    local options = playerMenu
+    table.insert(options, addMenuItem('Identificação', 'fas fa-address-card', 'fade', getPlayerInformation(PlayerData), ExecuteCommand, 'id'))
+    table.insert(options, addMenuItem('Emprego', 'fas fa-briefcase', 'fade', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
     if PlayerData.job.isboss then
-        table.insert(options, AddPlayerMenuItem('Gerenciar Emprego', 'users', 'fade', 'Configurações do Emprego.', ExecuteCommand, '+tablet:job'))
+        table.insert(options, addMenuItem('Gerenciar Emprego', 'users', 'fade', 'Configurações do Emprego.', ExecuteCommand, '+tablet:job'))
     end
-    table.insert(options, AddPlayerMenuItem('Gangue', 'gun', 'fade', gangData.label..' | '..gangData.grade, ExecuteCommand, 'gang'))
+    table.insert(options, addMenuItem('Gangue', 'gun', 'fade', gangData.label..' | '..gangData.grade, ExecuteCommand, 'gang'))
     if PlayerData.gang.isboss then
-        table.insert(options, AddPlayerMenuItem('Gerenciar Gangue', 'users', 'fade', 'Configurações da gangue.', ExecuteCommand, '+tablet:gang'))
+        table.insert(options, addMenuItem('Gerenciar Gangue', 'users', 'fade', 'Configurações da gangue.', ExecuteCommand, '+tablet:gang'))
     end
-    table.insert(options, AddPlayerMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
-    table.insert(options, AddPlayerMenuItem('Ver Habilidades', 'book', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
-    table.insert(options, AddPlayerMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
+    table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
+    table.insert(options, addMenuItem('Ver Habilidades', 'book', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
+    table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
 
     lib.registerContext({
         id = 'menu_jogador',
@@ -346,11 +409,13 @@ function OpenManageMenu()
         }
     end
 
+    local currentOptions = Utils.table_merge(options, managementMenu)
+
     lib.registerContext({
         id = 'menu_gerencial',
         menu = 'menu_admin',
         title = 'Gerenciamento',
-        options = options
+        options = currentOptions
     })
 
     lib.showContext('menu_gerencial')
