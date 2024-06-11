@@ -13,7 +13,7 @@ shared_scripts {
 	"config.lua",
 
 	"**/**/config.lua",
-	
+
 	"**/**/shared-side/*",
 	"**/**/shared-side/**/*",
 
