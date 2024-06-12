@@ -118,7 +118,7 @@ function AbrirMenuJogador()
         table.insert(options, addMenuItem('Gerenciar Gangue', 'users', 'fade', 'Configurações da gangue.', ExecuteCommand, '+tablet:gang'))
     end
     table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
-    table.insert(options, addMenuItem('Ver Habilidades', 'book', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
+    table.insert(options, addMenuItem('Ver Habilidades', 'fa-solid fa-book-bookmark', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
     table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
 
     lib.registerContext({
