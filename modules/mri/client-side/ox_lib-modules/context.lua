@@ -102,12 +102,13 @@ function AbrirMenuJogador()
         label = PlayerData.job.label,
         grade = PlayerData.job.grade.name
     }
+
     local gangData = {
         label = PlayerData.gang.label,
         grade = PlayerData.gang.grade.name
     }
 
-    local options = playerMenu
+    local options = Utils.table_clone(playerMenu)
     table.insert(options, addMenuItem('Identificação', 'fas fa-address-card', 'fade', getPlayerInformation(PlayerData), ExecuteCommand, 'id'))
     table.insert(options, addMenuItem('Emprego', 'fas fa-briefcase', 'fade', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
     if PlayerData.job.isboss then
