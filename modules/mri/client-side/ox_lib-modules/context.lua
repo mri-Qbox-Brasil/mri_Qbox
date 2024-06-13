@@ -410,13 +410,15 @@ function OpenManageMenu()
         }
     end
 
-    local currentOptions = Utils.table_merge(options, managementMenu)
+    for _,v in pairs(managementMenu) do
+        options[#options + 1] = v
+    end
 
     lib.registerContext({
         id = 'menu_gerencial',
         menu = 'menu_admin',
         title = 'Gerenciamento',
-        options = currentOptions
+        options = options
     })
 
     lib.showContext('menu_gerencial')
