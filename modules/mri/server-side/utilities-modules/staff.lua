@@ -75,7 +75,9 @@ local function logoutStaff(source)
             break
         end
     end
-    print("[SAIU] Log de staff: " .. player.PlayerData.citizenid .. " - ID:" .. source)
+    if player then
+        print("[SAIU] Log de staff: " .. player.PlayerData.citizenid .. " - ID:" .. source)
+    end
 end
 
 RegisterNetEvent('playerDropped', function(reason)
