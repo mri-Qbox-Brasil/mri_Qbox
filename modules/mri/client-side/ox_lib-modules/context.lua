@@ -10,6 +10,7 @@ local imageUrl = 'https://cfx-nui-mri_Qbox/web-side/icones/logo24.png'
 
 local playerMenu = {}
 local managementMenu = {}
+local f10Menu = {}
 
 local function getSpaces(qtd)
     local result = ''
@@ -55,40 +56,62 @@ local function locateMenuItem(menu, title)
     return 0
 end
 
-local function addManageMenu(item)
-    local index = locateMenuItem(managementMenu, item.title)
-    if index == 0 then
-        index = #managementMenu + 1
+local function locateMenu(menu)
+    if menu == 'f10' then
+        return f10Menu
+    elseif menu == 'management' then
+        return managementMenu
+    elseif menu == 'player' then
+        return playerMenu
+    else
+        print(string.format("Menu: '%s' não encontrado."))
     end
-    managementMenu[index] = addMenuItem(item.title, item.icon, item.iconAnimation, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
+end
+
+local function addItemToMenu(menu, item)
+    local menuToAdd = locateMenu(menu)
+    if not menuToAdd then
+        return
+    end
+    local index = locateMenuItem(menuToAdd, item.title)
+    if index == 0 then
+        index = #menuToAdd + 1
+    end
+    menuToAdd[index] = addMenuItem(item.title, item.icon, item.iconAnimation, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
+end
+
+exports('AddItemToMenu', addItemToMenu)
+
+local function removeItemFromMenu(menu, title)
+    local menuToRemove = locateMenu(menu)
+    local index = locateMenuItem(menuToRemove, title)
+    if index > 0 then
+        menuToRemove[index] = nil
+    end
+end
+
+exports('RemoveItemFromMenu', removeItemFromMenu)
+
+local function addManageMenu(item)
+    addItemToMenu('management', item)
 end
 
 exports('AddManageMenu', addManageMenu)
 
 local function removeManageMenu(title)
-    local index = locateMenuItem(managementMenu, item.title)
-    if index > 0 then
-        managementMenu[index] = nil
-    end
+    removeItemFromMenu('management', title)
 end
 
 exports('RemoveManageMenu', removeManageMenu)
 
 local function addPlayerMenu(item)
-    local index = locateMenuItem(playerMenu, item.title)
-    if index == 0 then
-        index = playerMenu + 1
-    end
-    playerMenu[index] = addMenuItem(item.title, item.icon, item.iconAnimation, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
+    addItemToMenu('player', item)
 end
 
 exports('AddPlayerMenu', addPlayerMenu)
 
 local function removePlayerMenu(title)
-    local index = locateMenuItem(playerMenu, item.title)
-    if index > 0 then
-        playerMenu[index] = nil
-    end
+    removeItemFromMenu('player', title)
 end
 
 exports('RemovePlayerMenu', removePlayerMenu)
@@ -102,7 +125,6 @@ function AbrirMenuJogador()
         label = PlayerData.job.label,
         grade = PlayerData.job.grade.name
     }
-
     local gangData = {
         label = PlayerData.gang.label,
         grade = PlayerData.gang.grade.name
@@ -271,6 +293,10 @@ function OpenAdminMenu()
             end
         }
     }
+
+    for _, v in pairs(f10Menu) do
+        options[#options+1] = v
+    end
 
     lib.registerContext({
         id = 'menu_admin',
