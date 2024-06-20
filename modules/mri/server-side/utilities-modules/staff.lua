@@ -1,4 +1,58 @@
 local staffs = {}
+local staffAces = {'group.admin', 'group.mod', 'group.support'}
+
+local function fetchPlayers()
+    return MySQL.query.await("SELECT citizenid FROM players")
+end
+
+local function checkAces(source)
+    for k, v in pairs(staffAces) do
+        print(IsPlayerAceAllowed(source, 'group.admin'))
+        if IsPlayerAceAllowed(source, v) then
+            return true
+        end
+    end
+end
+
+local function getMenuEntries()
+    local result = {}
+    local players = fetchPlayers()
+    for k, v in pairs(players) do
+        local player = exports.qbx_core:GetPlayerByCitizenId(v.citizenid) or exports.qbx_core:GetOfflinePlayer(v.citizenid)
+        local namePrefix = player.Offline and '❌ ' or '🟢 '
+        if player.PlayerData.metadata['staff'] then
+            result[#result+1] = {
+                cid = v.citizenid,
+                name = namePrefix..player.PlayerData.charinfo.firstname..' '..player.PlayerData.charinfo.lastname,
+            }
+        end
+    end
+    return result
+end
+
+lib.callback.register('mri_Qbox:server:getStaff', function(source)
+    return getMenuEntries()
+end)
+
+local function logoutStaff(source)
+    local player = exports.qbx_core:GetPlayer(source)
+    for k, v in pairs(staffs) do
+        print(k, v)
+        if v == player.PlayerData.citizenid then
+            table.remove(staffs, k)
+            break
+        end
+    end
+    if player then
+        print("[SAIU] Log de staff: " .. player.PlayerData.citizenid .. " - ID:" .. source)
+    end
+end
+
+local function CountStaff()
+    return #staffs
+end
+
+exports('CountStaff', CountStaff)
 
 lib.addCommand('staff', {
     help = 'Dar permissão ao staff permnanentemente',
@@ -61,24 +115,10 @@ lib.addCommand('staffs', {
 }, function(source, args)
     lib.notify(source, {
         title = 'Staff',
-        description = 'Tem ' .. CountStaff() .. ' players com permissão para staff',
+        description = 'Tem ' .. CountStaff() .. ' players online com permissão para staff',
         type = 'info'
     })
 end)
-
-local function logoutStaff(source)
-    local player = exports.qbx_core:GetPlayer(source)
-    for k, v in pairs(staffs) do
-        print(k, v)
-        if v == player.PlayerData.citizenid then
-            table.remove(staffs, k)
-            break
-        end
-    end
-    if player then
-        print("[SAIU] Log de staff: " .. player.PlayerData.citizenid .. " - ID:" .. source)
-    end
-end
 
 RegisterNetEvent('playerDropped', function(reason)
     logoutStaff(source)
@@ -103,7 +143,3 @@ RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
         staffs[#staffs + 1] = player.PlayerData.citizenid
     end
 end)
-
-function CountStaff()
-    return #staffs
-end exports('CountStaff', CountStaff)
