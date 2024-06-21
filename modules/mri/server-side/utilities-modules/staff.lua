@@ -16,10 +16,11 @@ end
 
 local function getMenuEntries()
     local result = {}
-    local onlineStaff, offlineStaff = 0,0
+    local onlineStaff, offlineStaff = 0, 0
     local players = fetchPlayers()
     for k, v in pairs(players) do
-        local player = exports.qbx_core:GetPlayerByCitizenId(v.citizenid) or exports.qbx_core:GetOfflinePlayer(v.citizenid)
+        local player = exports.qbx_core:GetPlayerByCitizenId(v.citizenid) or
+        exports.qbx_core:GetOfflinePlayer(v.citizenid)
         local namePrefix = player.Offline and '❌' or '🟢'
         if player.PlayerData.metadata['staff'] then
             if player.Offline then
@@ -27,9 +28,12 @@ local function getMenuEntries()
             else
                 onlineStaff = onlineStaff + 1
             end
-            result[#result+1] = {
+            result[#result + 1] = {
                 source = player.PlayerData.source,
-                name = string.format("%s %s %s", namePrefix, player.PlayerData.charinfo.firstname, player.PlayerData.charinfo.lastname),
+                citizenId = v.citizenid,
+                displayName = string.format("%s %s %s", namePrefix, player.PlayerData.charinfo.firstname,
+                    player.PlayerData.charinfo.lastname),
+                name = string.format("%s %s", player.PlayerData.charinfo.firstname, player.PlayerData.charinfo.lastname),
                 role = player.PlayerData.metadata['staff'],
                 offline = player.Offline
             }
@@ -98,5 +102,32 @@ lib.addCommand('staff', {
         player.Functions.SetMetaData('staff', nil)
         sendNotification(args.id, "info", string.format("Cargo: %s removido", player.PlayerData.metadata['staff']))
     end
-    sendNotification(source, "success", string.format("Permissão %s %s a: %d", args.cargo, (args.tipo == 'add' and "concedida") or "revogada" , args.id))
+    sendNotification(source, "success",
+        string.format("Permissão %s %s a: %d", args.cargo or player.PlayerData.metadata['staff'],
+            (args.tipo == 'add' and "concedida") or "revogada", args.id))
+end)
+
+RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
+    local player = exports.qbx_core:GetPlayer(source)
+    if player and player.PlayerData.metadata['staff'] then
+        lib.addPrincipal(source, player.PlayerData.metadata['staff'])
+    end
+end)
+
+RegisterNetEvent('mri_Qbox:server:manageStaff', function(data)
+    local source = source
+    local player = exports.qbx_core:GetOfflinePlayer(data.citizenId)
+    if player then
+        if data.action == 'remove' then
+            player.PlayerData.metadata['staff'] = nil
+        elseif data.action == 'add' then
+            player.PlayerData.metadata['staff'] = data.role
+        end
+        exports.qbx_core:SaveOffline(player.PlayerData)
+        sendNotification(source, "success",
+            string.format("Permissão '%s' %s a: %s", data.role or player.PlayerData.metadata['staff'],
+                (data.action == 'add' and "concedida") or "revogada", data.name))
+    else
+        print('not found')
+    end
 end)

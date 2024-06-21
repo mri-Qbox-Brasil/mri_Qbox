@@ -1,24 +1,101 @@
 ColorScheme = GlobalState.UIColors or {}
 local staffPeople = {}
 
+local function ConfirmationDialog(content)
+    return lib.alertDialog({
+        header = "Confirmação",
+        content = content,
+        centered = true,
+        cancel = true,
+        labels = {
+            cancel = "Cancelar",
+            confirm = "Confirmar"
+        }
+    })
+end
+
 local function addStaff(args)
-    ExecuteCommand(string.format("staff %d add %s", args.staffData.source, args.newRole))
+    print(json.encode(args))
+    if args.staffData.offline then
+        TriggerServerEvent("mri_Qbox:server:manageStaff", {
+            citizenId = args.staffData.citizenId,
+            name = args.staffData.name,
+            role = args.newRole,
+            action = 'add'
+        })
+    else
+        ExecuteCommand(string.format("staff %d add %s", args.staffData.source, args.newRole))
+    end
     if args['callback'] then
         args.callback()
     end
 end
 
+local function addNewStaff(args)
+    local input = lib.inputDialog("Adicionar Staff", { {
+        type = 'input',
+        label = "Id",
+        description = "Id do Jogador",
+        required = true
+    }, {
+        type = 'input',
+        label = 'Cargo',
+        description = 'Cargo do Jogador(admin, mod, support)',
+        placeholder = 'admin',
+        required = true
+    } })
+    if input then
+        if ConfirmationDialog(string.format("Adicionar '%s' a '%s'?", input[1], input[2])) then
+            addStaff({
+                staffData = {
+                    offline = args.staffData.offline,
+                    name = args.staffData.name,
+                    source = tonumber(input[1])
+                },
+                newRole = input[2]
+            })
+        end
+    end
+end
 
 local function removeStaff(args)
-    ExecuteCommand(string.format("staff %d rem %s", args.staffData.source, args.staffData.role))
+    if ConfirmationDialog(string.format("Remover '%s' de '%s'?", args.staffData.name, args.staffData.role)) then
+        if args.staffData.offline then
+            TriggerServerEvent("mri_Qbox:server:manageStaff", {
+                citizenId = args.staffData.citizenId,
+                action = 'remove'
+            })
+            Wait(500)
+        else
+            ExecuteCommand(string.format("staff %d rem %s", args.staffData.source, args.staffData.role))
+        end
+    end
     if args['callback'] then
         args.callback()
     end
 end
 
 local function changeRole(args)
-    removeStaff({source = args.staffData.source, role = args.staffData.role})
-    addStaff({source = args.staffData.source, args.newRole})
+    local input = lib.inputDialog("Alterar Cargo de Staff", { {
+        type = 'input',
+        label = 'Novo cargo',
+        description = 'Cargo do Jogador(admin, mod, support)',
+        placeholder = 'admin',
+        required = true
+    } })
+    if input then
+        if ConfirmationDialog(string.format("Mudar '%s' de '%s' para '%s'?", args.staffData.name, args.staffData.role, input[1])) then
+            addStaff({
+                staffData = {
+                    source = args.staffData.source,
+                    citizenId = args.staffData.citizenId,
+                    offline = args.staffData.offline,
+                    name = args.staffData.name
+                },
+                newRole = input[1]
+            })
+        end
+    end
     args.callback(args.staffData)
 end
 
@@ -28,7 +105,7 @@ local function manageStaff(staffData)
         menu = 'menu_staff',
         title = staffData.name,
         description = string.format("Source: %s, Cargo: %s", staffData.source, staffData.role),
-        options = {{
+        options = { {
             title = "Mudar Cargo",
             description = "Promover ou rebaixar o cargo.",
             icon = "retweet",
@@ -49,7 +126,7 @@ local function manageStaff(staffData)
                 staffData = staffData,
                 callback = ListStaff
             }
-        }}
+        } }
     }
     lib.registerContext(ctx)
     lib.showContext(ctx.id)
@@ -61,17 +138,17 @@ function ListStaff()
         id = 'list_staff',
         menu = 'menu_staff',
         title = 'Staffs',
-        description = string.format("Online: %d/%d", staffPeople.onlineStaff, staffPeople.onlineStaff + staffPeople.offlineStaff),
+        description = string.format("Online: %d/%d", staffPeople.onlineStaff,
+            staffPeople.onlineStaff + staffPeople.offlineStaff),
         options = {}
     }
     for k, v in pairs(staffPeople.staff) do
-        print(v.type)
-        ctx.options[#ctx.options+1] = {
-           title = v.name,
-           description = string.format("Source: %s, Cargo: %s", v.source, v.role),
-           onSelect = function()
+        ctx.options[#ctx.options + 1] = {
+            title = v.displayName,
+            description = string.format("Source: %s, Cargo: %s", v.source, v.role),
+            onSelect = function()
                 manageStaff(v)
-           end
+            end
         }
     end
     lib.registerContext(ctx)
@@ -84,17 +161,17 @@ local function openStaffMenu()
         menu = 'menu_admin',
         title = 'Staff',
         description = 'Gerenciamento da Staff',
-        options = {{
+        options = { {
             title = 'Adicionar pessoas a Staff',
             description = 'Recrutar novos players',
             icon = 'square-plus',
             iconAnimation = 'fade',
             arrow = true,
-            onSelect = addStaff,
+            onSelect = addNewStaff,
             args = {
                 callback = ListStaff
             }
-        },{
+        }, {
             title = 'Ver membros',
             description = 'Lista os membros da Staff',
             icon = 'list-ul',
@@ -102,7 +179,8 @@ local function openStaffMenu()
             arrow = true,
             onSelect = ListStaff
         }
-    }}
+        }
+    }
     lib.registerContext(ctx)
     lib.showContext(ctx.id)
 end
