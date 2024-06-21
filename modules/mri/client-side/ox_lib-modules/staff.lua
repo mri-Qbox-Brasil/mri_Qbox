@@ -1,22 +1,74 @@
+ColorScheme = GlobalState.UIColors or {}
+local staffPeople = {}
+
 local function addStaff(args)
-    args.callback()
+    ExecuteCommand(string.format("staff %d add %s", args.staffData.source, args.newRole))
+    if args['callback'] then
+        args.callback()
+    end
+end
+
+
+local function removeStaff(args)
+    ExecuteCommand(string.format("staff %d rem %s", args.staffData.source, args.staffData.role))
+    if args['callback'] then
+        args.callback()
+    end
+end
+
+local function changeRole(args)
+    removeStaff({source = args.staffData.source, role = args.staffData.role})
+    addStaff({source = args.staffData.source, args.newRole})
+    args.callback(args.staffData)
 end
 
 local function manageStaff(staffData)
+    local ctx = {
+        id = 'manage_staff',
+        menu = 'menu_staff',
+        title = staffData.name,
+        description = string.format("Source: %s, Cargo: %s", staffData.source, staffData.role),
+        options = {{
+            title = "Mudar Cargo",
+            description = "Promover ou rebaixar o cargo.",
+            icon = "retweet",
+            iconAnimation = "fade",
+            onSelect = changeRole,
+            args = {
+                staffData = staffData,
+                callback = manageStaff
+            }
+        }, {
+            title = "Remover da Staff",
+            description = "Remove da Staff e todas as permissões",
+            icon = "trash",
+            iconAnimation = "fade",
+            iconColor = ColorScheme.danger,
+            onSelect = removeStaff,
+            args = {
+                staffData = staffData,
+                callback = ListStaff
+            }
+        }}
+    }
+    lib.registerContext(ctx)
+    lib.showContext(ctx.id)
 end
 
-local function listStaff()
-    local staffPeople = lib.callback.await('mri_Qbox:server:getStaff')
+function ListStaff()
+    staffPeople = lib.callback.await('mri_Qbox:server:getStaff')
     local ctx = {
         id = 'list_staff',
         menu = 'menu_staff',
         title = 'Staffs',
+        description = string.format("Online: %d/%d", staffPeople.onlineStaff, staffPeople.onlineStaff + staffPeople.offlineStaff),
         options = {}
     }
-    for k, v in pairs(staffPeople) do
+    for k, v in pairs(staffPeople.staff) do
         print(v.type)
         ctx.options[#ctx.options+1] = {
            title = v.name,
+           description = string.format("Source: %s, Cargo: %s", v.source, v.role),
            onSelect = function()
                 manageStaff(v)
            end
@@ -40,7 +92,7 @@ local function openStaffMenu()
             arrow = true,
             onSelect = addStaff,
             args = {
-                callback = listStaff
+                callback = ListStaff
             }
         },{
             title = 'Ver membros',
@@ -48,7 +100,7 @@ local function openStaffMenu()
             icon = 'list-ul',
             iconAnimation = 'fade',
             arrow = true,
-            onSelect = listStaff
+            onSelect = ListStaff
         }
     }}
     lib.registerContext(ctx)
