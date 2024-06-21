@@ -15,7 +15,6 @@ local function ConfirmationDialog(content)
 end
 
 local function addStaff(args)
-    print(json.encode(args))
     if args.staffData.offline then
         TriggerServerEvent("mri_Qbox:server:manageStaff", {
             citizenId = args.staffData.citizenId,

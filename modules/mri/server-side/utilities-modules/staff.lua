@@ -127,7 +127,6 @@ RegisterNetEvent('mri_Qbox:server:manageStaff', function(data)
         sendNotification(source, "success",
             string.format("Permissão '%s' %s a: %s", data.role or player.PlayerData.metadata['staff'],
                 (data.action == 'add' and "concedida") or "revogada", data.name))
-    else
-        print('not found')
+
     end
 end)
