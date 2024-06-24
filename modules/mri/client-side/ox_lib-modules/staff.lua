@@ -14,7 +14,17 @@ local function ConfirmationDialog(content)
     })
 end
 
+local function findPlayers()
+    local coords = GetEntityCoords(cache.ped)
+    local closePlayers = lib.getNearbyPlayers(coords, 10, false)
+    for _, v in pairs(closePlayers) do
+        v.id = GetPlayerServerId(v.id)
+    end
+    return lib.callback.await('qbx_management:server:getPlayers', false, closePlayers)
+end
+
 local function addStaff(args)
+    print(json.encode(args))
     if args.staffData.offline then
         TriggerServerEvent("mri_Qbox:server:manageStaff", {
             citizenId = args.staffData.citizenId,
@@ -31,10 +41,12 @@ local function addStaff(args)
 end
 
 local function addNewStaff(args)
-    local input = lib.inputDialog("Adicionar Staff", { {
+    local input = lib.inputDialog('Adicionar Staff', { {
         type = 'input',
-        label = "Id",
-        description = "Id do Jogador",
+        label = 'Id',
+        description = 'Id do Jogador',
+        disabled = args['nearby'],
+        default = (args['staffData'] and args.staffData['source']),
         required = true
     }, {
         type = 'input',
@@ -47,14 +59,46 @@ local function addNewStaff(args)
         if ConfirmationDialog(string.format("Adicionar '%s' a '%s'?", input[1], input[2])) then
             addStaff({
                 staffData = {
-                    offline = args.staffData.offline,
-                    name = args.staffData.name,
+                    offline = args['staffData'] and args.staffData.offline,
+                    name = (args['staffData'] and args.staffData.name) or input[2],
                     source = tonumber(input[1])
                 },
                 newRole = input[2]
             })
         end
     end
+    if args['callback'] then
+        args.callback(args)
+    end
+end
+
+local function addNearbyStaff(args)
+    local hireMenu = {}
+    local players = findPlayers()
+    for _, player in pairs(players) do
+        hireMenu[#hireMenu + 1] = {
+            title = player.name,
+            description = string.format("CitizenId: %s, Source: %s", player.citizenid, player.source),
+            onSelect = addNewStaff,
+            args = {
+                staffData = {
+                    offline = false,
+                    source = player.source
+                },
+                nearby = true,
+                callback = addNearbyStaff
+            }
+        }
+    end
+
+    lib.registerContext({
+        id = 'hireMenu',
+        title = 'Recrutar',
+        menu = 'menu_staff',
+        options = hireMenu
+    })
+
+    lib.showContext('hireMenu')
 end
 
 local function removeStaff(args)
@@ -62,7 +106,9 @@ local function removeStaff(args)
         if args.staffData.offline then
             TriggerServerEvent("mri_Qbox:server:manageStaff", {
                 citizenId = args.staffData.citizenId,
-                action = 'remove'
+                action = 'remove',
+                name = args.staffData.name,
+                role = args.staffData.role
             })
             Wait(500)
         else
@@ -103,7 +149,7 @@ local function manageStaff(staffData)
         id = 'manage_staff',
         menu = 'menu_staff',
         title = staffData.name,
-        description = string.format("Source: %s, Cargo: %s", staffData.source, staffData.role),
+        description = string.format("Source: %s, Cargo: %s", staffData.source or '(offline)', staffData.role),
         options = { {
             title = "Mudar Cargo",
             description = "Promover ou rebaixar o cargo.",
@@ -144,7 +190,7 @@ function ListStaff()
     for k, v in pairs(staffPeople.staff) do
         ctx.options[#ctx.options + 1] = {
             title = v.displayName,
-            description = string.format("Source: %s, Cargo: %s", v.source, v.role),
+            description = string.format("Source: %s, Cargo: %s", v.source or '(offline)', v.role),
             onSelect = function()
                 manageStaff(v)
             end
@@ -161,12 +207,22 @@ local function openStaffMenu()
         title = 'Staff',
         description = 'Gerenciamento da Staff',
         options = { {
-            title = 'Adicionar pessoas a Staff',
-            description = 'Recrutar novos players',
+            title = 'Adicionar Staff por ID',
+            description = 'Adiciona uma pessoa pelo ID',
             icon = 'square-plus',
             iconAnimation = 'fade',
             arrow = true,
             onSelect = addNewStaff,
+            args = {
+                callback = ListStaff
+            }
+        }, {
+            title = 'Adicionar pessoas por proximidade',
+            description = 'Adicionar pessoas que estão por perto',
+            icon = 'bullseye',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = addNearbyStaff,
             args = {
                 callback = ListStaff
             }
