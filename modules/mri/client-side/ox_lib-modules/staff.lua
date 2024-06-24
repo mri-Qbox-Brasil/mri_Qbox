@@ -56,7 +56,7 @@ local function addNewStaff(args)
         required = true
     } })
     if input then
-        if ConfirmationDialog(string.format("Adicionar '%s' a '%s'?", input[1], input[2])) then
+        if ConfirmationDialog(string.format("Adicionar '%s' a '%s'?", input[1], input[2])) == 'confirm' then
             addStaff({
                 staffData = {
                     offline = args['staffData'] and args.staffData.offline,
@@ -102,7 +102,7 @@ local function addNearbyStaff(args)
 end
 
 local function removeStaff(args)
-    if ConfirmationDialog(string.format("Remover '%s' de '%s'?", args.staffData.name, args.staffData.role)) then
+    if ConfirmationDialog(string.format("Remover '%s' de '%s'?", args.staffData.name, args.staffData.role)) == 'confirm' then
         if args.staffData.offline then
             TriggerServerEvent("mri_Qbox:server:manageStaff", {
                 citizenId = args.staffData.citizenId,
@@ -129,7 +129,7 @@ local function changeRole(args)
         required = true
     } })
     if input then
-        if ConfirmationDialog(string.format("Mudar '%s' de '%s' para '%s'?", args.staffData.name, args.staffData.role, input[1])) then
+        if ConfirmationDialog(string.format("Mudar '%s' de '%s' para '%s'?", args.staffData.name, args.staffData.role, input[1])) == 'confirm' then
             addStaff({
                 staffData = {
                     source = args.staffData.source,
