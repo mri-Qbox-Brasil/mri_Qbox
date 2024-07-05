@@ -388,7 +388,7 @@ function OpenManageMenu()
             iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
-                MenuGarages()
+                ExecuteCommand('garagelist')
             end
         },
         {
@@ -479,37 +479,6 @@ function MenuPosters()
         }
     })
     lib.showContext('menu_posters')
-end
-
-function MenuGarages()
-    lib.registerContext({
-        id = 'menu_garages',
-        menu = 'menu_gerencial',
-        title = 'Gerenciar Garagens',
-        options = {
-            {
-                title = 'Criar garagem',
-                description = 'Crie uma nova garagem.',
-                icon = 'square-plus',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('creategarage')
-                end
-            },
-            {
-                title = 'Ver lista',
-                description = 'Veja todas as garagens criadas.',
-                icon = 'list',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('listgarage')
-                end
-            },
-        }
-    })
-    lib.showContext('menu_garages')
 end
 
 function MenuCrafting()
