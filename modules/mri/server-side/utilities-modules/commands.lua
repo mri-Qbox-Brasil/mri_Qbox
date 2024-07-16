@@ -49,19 +49,19 @@ lib.addCommand('tuning', {
     help = 'Tune seu veículo',
     restricted = 'group.admin'
 }, function(source)
-    lib.callback("vehtuning", source)
+    lib.callback.await("vehtuning", source)
 end)
 
 lib.addCommand('menu_admin', {
     help = 'Abrir menu Admin (atalho F10)',
     restricted = 'group.admin'
 }, function(source)
-    lib.callback('AbrirMenuAdmin', source)
+    lib.callback.await('AbrirMenuAdmin', source)
 end)
 
 lib.addCommand('customs', {
     help = 'Tunar seu veículo atual',
     restricted = 'group.admin'
 }, function(source)
-    lib.callback('mri_Qbox:customs:client', source)
+    lib.callback.await('mri_Qbox:customs:client', source)
 end)
