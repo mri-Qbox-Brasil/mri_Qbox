@@ -65,3 +65,15 @@ lib.addCommand('customs', {
 }, function(source)
     lib.callback.await('mri_Qbox:customs:client', source)
 end)
+
+lib.addCommand('raycast', {
+    help = 'Pegar coordenadas por RayCast',
+    restricted = 'group.admin'
+},function(source)
+    lib.callback.await('mri_Qbox:client:raycast', source)
+    lib.notify(source, {
+        title = "RayCast",
+        type = "success",
+        description = "Coordendas copiadas para a Clipboard (Área de Transferência)."
+    })
+end)

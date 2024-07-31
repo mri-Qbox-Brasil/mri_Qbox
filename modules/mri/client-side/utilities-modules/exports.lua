@@ -1,4 +1,6 @@
-local function getRayCoords()
+local ColorScheme = GlobalState.UIColors
+
+local function GetRayCoords()
     lib.notify({
         title = "Selecionar coordenadas",
         description = "Confirme pressionando [E]",
@@ -8,8 +10,7 @@ local function getRayCoords()
     while true do
         local hit, entity, coords = lib.raycast.cam(1, 4)
         lib.showTextUI(
-            'PARA  \nCONFIRMAR  \n**LOCAL**  \n  \n X:  ' ..
-            math.round(coords.x) .. ',  \n Y:  ' .. math.round(coords.y) .. ',  \n Z:  ' .. math.round(coords.z),
+            string.format('PARA  \nCONFIRMAR  \n**LOCAL**  \n  \nX: %.2f  \nY: %.2f  \nZ: %.2f', coords.x, coords.y, coords.z),
             {
                 icon = "e"
             })
@@ -24,4 +25,42 @@ local function getRayCoords()
     end
 end
 
-exports('GetRayCoords', getRayCoords)
+lib.callback.register('mri_Qbox:client:raycast', function()
+    local coords = GetRayCoords()
+    lib.setClipboard(string.format("vector3(%.2f, %.2f, %.2f)", coords.x, coords.y, coords.z))
+end)
+
+exports('GetRayCoords', GetRayCoords)
+
+local function Request(title, text, position)
+    if not position then
+        position = 'top-right'
+    end
+    local ctx = {
+        id = 'mriRequest',
+        title = title,
+        position = position,
+        canClose = false,
+        options = {{
+            label = 'Sim',
+            icon = 'fa-regular fa-circle-check',
+            description = text
+        },{
+            label = 'Não',
+            icon = 'fa-regular fa-circle-xmark',
+            iconColor = ColorScheme.danger,
+            description = text
+        }}
+    }
+    local result = false
+    lib.registerMenu(ctx, function(selected, scrollIndex, args)
+        result = selected == 1
+    end)
+    lib.showMenu(ctx.id)
+    while lib.getOpenMenu() == ctx.id do
+        Wait(100)
+    end
+    return result
+end
+
+exports('Request', Request)
