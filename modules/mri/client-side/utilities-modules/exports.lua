@@ -63,4 +63,8 @@ local function Request(title, text, position)
     return result
 end
 
+lib.callback.register('mri_Qbox:client:request', function(title, text, position)
+    return Request(title, text, position)
+end)
+
 exports('Request', Request)
