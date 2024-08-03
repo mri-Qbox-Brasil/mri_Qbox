@@ -1,6 +1,9 @@
 cfg = {}
 
-
+-----------------------------------------------------------------------------------------
+---- UTILITIES-MODULES
+-----------------------------------------------------------------------------------------
+cfg.printidentifiers = true
 -----------------------------------------------------------------------------------------
 ---- TARGET-MODULES
 -----------------------------------------------------------------------------------------
@@ -43,7 +46,7 @@ cfg.disableblindfiring = {
     toggle = false,                      -- true para desativar o tiro cego quando estiver pegando cover em paredes
 }
 
-cfg.realisticrecoil = { 
+cfg.realisticrecoil = {
     hideCrosshair = false, -- Hide builtin GTA crosshair while aiming?
     drunkAiming = false, -- Enable "drunk" aiming?
     verticalRecoil = false, -- Enable realistic vertical recoil while shooting?

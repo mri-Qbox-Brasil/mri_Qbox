@@ -4,7 +4,6 @@ local function setPlayerJob(targetPlayer)
     local options = {}
 
     for k, v in pairs(jobs) do
-        print(k)
         options[#options + 1] = {
             label = string.format('%s (%s)', v.label, k),
             value = k
@@ -41,7 +40,6 @@ local function setPlayerGang(targetPlayer)
     local options = {}
 
     for k, v in pairs(jobs) do
-        print(k)
         options[#options + 1] = {
             label = string.format('%s (%s)', v.label, k),
             value = k

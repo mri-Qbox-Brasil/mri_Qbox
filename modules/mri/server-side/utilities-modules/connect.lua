@@ -1,6 +1,8 @@
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
     identifiers = GetPlayerIdentifiers(source)
-    for i in ipairs(identifiers) do
-        print('Player: ' .. playerName .. ', Identifier #' .. i .. ': ' .. identifiers[i])
+    if cfg.printidentifiers then
+        for i in ipairs(identifiers) do
+            print('Jogador: ' .. playerName .. ', Identificador #' .. i .. ': ' .. identifiers[i])
+        end
     end
 end)

@@ -18,7 +18,6 @@ CreateThread(function()
                         sleep = 1000
                         local vehHeight = GetEntityHeightAboveGround(veh)
                         if vehHeight >= 1 then
-                            print(vehHeight)
                             local vehFly = IsEntityInAir(veh)
                             if not controlGround then
                                 if vehHeight >= cfg.carexplosion.height and vehFly then
@@ -37,7 +36,7 @@ CreateThread(function()
                                 vehHeight = GetEntityHeightAboveGround(veh)
                                 vehFly = IsEntityInAir(veh)
                                 inGround = vehHeight < 2 and true or false
-        
+
                                 if inGround then
                                     controlGround = false
                                     SetVehicleEngineHealth(veh, 0)

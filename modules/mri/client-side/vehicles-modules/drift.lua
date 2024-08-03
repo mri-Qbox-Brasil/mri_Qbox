@@ -15,7 +15,7 @@ local SaveTime = nil
 function round(number)
     number = tonumber(number)
     number = math.floor(number)
-    
+
     if number < 0.01 then
         number = 0
     elseif number > 999999999 then
@@ -35,13 +35,13 @@ function angle(veh)
     if not veh then return false end
     local vx,vy,vz = table.unpack(GetEntityVelocity(veh))
     local modV = math.sqrt(vx*vx + vy*vy)
-    
-    
+
+
     local rx,ry,rz = table.unpack(GetEntityRotation(veh,0))
     local sn,cs = -math.sin(math.rad(rz)), math.cos(math.rad(rz))
-    
+
     if GetEntitySpeed(veh)* 3.6 < 30 or GetVehicleCurrentGear(veh) == 0 then return 0,modV end --speed over 30 km/h
-    
+
     local cosX = (sn*vx + cs*vy)/modV
     if cosX > 0.966 or cosX < 0 then return 0,modV end
     return math.deg(math.acos(cosX))*0.5, modV
@@ -59,7 +59,7 @@ Citizen.CreateThread( function()
             PlayerVeh = GetVehiclePedIsIn(PlayerPed,false)
 			local angle,velocity = angle(PlayerVeh)
 			local tempBool = tick - (idleTime or 0) < 1850
-			
+
 			if angle ~= 0 then
                 stopped = false
 				if score == 0 then
@@ -71,7 +71,7 @@ Citizen.CreateThread( function()
 					score = math.floor(angle*velocity)*mult
 				end
 				screenScore = calculateBonus(score)
-				
+
 				idleTime = tick
             else
                 if old and not stopped then
@@ -84,7 +84,7 @@ Citizen.CreateThread( function()
                 end
 			end
 		end
-		
+
 		if tick - (idleTime or 0) < 3000 then
 			if curAlpha < 255 and curAlpha+10 < 255 then
 				curAlpha = curAlpha+10
@@ -103,17 +103,17 @@ Citizen.CreateThread( function()
 				curAlpha = 0
 			end
 		end
-       
+
         if not stopped then
             if not screenScore then
-                screenScore = 0  
+                screenScore = 0
                 SendNUIMessage({ drift = 0})
             else
                 SendNUIMessage({ drift = screenScore})
             end
             old = screenScore
         end
-       
+
         Citizen.Wait(500)
 	end
 end)
@@ -137,14 +137,12 @@ local carSpeed = 0
 local speed = kmh
 local speedLimit = cfg.drift.speed
 Citizen.CreateThread(function()
-    print(cfg.drift.toggle)
-
     while cfg.drift.toggle do
         Citizen.Wait(500)
         if IsPedInAnyVehicle(PlayerPedId(),false) then
             carSpeed = GetEntitySpeed(GetVehiclePedIsIn(PlayerPedId())) * speed
             if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(),false),-1) == PlayerPedId() then
-                if (carSpeed <= speedLimit) then  
+                if (carSpeed <= speedLimit) then
                     if IsControlPressed(0, 21) then
                         SetVehicleReduceGrip(GetVehiclePedIsIn(PlayerPedId(),false),true)
                     else

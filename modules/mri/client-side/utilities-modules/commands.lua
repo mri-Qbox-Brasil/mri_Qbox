@@ -1,5 +1,4 @@
 RegisterNetEvent("mri_Qbox:ExecuteCommand", function(command,args)
-    -- print(args)
     if not args then
         ExecuteCommand(command)
     else
@@ -64,7 +63,6 @@ lib.callback.register("vehtuning", function()
 end)
 
 RegisterCommand("addskill", function(source, args)
-    print(json.encode(args))
     exports["cw-rep"]:updateSkill(args[1], args[2])
 end)
 

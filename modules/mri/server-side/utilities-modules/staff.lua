@@ -117,7 +117,6 @@ end)
 RegisterNetEvent('mri_Qbox:server:manageStaff', function(data)
     local source = source
     local player = exports.qbx_core:GetOfflinePlayer(data.citizenId)
-    print(json.encode(data))
     if player then
         if data.action == 'remove' then
             player.PlayerData.metadata['staff'] = nil
