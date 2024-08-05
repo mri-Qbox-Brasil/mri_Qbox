@@ -1,6 +1,6 @@
-local dropItems = {
-    burger = 'prop_cs_burger_01',
-}
+if not cfg.dropitems then return end
+
+local dropItems = cfg.dropitems_table
 
 
 exports.ox_inventory:registerHook('swapItems', function(payload)
