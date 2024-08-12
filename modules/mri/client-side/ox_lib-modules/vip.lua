@@ -82,8 +82,8 @@ local function addNewVip(args)
                 value = 'tier6',
             },
             {
-                label = 'Only Z',
-                value = 'onlyz',
+                label = 'MRI QBOX',
+                value = 'mriqbox',
             }  
         }
     } })
