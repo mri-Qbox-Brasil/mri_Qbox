@@ -25,23 +25,15 @@ lib.addCommand({'item'}, {
 	},
 	restricted = 'group.admin',
 }, function(source, args)
-	local item = true --Items(args.item)
-
-	if item then
+	if args.item then
         -- local inventory = Inventory(args.target) --[[@as OxInventory]]
         local inventory = args.target or source
         local count = args.count or 1
         local success, response = exports.ox_inventory:AddItem(inventory, args.item, count, args.type and { type = tonumber(args.type) or args.type })
 
         if not success then
-            return Citizen.Trace(('Failed to give %sx %s to player %s (%s)'):format(count, item.name, args.target, response))
+            return Citizen.Trace(('Falha ao dar %sx %s para o player %s (%s)'):format(count, args.item, inventory, response))
         end
-
-        -- source = Inventory(source) or { label = 'console', owner = 'console' }
-
-        -- if server.loglevel > 0 then
-        --     lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, count, item.name, inventory.label))
-        -- end
 	end
 end)
 
