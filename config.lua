@@ -3,9 +3,11 @@ cfg = {}
 -----------------------------------------------------------------------------------------
 ---- UTILITIES-MODULES
 -----------------------------------------------------------------------------------------
-cfg.printidentifiers = true
+cfg.printidentifiers = true                 -- true para mostrar os identificadores no console
 
-cfg.dropitems = true                     -- true para ativar o drop de items como props
+cfg.indetructibleProps = false              -- true para ativar as props indestrutíveis
+
+cfg.dropitems = true                        -- true para ativar o drop de items como props
 cfg.dropitems_table = {
     burger = 'prop_cs_burger_01',
     water = 'prop_ld_flow_bottle',
