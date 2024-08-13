@@ -1,4 +1,3 @@
-local Utils = lib.load('modules/mri/client-side/ox_lib-modules/utils')
 local ColorScheme = {
     success = '#51CF66',
     info = '#668CFF',
@@ -9,6 +8,7 @@ GlobalState:set('UIColors', ColorScheme, true)
 local imageUrl = 'https://cfx-nui-mri_Qbox/web-side/icones/logo24.png'
 
 local playerMenu = {}
+local runTimePlayerMenu = {}
 local managementMenu = {}
 local f10Menu = {}
 
@@ -62,7 +62,7 @@ local function locateMenu(menu)
     elseif menu == 'management' then
         return managementMenu
     elseif menu == 'player' then
-        return playerMenu
+        return runTimePlayerMenu
     else
         print(string.format("Menu: '%s' não encontrado."))
     end
@@ -130,7 +130,7 @@ function AbrirMenuJogador()
         grade = PlayerData.gang.grade.name
     }
 
-    local options = Utils.table_clone(playerMenu)
+    local options = {}
     table.insert(options, addMenuItem('Identificação', 'fas fa-address-card', 'fade', getPlayerInformation(PlayerData), ExecuteCommand, 'id'))
     table.insert(options, addMenuItem('Emprego', 'fas fa-briefcase', 'fade', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
     if PlayerData.job.isboss then
@@ -143,6 +143,10 @@ function AbrirMenuJogador()
     table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
     table.insert(options, addMenuItem('Ver Habilidades', 'fa-solid fa-book-bookmark', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
     table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
+
+    for k, v in pairs(runTimePlayerMenu) do
+        table.insert(options, v)
+    end
 
     lib.registerContext({
         id = 'menu_jogador',
