@@ -19,6 +19,16 @@ cfg.dropitems_table = {
     ['ammo-rifle2'] = 'prop_ld_ammo_pack_02',
 }
 
+cfg.SqlBackup = {
+    Active = false,
+    Debug = false,
+    BackupCommand = 'backupdb',
+    BackupOnStart = false,
+    -- ExecuteOnTime = {
+    --     hour = 3,
+    --     min = 40
+    -- }
+}
 -----------------------------------------------------------------------------------------
 ---- TARGET-MODULES
 -----------------------------------------------------------------------------------------
