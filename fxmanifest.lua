@@ -13,33 +13,18 @@ shared_scripts {
 	"config.lua",
 
 	"**/**/config.lua",
-
-	"**/**/shared-side/*",
-	"**/**/shared-side/**/*",
-
-	"shared-side/*",
-	"shared-side/**/*"
+	"**/**/shared/*",
 }
 
 client_scripts {
 	"**/**/client/*",
-
-	"**/**/client-side/*",
 	"**/**/client-side/**/*",
-
-	"client-side/*",
-	"client-side/**/*"
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
 	"**/**/server/*",
-
-	"modules/**/server-side/*",
-	"modules/**/server-side/**/*",
-
-	"server-side/*",
-	"server-side/**/*"
+	"**/**/server-side/**/*",
 }
 
 files {

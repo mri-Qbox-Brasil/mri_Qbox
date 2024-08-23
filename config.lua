@@ -5,7 +5,7 @@ cfg = {}
 -----------------------------------------------------------------------------------------
 cfg.printidentifiers = true                 -- true para mostrar os identificadores no console
 
-cfg.indetructibleProps = false              -- true para ativar as props indestrutíveis
+cfg.indestructibleProps = true              -- true para ativar as props indestrutíveis
 
 cfg.dropitems = true                        -- true para ativar o drop de items como props
 cfg.dropitems_table = {
@@ -38,7 +38,7 @@ cfg.entervehicle = {
 }
 
 cfg.dumpsters = {
-    toggle = false,                      -- true para ativar as lixeiras para abrir no olhinho
+    toggle = true,                      -- true para ativar as lixeiras para abrir no olhinho
     TrashCans = {
         Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}, -- modelo da lixeira
     }
