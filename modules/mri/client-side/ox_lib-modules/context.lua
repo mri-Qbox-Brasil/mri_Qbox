@@ -467,17 +467,17 @@ function MenuPosters()
                 iconAnimation = 'fade',
                 arrow = false,
                 onSelect = function()
-                    ExecuteCommand('poster')
+                    ExecuteCommand('rw_draw++/draw')
                 end
             },
             {
-                title = 'Edite ou exclua posters ao seu redor',
-                description = 'IMPORTANTE: Ative e aproxime-se do poster',
+                title = 'Modo DEV',
+                description = 'para deletar use o comando rw_draw++/rem id_do_poster',
                 icon = 'list-check',
                 iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
-                    ExecuteCommand('draw_dev on')
+                    ExecuteCommand('rw_draw++/dev')
                 end
             },
         }
