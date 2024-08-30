@@ -9,6 +9,7 @@ cfg.indestructibleProps = true              -- true para ativar as props indestr
 
 cfg.dropitems = true                        -- true para ativar o drop de items como props
 cfg.dropitems_table = {
+    money = 'prop_cash_pile_02',
     burger = 'prop_cs_burger_01',
     water = 'prop_ld_flow_bottle',
     speaker = 'gordela_boombox3',

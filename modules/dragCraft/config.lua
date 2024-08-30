@@ -21,7 +21,7 @@
 
 ---@type table<string, CraftRecipe>
 RECIPES = {
-    ['garbage scrapmetal'] = {
+    ['garbage metalscrap'] = {
         duration = 2000,
         client = {
             before = function(recipeData)
@@ -47,7 +47,7 @@ RECIPES = {
         },
         costs = {
             ['garbage'] = { need = 1, remove = true },
-            ['scrapmetal'] = { need = 1, remove = true },
+            ['metalscrap'] = { need = 1, remove = true },
         },
         result = {
             { name = 'lockpick', amount = 1 },
