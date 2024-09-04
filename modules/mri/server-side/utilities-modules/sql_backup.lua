@@ -15,18 +15,10 @@ local function createDir(dir)
     os.execute(string.format('mkdir "%s"', dir))
 end
 
-local function setupBackupFolder(path)
-    local resources_pos = path:find("resources")
-    if not resources_pos then
-        return
-    end
-    local last_slash_before_resources = path:sub(1, resources_pos):match(".*/")
-    local result = last_slash_before_resources:match("(.*/mri_Qbox)/")
-    if not result then
-        return
-    end
-    local backupDir = result .. '/backup'
-    if not dirExists(backupDir) then
+local function setupBackupFolder(source)
+    local backupDir = 'backup'
+    resultDir = dirExists(backupDir)
+    if not resultDir then
         createDir(backupDir)
     end
     return backupDir
@@ -96,7 +88,7 @@ local function backupDatabase(source)
         mysqldumpPath = xamppMysqlDumpPath
     end
     mysqldumpPath = normalizePath(mysqldumpPath)
-    local backupDir = setupBackupFolder(GetResourcePath(GetCurrentResourceName()))
+    local backupDir = setupBackupFolder(source)
     local backupFile = string.format('%s/%s_%s.sql', backupDir, database, os.date('%Y-%m-%d_%H-%M-%S'))
     local backupCmd = ''
     if password and password ~= '' then
