@@ -21,11 +21,11 @@ cfg.dropitems_table = {
 }
 
 cfg.SqlBackup = {
-    Active = false,
-    Debug = false,                          -- true para mostrar logs no console
-    BackupCommand = 'backupdb',             -- comando para backup do banco de dados
-    BackupOnStart = false,                  -- true para criar backup ao iniciar o servidor
-    -- ExecuteOnTime = {                    -- hora e minuto para executar o backup
+    Active = false,                         -- Ativa o backup
+    Debug = false,                          -- Mostra informações sobre debug
+    BackupCommand = 'backupdb',             -- Nome do comando para execução manual
+    BackupOnStart = false,                  -- Backup ao iniciar mri_Qbox(esse resource)
+    -- ExecuteOnTime = {                    -- Executar backup automaticamente no horário
     --     hour = 3,
     --     min = 40
     -- }

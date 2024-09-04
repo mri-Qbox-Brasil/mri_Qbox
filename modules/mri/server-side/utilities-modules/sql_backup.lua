@@ -15,29 +15,6 @@ local function createDir(dir)
     os.execute(string.format('mkdir "%s"', dir))
 end
 
-local function sendNotification(source, type, message)
-    local msgColor = '^2'
-    local title = 'Sucesso'
-    if type == 'error' then
-        msgColor = '^1'
-        title = 'Erro'
-    elseif type == 'debug' then
-        msgColor = '^5'
-        title = 'Debug'
-    elseif type == 'warn' then
-        msgColor = '^3'
-        title = 'Aviso'
-    end
-    if (source > 0) and (type ~= 'debug') then
-        lib.notify(source, {
-            title = title,
-            type = type,
-            description = message
-        })
-    end
-    print(string.format("%s[CMD] %s: %s^7", msgColor, title, message))
-end
-
 local function setupBackupFolder(path)
     local resources_pos = path:find("resources")
     if not resources_pos then
@@ -75,10 +52,10 @@ local function isXAMPP(source)
     local file = io.open(xamppMysqlDumpPath, "r")
     if file ~= nil then
         io.close(file)
-        if cfg.Debug then
-            sendNotification(source, 'debug', 'IsXAMPP: Sim')
+        if cfg.SqlBackup.Debug then
+            SendNotification(source, 'debug', 'IsXAMPP: Sim')
         end
-        sendNotification(source, 'warn',
+        SendNotification(source, 'warn',
             'Este servidor está executando o XAMPP. Se for um servidor de produção, EVITE usar esta ferramenta.')
         return true
     end
@@ -88,8 +65,8 @@ local function extractDbConfig(source)
     local patternWithPw = "mysql://(.-):(.-)@(.-)/(.-)%?"
     local patternWithoutPw = "mysql://(.-)@(.-)/(.-)%?"
     local connectionString = GetConvar(mysqlConvar, '')
-    if cfg.Debug then
-        sendNotification(source, 'debug', 'ConnectionString: ' .. connectionString)
+    if cfg.SqlBackup.Debug then
+        SendNotification(source, 'debug', 'ConnectionString: ' .. connectionString)
     end
     if connectionString == '' then
         return
@@ -98,11 +75,11 @@ local function extractDbConfig(source)
     if not user then
         user, host, database = string.match(connectionString, patternWithoutPw)
         if user then
-            sendNotification(source, 'warn', string.format('"%s" deve ter uma senha.', mysqlConvar))
+            SendNotification(source, 'warn', string.format('"%s" deve ter uma senha.', mysqlConvar))
         end
     end
-    if cfg.Debug then
-        sendNotification(source, 'debug', string.format(
+    if cfg.SqlBackup.Debug then
+        SendNotification(source, 'debug', string.format(
             'ExtractDbConfig: Usuário: %s, Senha: %s, Servidor: %s, Banco: %s', user, password, host, database))
     end
     return user, password, host, database
@@ -112,7 +89,7 @@ local function backupDatabase(source)
     local mysqldumpPath = 'mysqldump'
     local user, password, host, database = extractDbConfig(source)
     if not user then
-        sendNotification(source, 'error', string.format('"%s" não configurado.', mysqlConvar))
+        SendNotification(source, 'error', string.format('"%s" não configurado.', mysqlConvar))
         return
     end
     if isXAMPP(source) then
@@ -132,20 +109,20 @@ local function backupDatabase(source)
 
     CreateThread(function()
         local cmd = string.format('%s', backupCmd)
-        if cfg.Debug then
-            sendNotification(source, 'debug', string.format('CMD: %s', cmd))
+        if cfg.SqlBackup.Debug then
+            SendNotification(source, 'debug', string.format('CMD: %s', cmd))
         end
 
         if os.execute(cmd) then
-            sendNotification(source, 'success', string.format('Backup de "%s" concluído com sucesso.', database))
+            SendNotification(source, 'success', string.format('Backup de "%s" concluído com sucesso.', database))
         else
-            sendNotification(source, 'error', string.format('Erro ao criar o backup de "%s".', database))
+            SendNotification(source, 'error', string.format('Erro ao criar o backup de "%s".', database))
         end
     end)
 end
 
 RegisterNetEvent('onResourceStart', function(resource)
-    if "qbx_core" == resource and cfg.SqlBackup.Active and cfg.SqlBackup.BackupOnStart then
+    if GetCurrentResourceName() == resource and cfg.SqlBackup.Active and cfg.SqlBackup.BackupOnStart then
         backupDatabase(0)
     end
 end)
