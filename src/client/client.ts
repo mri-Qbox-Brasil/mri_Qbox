@@ -1,0 +1,3 @@
+on('onResourceStart', (resName: string) => {
+
+})

@@ -1,0 +1,180 @@
+name: Build and Release
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+permissions:
+    contents: write
+    actions: write
+
+jobs:
+    build_and_release:
+        runs-on: ubuntu-latest
+        outputs:
+            version: ${{ steps.get_project_information.outputs.version }}
+            release_body: ${{ steps.prepare_release_body.outputs.body }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "16"
+
+            - name: Install dependencies
+              working-directory: ./src
+              run: |
+                  sudo apt install -y jq
+                  npm install
+
+            - name: Build project
+              working-directory: ./src
+              run: |
+                  npm run build
+                  if [ $? -ne 0 ]; then
+                    echo "Erro na compilação"
+                    exit 1
+                  fi
+
+            - name: Get commit messages, version, and repository description
+              id: get_project_information
+              run: |
+                  LAST_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+                  CURRENT_TAG="${GITHUB_REF#refs/tags/}"
+
+                  if [ -n "$LAST_TAG" ]; then
+                    COMMITS=$(git log $LAST_TAG..$GITHUB_SHA --oneline --pretty=format:"%h %s")
+                  else
+                  echo "Nenhuma tag anterior encontrada. Coletando todos os commits até a tag atual."
+                    COMMITS=$(git log --oneline --pretty=format:"%h %s")
+                  fi
+
+                  if [ -z "$COMMITS" ]; then
+                    echo "Nenhuma mudança significativa desde a última release." > ./release_body.txt
+                  else
+                    echo "$COMMITS" > ./release_body.txt
+                  fi
+
+                  echo "version=$CURRENT_TAG" >> $GITHUB_OUTPUT
+
+            - name: Prepare release body
+              id: prepare_release_body
+              run: |
+                  if [ -f release_body.txt ]; then
+                      # Obtém as primeiras 1900 linhas do release_body.txt para não exceder o limite de 2000 caracteres por campo no Discord
+                      RELEASE_NOTES=$(head -n 1900 release_body.txt)
+                      echo "body=$RELEASE_NOTES" >> $GITHUB_OUTPUT
+                  else
+                      echo "Arquivo release_body.txt não encontrado!"
+                      echo "body=Nenhuma nota de release disponível." >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Update manifest data
+              run: |
+                  if [ -f fxmanifest.lua ]; then
+                      REPO_DESCRIPTION=$(curl -s https://api.github.com/repos/${{ github.repository }} | jq -r .description)
+                      sed -i "s/MRIQBOX_VERSION/${{ steps.get_project_information.outputs.version }}/g" fxmanifest.lua
+                      sed -i "s/MRIQBOX_DESCRIPTION/${REPO_DESCRIPTION}/g" fxmanifest.lua
+                      sed -i "s/MRIQBOX_DISCORD/${{ secrets.INVITE_DISCORD_URL }}/g" fxmanifest.lua
+                  else
+                      echo "Arquivo fxmanifest.lua não encontrado!"
+                      exit 1
+                  fi
+
+            - name: Create ZIP file
+              run: |
+                  mkdir -p "${{ github.event.repository.name }}"
+                  rsync -av \
+                    --exclude='src/' \
+                    --exclude='.github/' \
+                    --exclude='.git/' \
+                    --exclude='*.txt' \
+                    --exclude='*.lock' \
+                    --exclude='.gitignore' \
+                    --exclude='.editorconfig' \
+                    --exclude='${{ github.event.repository.name }}' \
+                    ./ "${{ github.event.repository.name }}/"
+                  zip -r --symlinks "${{ github.event.repository.name }}.zip" "${{ github.event.repository.name }}"
+
+            - name: Generate Release
+              uses: comnoco/create-release-action@v2
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              id: release
+              with:
+                  tag_name: "${{ steps.get_project_information.outputs.version }}"
+                  release_name: "${{ steps.get_project_information.outputs.version }}"
+                  body_path: release_body.txt
+                  draft: false
+                  prerelease: false
+
+            - name: Upload artifacts
+              uses: shogo82148/actions-upload-release-asset@v1.7.7
+              with:
+                  upload_url: ${{ steps.release.outputs.upload_url }}
+                  asset_path: ${{ github.event.repository.name }}.zip
+
+    post_to_discord:
+        needs: build_and_release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Post to Discord (with embed)
+              env:
+                  DISCORD_WEBHOOK_URL: ${{ secrets.UPDATE_DISCORD_WEBHOOK }}
+                  RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}
+                  RELEASE_TAG: ${{ github.ref_name }}
+                  RELEASE_AUTHOR: ${{ github.actor }}
+                  RELEASE_BODY: ${{ needs.build_and_release.outputs.release_body }}
+              run: |
+                  REPO_DESCRIPTION=$(curl -s https://api.github.com/repos/${{ github.repository }} | jq -r .description)
+
+                  EMBED_DATA='{
+                      "embeds": [{
+                      "author": {
+                          "name": "MRI QBOX - Updates",
+                          "icon_url": "${{ secrets.LOGO_MRIQBOX_URL }}"
+                      },
+                      "title": "[${{ github.event.repository.name }}] Nova versão disponível: '"${RELEASE_TAG}"'",
+                      "url": "'"${RELEASE_URL}"'",
+                      "description": "'"${REPO_DESCRIPTION}"'",
+                      "fields": [{
+                        "name": "O que há de novo?",
+                        "value": "'"${RELEASE_BODY}"'"
+                      },
+                      {
+                        "name": "Veja todas as mudanças",
+                        "value": "[Veja todas as mudanças aqui](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }})"
+                      },
+                      {
+                        "name": "Precisa de ajuda?",
+                        "value": "[Participe da comunidade](${{ secrets.INVITE_DISCORD_URL}})",
+                        "inline": true
+                      },
+                      {
+                        "name": "Documentação",
+                        "value": "[Acesse aqui](${{ secrets.DOCS_MRIQBOX_URL }})",
+                        "inline": true
+                      }],
+                      "image": {
+                        "url": "${{ secrets.RESOURCE_MRIQBOX_URL }}"
+                      },
+                      "color": 4243543,
+                      "footer": {
+                          "text": "Realizado por: '"${RELEASE_AUTHOR}"'",
+                          "icon_url": "${{ secrets.LOGO_MRIQBOX_URL }}"
+                      },
+                      "timestamp": "'"$(date --utc +%Y-%m-%dT%H:%M:%SZ)"'"
+                      }]
+                  }'
+
+                  if [ -z "$DISCORD_WEBHOOK_URL" ] || [ -z "$RELEASE_URL" ] || [ -z "$RELEASE_TAG" ]; then
+                    echo "Algumas variáveis obrigatórias estão ausentes. Não será possível enviar o webhook."
+                    exit 1
+                  fi
+
+                  curl -H "Content-Type: application/json" \
+                      -d "$EMBED_DATA" \
+                      $DISCORD_WEBHOOK_URL

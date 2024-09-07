@@ -1,10 +1,10 @@
---- Envia uma notificação ao jogador ou exibe uma mensagem de log no console.
--- @param source O ID do jogador que receberá a notificação. Se `source` for maior que 0 e o tipo não for 'debug', a notificação será enviada ao jogador. Caso contrário, apenas uma mensagem será exibida no console.
--- @param type O tipo de notificação. Pode ser 'success', 'error', 'debug' ou 'warn'. Cada tipo determina a cor e o título da notificação.
--- @param message A mensagem que será exibida na notificação ou no console.
+--- Envia uma notificacao ao jogador ou exibe uma mensagem de log no console.
+-- @param source O ID do jogador que recebera a notificacao. Se `source` for maior que 0 e o tipo nao for 'debug', a notificação sera enviada ao jogador. Caso contrário, apenas uma mensagem sera exibida no console.
+-- @param type O tipo de notificação. Pode ser 'success', 'error', 'debug' ou 'warn'. Cada tipo determina a cor e o título da notificacao.
+-- @param message A mensagem que sera exibida na notificação ou no console.
 -- @example
--- SendNotification(1, 'success', 'Operação concluída com sucesso.')
--- -- Envia uma notificação de sucesso para o jogador com ID 1.
+-- SendNotification(1, 'success', 'Operação concluida com sucesso.')
+-- -- Envia uma notificacao de sucesso para o jogador com ID 1.
 --
 -- SendNotification(0, 'error', 'Falha ao realizar a operação.')
 -- -- Exibe uma mensagem de erro no console.
@@ -42,12 +42,12 @@ function SendNotification(source, type, message, webhook, keepOnConsole)
 end
 
 --- Divide uma string em partes com base em um separador especificado.
--- @param inputstr A string que será dividida.
--- @param sep O separador usado para dividir a string. Se não for especificado, o separador padrão será um espaço em branco.
+-- @param inputstr A string que sera dividida.
+-- @param sep O separador usado para dividir a string. Se nao for especificado, o separador padrao sera um espaco em branco.
 -- @return Uma tabela contendo as partes da string dividida.
 -- @example
--- local result = Split("Olá, mundo!", ",")
--- -- result = {"Olá", " mundo!"}
+-- local result = Split("Ola, mundo!", ",")
+-- -- result = {"Ola", " mundo!"}
 function Split(inputstr, sep)
     if sep == nil then
         sep = "%s"
