@@ -64,7 +64,6 @@ jobs:
               id: prepare_release_body
               run: |
                   if [ -f release_body.txt ]; then
-                      # Obtém as primeiras 1900 linhas do release_body.txt para não exceder o limite de 2000 caracteres por campo no Discord
                       RELEASE_NOTES=$(head -n 1900 release_body.txt)
                       echo "body=$RELEASE_NOTES" >> $GITHUB_OUTPUT
                   else
@@ -77,8 +76,6 @@ jobs:
                   if [ -f fxmanifest.lua ]; then
                       REPO_DESCRIPTION=$(curl -s https://api.github.com/repos/${{ github.repository }} | jq -r .description)
                       sed -i "s/MRIQBOX_VERSION/${{ steps.get_project_information.outputs.version }}/g" fxmanifest.lua
-                      sed -i "s/MRIQBOX_DESCRIPTION/${REPO_DESCRIPTION}/g" fxmanifest.lua
-                      sed -i "s/MRIQBOX_DISCORD/${{ secrets.INVITE_DISCORD_URL }}/g" fxmanifest.lua
                   else
                       echo "Arquivo fxmanifest.lua não encontrado!"
                       exit 1

@@ -1,9 +1,8 @@
 fx_version "cerulean"
 game "gta5"
 
-description "MRIQBOX_DESCRIPTION"
+description "Responsável por fazer as principais conexões entre os resources da mri Qbox"
 author "MRI QBOX Team"
-discord "MRIQBOX_DISCORD"
 version "MRIQBOX_VERSION"
 
 ui_page "web-side/index.html"
