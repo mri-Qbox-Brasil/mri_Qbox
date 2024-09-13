@@ -33,6 +33,9 @@ end)
 exports('GetRayCoords', GetRayCoords)
 
 local function Request(title, text, position)
+    while lib.getOpenMenu() do
+        Wait(100)
+    end
     if not position then
         position = 'top-right'
     end
