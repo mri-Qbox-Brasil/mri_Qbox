@@ -92,6 +92,8 @@ jobs:
                     --exclude='*.lock' \
                     --exclude='.gitignore' \
                     --exclude='.editorconfig' \
+                    --exclude='*.sh' \
+                    --exclude='*.bat' \
                     --exclude='${{ github.event.repository.name }}' \
                     ./ "${{ github.event.repository.name }}/"
                   zip -r --symlinks "${{ github.event.repository.name }}.zip" "${{ github.event.repository.name }}"
