@@ -3,9 +3,10 @@
 ----------------------------------------------------------------------------------------
 CreateThread(function()
     while true do
+        print(cfg.radio)
         local playerPed = PlayerPedId() -- Obtém o ped do jogador no client-side
         local vehicle = GetVehiclePedIsIn(playerPed, false) -- Obtém o veículo em que o jogador está
-        if cfg.radio then
+        if not cfg.radio then
             if vehicle ~= 0 then -- Verifica se o jogador está em um veículo
                 -- Desativa o rádio, se estiver ligado
                 if IsVehicleRadioOn(vehicle) then
