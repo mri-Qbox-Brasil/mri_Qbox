@@ -1,6 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+git fetch --all --tags
+
 :: Função para encontrar a branch principal automaticamente (main ou master)
 set "main_branch="
 call :get_main_branch

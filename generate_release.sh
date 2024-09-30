@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git fetch --all --tags
+
 # Função para encontrar a branch principal automaticamente (main ou master)
 get_main_branch() {
   main_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
