@@ -93,6 +93,9 @@ end
 exports('RemoveItemFromMenu', removeItemFromMenu)
 
 local function addManageMenu(item)
+    if locateMenuItem(managementMenu, item.title) > 0 then
+        removeItemFromMenu('management', item.title)
+    end
     addItemToMenu('management', item)
 end
 
@@ -105,6 +108,9 @@ end
 exports('RemoveManageMenu', removeManageMenu)
 
 local function addPlayerMenu(item)
+    if locateMenuItem(runTimePlayerMenu, item.title) > 0 then
+        removeItemFromMenu('player', item.title)
+    end
     addItemToMenu('player', item)
 end
 

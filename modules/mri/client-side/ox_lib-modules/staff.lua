@@ -239,7 +239,7 @@ local function openStaffMenu()
     lib.showContext(ctx.id)
 end
 
-exports['mri_Qbox']:AddItemToMenu('f10',
+exports['mri_Qbox']:AddManageMenu(
     {
         title = 'Staff',
         description = 'Gerencie a staff do servidor.',
