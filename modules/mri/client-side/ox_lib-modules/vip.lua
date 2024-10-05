@@ -304,7 +304,7 @@ local function openVipMenu()
     lib.showContext(ctx.id)
 end
 
-exports['mri_Qbox']:AddManageMenu(
+exports['mri_Qbox']:AddItemToMenu('f10',
     {
         title = 'Vip',
         description = 'Gerencie o Vip do servidor.',
