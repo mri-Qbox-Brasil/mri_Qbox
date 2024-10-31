@@ -139,11 +139,15 @@ function AbrirMenuJogador()
     local options = {}
     table.insert(options, addMenuItem('Identificação', 'fas fa-address-card', 'fade', getPlayerInformation(PlayerData), ExecuteCommand, 'id'))
     table.insert(options, addMenuItem('Emprego', 'fas fa-briefcase', 'fade', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
-    if PlayerData.job.isboss then
+    local isBoss = exports.mri_Qjobsystem:CheckPlayerIsbossByJobSystemData("job", PlayerData)
+    local isRecruiter = exports.mri_Qjobsystem:CheckPlayerIrecruiterByJobSystemData("job", PlayerData)
+    if isBoss or isRecruiter then
         table.insert(options, addMenuItem('Gerenciar Emprego', 'users', 'fade', 'Configurações do Emprego.', ExecuteCommand, '+tablet:job'))
     end
     table.insert(options, addMenuItem('Gangue', 'gun', 'fade', gangData.label..' | '..gangData.grade, ExecuteCommand, 'gang'))
-    if PlayerData.gang.isboss then
+    local isGangBoss = exports.mri_Qjobsystem:CheckPlayerIsbossByJobSystemData("gang", PlayerData)
+    local isGangRecruiter = exports.mri_Qjobsystem:CheckPlayerIrecruiterByJobSystemData("gang", PlayerData)
+    if isGangBoss or isGangRecruiter then
         table.insert(options, addMenuItem('Gerenciar Gangue', 'users', 'fade', 'Configurações da gangue.', ExecuteCommand, '+tablet:gang'))
     end
     table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
