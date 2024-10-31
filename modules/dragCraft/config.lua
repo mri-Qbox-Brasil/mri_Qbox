@@ -20,8 +20,8 @@
 ---@field remove boolean Whether the item should be removed after crafting.
 
 ---@type table<string, CraftRecipe>
-RECIPES = {
-    ['garbage metalscrap'] = {
+return {
+    ["garbage metalscrap"] = {
         duration = 2000,
         client = {
             before = function(recipeData)
@@ -32,7 +32,7 @@ RECIPES = {
             after = function(recipeData)
                 -- some client logic to run after crafting
                 -- returns boolean or nil
-            end,
+            end
         },
         server = {
             before = function(recipeData)
@@ -43,18 +43,16 @@ RECIPES = {
             after = function(recipeData)
                 -- some server logic to run after crafting
                 -- returns boolean or nil
-            end,
+            end
         },
         costs = {
-            ['garbage'] = { need = 1, remove = true },
-            ['metalscrap'] = { need = 1, remove = true },
+            ["garbage"] = {need = 1, remove = true},
+            ["metalscrap"] = {need = 1, remove = true}
         },
         result = {
-            { name = 'lockpick', amount = 1 },
+            {name = "lockpick", amount = 1}
             -- { name = 'something', amount = 1 }
-        },
-    },
+        }
+    }
     -- Additional recipes can be added here
 }
-
-return RECIPES

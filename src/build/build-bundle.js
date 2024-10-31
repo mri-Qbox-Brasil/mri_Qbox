@@ -7,12 +7,12 @@ const TARGET_ENTRIES = [
     target: "node16",
     entryPoints: ["server_src/server.ts"],
     platform: "node",
-    outfile: "../modules/mri/server-side/utilities-modules/_server.js",
+    outfile: "../modules/coreJS/server.js",
   },
 //   {
 //     target: "es2020",
 //     entryPoints: ["client_src/client.ts"],
-//     outfile: "../modules/mri/client-side/utilities-modules/_client.js",
+//     outfile: "../modules/coreJS/client.js",
 //   },
 ];
 

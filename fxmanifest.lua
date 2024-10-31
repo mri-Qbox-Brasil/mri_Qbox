@@ -1,34 +1,36 @@
 fx_version "cerulean"
 game "gta5"
 
+name "mri_Qbox"
 description "Responsável por fazer as principais conexões entre os resources da mri Qbox"
+repository "https://github.com/mri-Qbox-Brasil/mri_Qbox"
 author "MRI QBOX Team"
 version "MRIQBOX_VERSION"
 
 ui_page "web-side/index.html"
 
+ox_lib "locale"
+
 shared_scripts {
 	"@ox_lib/init.lua",
-	"@qbx_core/modules/playerdata.lua",
-	"config.lua",
-	"**/**/config.lua",
-	"**/**/shared/*",
+    "modules/**/config.lua",
 }
 
 server_scripts {
     "@oxmysql/lib/MySQL.lua",
-    "**/**/server/*",
-    "**/**/server-side/**/*",
+    "modules/**/server.lua",
+    "modules/**/server.js",
 }
 
 client_scripts {
-	"**/**/client/*",
-	"**/**/client-side/**/*",
+    "@qbx_core/modules/playerdata.lua",
+	"modules/**/client.lua",
+    "modules/**/client.js",
 }
 
 files {
-	"web-side/*",
-	"web-side/**/*"
+	"web-side/**/*",
+    "locales/*.json"
 }
 
 lua54 "yes"

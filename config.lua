@@ -7,35 +7,6 @@ cfg.printidentifiers = true                 -- true para mostrar os identificado
 
 cfg.indestructibleProps = true              -- true para ativar as props indestrutíveis
 
-cfg.dropitems = true                        -- true para ativar o drop de items como props
-cfg.dropitems_table = {
-    money = 'prop_cash_pile_02',
-    burger = 'prop_cs_burger_01',
-    water = 'prop_ld_flow_bottle',
-    speaker = 'gordela_boombox3',
-    phone = 'prop_phone_ing_02_lod',
-    WEAPON_MINISMG = 'w_sb_minismg',
-    ['ammo-9'] = 'prop_ld_ammo_pack_01',
-    ['ammo-rifle'] = 'prop_ld_ammo_pack_03',
-    ['ammo-rifle2'] = 'prop_ld_ammo_pack_02',
-}
-
-cfg.SqlBackup = {
-    Active = false,                         -- Ativa o backup
-    Debug = false,                          -- Mostra informações sobre debug
-    BackupCommand = 'backupdb',             -- Nome do comando para execução manual
-    BackupOnStart = false,                  -- Backup ao iniciar mri_Qbox(esse resource)
-    -- ExecuteOnTime = {                    -- Executar backup automaticamente no horário
-    --     hour = 3,
-    --     min = 40
-    -- }
-}
-
-cfg.AutoUpdater = {
-    Debug = true,                           -- Mostra informações sobre debug
-    WebHook = nil,                          -- Enviar os avisos de atualizações para um WebHook(discord,...)
-    KeepOnConsole = false                   -- Manter os avisos no console mesmo ao enviar para um WebHook
-}
 -----------------------------------------------------------------------------------------
 ---- TARGET-MODULES
 -----------------------------------------------------------------------------------------
