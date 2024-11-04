@@ -185,8 +185,8 @@ local function changeRole(args)
                     value = 'tier6',
                 },
                 {
-                    label = 'Only Z',
-                    value = 'onlyz',
+                    label = 'MRI QBOX',
+                    value = 'mriqbox',
                 }  
             },
         placeholder = 'admin',
