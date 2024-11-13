@@ -66,9 +66,9 @@ lib.addCommand('vipadm', {
             help = 'Tipo de permissão (add ou rem)',
         },
         {
-            name = 'cargo',
+            name = 'tier',
             type = 'string',
-            help = 'Cargo de vip',
+            help = 'Tier de vip',
             optional = true
         },
     },
@@ -84,8 +84,8 @@ lib.addCommand('vipadm', {
         return
     end
     
-    if args.tipo == 'add' and not args.cargo then
-        sendNotification(source, "error", "Cargo não informado.")
+    if args.tipo == 'add' and not args.tier then
+        sendNotification(source, "error", "Vip não informado.")
         return
     end
     
@@ -96,16 +96,16 @@ lib.addCommand('vipadm', {
     end
     
     if args.tipo == 'add' then
-        lib.addPrincipal(args.id, args.cargo)
-        player.Functions.SetMetaData('vip', args.cargo)
-        sendNotification(args.id, "success", string.format("Recebeu o cargo: %s", args.cargo))
+        lib.addPrincipal(args.id, args.tier)
+        player.Functions.SetMetaData('vip', args.tier)
+        sendNotification(args.id, "success", string.format("Recebeu o vip: %s", args.tier))
     elseif args.tipo == 'rem' and player.PlayerData.metadata['vip'] then
         lib.removePrincipal(args.id, player.PlayerData.metadata['vip'])
         player.Functions.SetMetaData('vip', nil)
-        sendNotification(args.id, "info", string.format("Cargo: %s removido", player.PlayerData.metadata['vip']))
+        sendNotification(args.id, "info", string.format("Vip: %s removido", player.PlayerData.metadata['vip']))
     end
     sendNotification(source, "success",
-        string.format("Permissão %s %s a: %d", args.cargo or player.PlayerData.metadata['vip'],
+        string.format("Permissão %s %s a: %d", args.tier or player.PlayerData.metadata['vip'],
             (args.tipo == 'add' and "concedida") or "revogada", args.id))
 end)
 

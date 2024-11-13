@@ -24,7 +24,6 @@ local function findPlayers()
 end
 
 local function addVip(args)
-    print(json.encode(args))
     if args.vipData.offline then
         TriggerServerEvent("mri_Qbox:server:manageVip", {
             citizenId = args.vipData.citizenId,
@@ -63,8 +62,8 @@ local function addNewVip(args)
         required = true
     }, {
         type = 'select',
-        label = 'Cargo',
-        description = 'Cargo do Vip',
+        label = 'Vip',
+        description = 'Tipo de vip',
         placeholder = 'admin',
         required = true,
         options = getVipRoles()
@@ -137,9 +136,9 @@ end
 exports("removeVip", removeVip)
 
 local function changeRole(args)
-    local input = lib.inputDialog("Alterar Cargo de Vip", { {
+    local input = lib.inputDialog("Alterar Vip", { {
         type = 'select',
-        label = 'Novo cargo vip',
+        label = 'Alterar Vip',
         description = 'Tier do vip',
             options = getVipRoles(),
         placeholder = 'admin',
@@ -166,10 +165,10 @@ local function manageVip(vipData)
         id = 'manage_vip',
         menu = 'menu_vip',
         title = vipData.name,
-        description = string.format("Source: %s, Cargo: %s", vipData.source or '(offline)', vipData.role),
+        description = string.format("Source: %s, Vip: %s", vipData.source or '(offline)', vipData.role),
         options = { {
-            title = "Mudar Cargo",
-            description = "Promover ou rebaixar o cargo.",
+            title = "Mudar Vip",
+            description = "Promover ou rebaixar o Vip.",
             icon = "retweet",
             iconAnimation = "fade",
             onSelect = changeRole,
@@ -207,7 +206,7 @@ function ListVip()
     for k, v in pairs(vipPeople.vip) do
         ctx.options[#ctx.options + 1] = {
             title = v.displayName,
-            description = string.format("Source: %s, Cargo: %s", v.source or '(offline)', v.role),
+            description = string.format("Source: %s, Vip: %s", v.source or '(offline)', v.role),
             onSelect = function()
                 manageVip(v)
             end
