@@ -42,8 +42,19 @@ end
 
 exports("addVip", addVip)
 
+local function getVipRoles()
+    local result = {}
+    for k,v in pairs(cfg.vipmenu.Roles) do
+        result[#result + 1] = {
+            label = v.label,
+            value = k
+        }
+    end
+    return result
+end
+
 local function addNewVip(args)
-    local input = lib.inputDialog('Adicionar Vip', { {
+    local input = lib.inputDialog('Adicionar Vip', {{
         type = 'input',
         label = 'Id',
         description = 'Id do Jogador',
@@ -56,37 +67,8 @@ local function addNewVip(args)
         description = 'Cargo do Vip',
         placeholder = 'admin',
         required = true,
-        options = {
-            {
-                label = 'Tier 1',
-                value = 'tier1',
-            },
-            {
-                label = 'Tier 2',
-                value = 'tier2',
-            },
-            {
-                label = 'Tier 3',
-                value = 'tier3',
-            },
-            {
-                label = 'Tier 4',
-                value = 'tier4',
-            },
-            {
-                label = 'Tier 5',
-                value = 'tier5',
-            },
-            {
-                label = 'Tier 6',
-                value = 'tier6',
-            },
-            {
-                label = 'MRI QBOX',
-                value = 'mriqbox',
-            }  
-        }
-    } })
+        options = getVipRoles()
+    }})
     if input then
         if ConfirmationDialog(string.format("Adicionar '%s' a '%s'?", input[1], input[2])) == 'confirm' then
             addVip({
@@ -159,36 +141,7 @@ local function changeRole(args)
         type = 'select',
         label = 'Novo cargo vip',
         description = 'Tier do vip',
-            options = {
-                {
-                    label = 'Tier 1',
-                    value = 'tier1',
-                },
-                {
-                    label = 'Tier 2',
-                    value = 'tier2',
-                },
-                {
-                    label = 'Tier 3',
-                    value = 'tier3',
-                },
-                {
-                    label = 'Tier 4',
-                    value = 'tier4',
-                },
-                {
-                    label = 'Tier 5',
-                    value = 'tier5',
-                },
-                {
-                    label = 'Tier 6',
-                    value = 'tier6',
-                },
-                {
-                    label = 'MRI QBOX',
-                    value = 'mriqbox',
-                }  
-            },
+            options = getVipRoles(),
         placeholder = 'admin',
         required = true
     } })
@@ -304,7 +257,7 @@ local function openVipMenu()
     lib.showContext(ctx.id)
 end
 
-exports['mri_Qbox']:AddManageMenu(
+exports['mri_Qbox']:AddItemToMenu('f10',
     {
         title = 'Vip',
         description = 'Gerencie o Vip do servidor.',

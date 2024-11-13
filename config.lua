@@ -5,6 +5,22 @@ cfg = {}
 -----------------------------------------------------------------------------------------
 cfg.printidentifiers = true                 -- true para mostrar os identificadores no console
 
+cfg.vipmenu = {
+    PaycheckInterval = 30,
+    CashType = 'bank', -- money, bank, crypto
+    CoinType = "R$",
+    Roles = {
+        nenhum = {
+            label = "Sem vip",
+            payment = 0
+        },
+        tier1 = {
+            label = "Tier 1",
+            payment = 5000
+        }
+    }
+}
+
 cfg.indestructibleProps = true              -- true para ativar as props indestrutíveis
 
 cfg.dropitems = true                        -- true para ativar o drop de items como props

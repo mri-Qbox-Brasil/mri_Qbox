@@ -1,3 +1,5 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 local function fetchPlayers()
     return MySQL.query.await("SELECT citizenid FROM players")
 end
@@ -76,23 +78,23 @@ lib.addCommand('vipadm', {
         sendNotification(source, "error", "Id não informado.")
         return
     end
-
+    
     if not args.tipo then
         sendNotification(source, "error", "Tipo não informado.")
         return
     end
-
+    
     if args.tipo == 'add' and not args.cargo then
         sendNotification(source, "error", "Cargo não informado.")
         return
     end
-
+    
     local player = exports.qbx_core:GetPlayer(args.id)
     if not player then
         sendNotification(source, "error", "Nenhum player encontrado.")
         return
     end
-
+    
     if args.tipo == 'add' then
         lib.addPrincipal(args.id, args.cargo)
         player.Functions.SetMetaData('vip', args.cargo)
@@ -138,5 +140,28 @@ RegisterNetEvent('mri_Qbox:server:manageVip', function(data)
         sendNotification(source, "success",
             string.format("Permissão '%s' %s a: %s", data.role or player.PlayerData.metadata['vip'],
                 (data.action == 'add' and "concedida") or "revogada", data.name))
+    end
+end)
+
+local function sendPaycheck(player, payment)
+    player.Functions.AddMoney(cfg.vipmenu.CashType, payment)
+    sendNotification(player.PlayerData.source, "success", string.format("Você recebeu seu salário VIP de %s %s", cfg.vipmenu.CoinType, payment))
+end
+
+local function pay(player)
+    local vip = player.PlayerData.metadata["vip"] or "nenhum"
+    if vip == "nenhum" then return end
+    local payment = cfg.vipmenu.Roles[vip].payment or 0
+    if payment <= 0 then return end
+    sendPaycheck(player, payment)
+end
+
+CreateThread(function()
+    local interval = 60000 * cfg.vipmenu.PaycheckInterval
+    while true do
+        Wait(interval)
+        for _, player in pairs(exports.qbx_core:GetQBPlayers()) do
+            pay(player)
+        end
     end
 end)
