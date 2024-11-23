@@ -12,11 +12,13 @@ cfg.vipmenu = {
     Roles = {
         nenhum = {
             label = "Sem vip",
-            payment = 0
+            payment = 0,
+            inventory = 100, -- 100 KG
         },
         tier1 = {
             label = "Tier 1",
-            payment = 5000
+            payment = 5000,
+            inventory = 200 , -- 200 KG
         }
     }
 }
