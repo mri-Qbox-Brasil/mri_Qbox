@@ -62,9 +62,9 @@ lib.callback.register("vehtuning", function()
     end
 end)
 
-RegisterCommand("addskill", function(source, args)
-    exports["cw-rep"]:updateSkill(args[1], args[2])
-end)
+-- RegisterCommand("addskill", function(source, args)
+--     exports["cw-rep"]:updateSkill(args[1], args[2])
+-- end)
 
 RegisterCommand("menu", function(source, args)
     if args and args[1] then

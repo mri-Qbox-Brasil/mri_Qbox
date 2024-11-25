@@ -58,8 +58,11 @@ cfg.entervehicle = {
 
 cfg.dumpsters = {
     toggle = true,                          -- true para ativar as lixeiras para abrir no olhinho
-    TrashCans = {
-        Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}, -- modelo da lixeira
+    HideProps = { -- props para esconder-se
+        Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951 }, -- modelo da lixeira
+    },
+    TrashProps = { -- props para vasculhar
+        Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951, -1426008804}, -- modelo da lixeira
     }
 }
 
@@ -91,11 +94,11 @@ cfg.disableblindfiring = {
 }
 
 cfg.realisticrecoil = {
-    hideCrosshair = false,                  -- Hide builtin GTA crosshair while aiming?
-    drunkAiming = false,                    -- Enable "drunk" aiming?
-    verticalRecoil = false,                 -- Enable realistic vertical recoil while shooting?
-    disableAimPunching = false,             -- Disables punching with [R] and other keys while aiming
-    disableHeadshots = false,               -- Disables one-shots to head
+    hideCrosshair = true,                  -- Hide builtin GTA crosshair while aiming?
+    drunkAiming = true,                    -- Enable "drunk" aiming?
+    verticalRecoil = true,                 -- Enable realistic vertical recoil while shooting?
+    disableAimPunching = true,             -- Disables punching with [R] and other keys while aiming
+    disableHeadshots = true,               -- Disables one-shots to head
     drunkAimingPower = 0.20,                -- Higher number = Higher screen shake
     whitelistedWeapons = {                  -- Table of weapons with no recoil
     ["WEAPON_SNIPERRIFLE"] = true,
@@ -121,7 +124,7 @@ cfg.realisticrecoil = {
 ---- VEHICLES-MODULES
 -----------------------------------------------------------------------------------------
 cfg.wheelbreak = {
-    toggle = false,                         -- true para ativar as rodas quebrarem/soltarem ao bater o veículo
+    toggle = true,                         -- true para ativar as rodas quebrarem/soltarem ao bater o veículo
     speed = 150,                            -- velocidade em km/h que a roda vai quebrar/soltar (100 = hardcore)
 }
 

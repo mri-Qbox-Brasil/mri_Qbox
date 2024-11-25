@@ -6,15 +6,15 @@ CreateThread(function()
 end)
 
 function App()
-    exports.ox_target:addModel(cfg.dumpsters.TrashCans.Model, {
+    exports.ox_target:addModel(cfg.dumpsters.HideProps.Model, {
         event = 'mri_Qhideintrash:enter',
         icon = "fa-sharp fa-solid fa-eye-low-vision",
         label ="Esconder",
         distance = 1
     })
-    exports.ox_target:addModel(cfg.dumpsters.TrashCans.Model, {
+    exports.ox_target:addModel(cfg.dumpsters.TrashProps.Model, {
         icon = 'fas fa-dumpster',
-        label = "Abrir",
+        label = "Vasculhar",
         onSelect = function(data)
             local entity = data.entity
             local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
@@ -24,6 +24,22 @@ function App()
                 netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
             end
             if netId then
+                local completed = lib.progressCircle({
+                    label = 'Vasculhando...',
+                    duration = 2000,
+                    position = 'middle',
+                    useWhileDead = false,
+                    canCancel = true,
+                    disable = {
+                        car = true,
+                        move = true,
+                        combat = true,
+                    },
+                    anim = {
+                        scenario = 'PROP_HUMAN_PARKING_METER',
+                    }
+                })
+                if not completed then return end
                 exports.ox_inventory:openInventory('dumpster', 'dumpster'..netId)
             end
         end,

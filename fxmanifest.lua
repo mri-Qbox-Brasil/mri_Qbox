@@ -7,6 +7,8 @@ version "MRIQBOX_VERSION"
 
 ui_page "web-side/index.html"
 
+lua54 "yes"
+
 shared_scripts {
 	"@ox_lib/init.lua",
 	"@qbx_core/modules/playerdata.lua",
@@ -30,5 +32,3 @@ files {
 	"web-side/*",
 	"web-side/**/*"
 }
-
-lua54 "yes"
