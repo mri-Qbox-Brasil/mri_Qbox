@@ -82,6 +82,13 @@ exports.ox_target:addModel('prop_watercooler', {
     {
         icon = 'fas fa-tint',
         label = 'Beber Água',
+        canInteract = function(entity, distance, coords, name, bone)
+            local thirst = QBX.PlayerData.metadata["thirst"]
+            if thirst >= 100 then
+                return false
+            end
+            return true
+        end,
         onSelect = function(data)
             local targetEntity = data.entity or nil
             drink(targetEntity)
@@ -91,6 +98,10 @@ exports.ox_target:addModel('prop_watercooler', {
     {
         icon = 'fa-solid fa-bottle-water',
         label = 'Encher garrafa',
+        canInteract = function(entity, distance, coords, name, bone)
+            local count = exports.ox_inventory:Search('count', 'empty_water_bottle')            
+            return count > 0
+        end,
         onSelect = function(data)
             local targetEntity = data.entity or nil
             TriggerEvent('mri_Qwaterbottle:client:FillWaterBottle', targetEntity)
@@ -102,28 +113,21 @@ exports.ox_target:addModel('prop_watercooler', {
 RegisterNetEvent('mri_Qwaterbottle:client:FillWaterBottle', function(targetEntity)
     if targetEntity and isPlayerWithinRange(targetEntity) then
         TriggerEvent('animations:client:EmoteCommandStart', { "mechanic4" })
+        local completed = lib.progressCircle({
+            duration = Config.progressSettings.duration,
+            label = 'Enchendo garrafa...',
+            useWhileDead = false,
+            canCancel = true,
+            disable = {
+                car = true,
+                move = true,
+                combat = true,
+            },
+        })
 
-        local success = lib.skillCheck({ Config.progressSettings.skill_difficulty }, { 'e' })
-
-        if success then
-            local completed = lib.progressCircle({
-                duration = Config.progressSettings.duration,
-                label = 'Enchendo garrafa...',
-                useWhileDead = false,
-                canCancel = true,
-                disable = {
-                    car = true,
-                    move = true,
-                    combat = true,
-                },
-            })
-
-            if completed then
-                TriggerServerEvent('mri_Qwaterbottle:server:FillWaterBottle', success)
-                exports.scully_emotemenu:cancelEmote()
-            else
-                exports.scully_emotemenu:cancelEmote()
-            end
+        if completed then
+            TriggerServerEvent('mri_Qwaterbottle:server:FillWaterBottle', true)
+            exports.scully_emotemenu:cancelEmote()
         else
             exports.scully_emotemenu:cancelEmote()
         end

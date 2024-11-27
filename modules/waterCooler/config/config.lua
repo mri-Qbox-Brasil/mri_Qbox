@@ -44,7 +44,7 @@ return {
         filled_bottle = 'water_bottle'
     },
 
-    hydrationValue = 10,
+    hydrationValue = 50,
 
     excessiveDrinkCount = 3
 }
