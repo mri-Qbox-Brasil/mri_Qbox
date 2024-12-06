@@ -6,6 +6,7 @@ cfg = {}
 cfg.printidentifiers = true                 -- true para mostrar os identificadores no console
 
 cfg.vipmenu = {
+    Enable = true,
     PaycheckInterval = 30,
     CashType = 'bank', -- money, bank, crypto
     CoinType = "R$",

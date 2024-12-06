@@ -1,5 +1,6 @@
+if not cfg.vipmenu.Enable then return end
+
 ColorScheme = GlobalState.UIColors or {}
-local vipPeople = {}
 
 local function ConfirmationDialog(content)
     return lib.alertDialog({
@@ -194,7 +195,7 @@ local function manageVip(vipData)
 end
 
 function ListVip()
-    vipPeople = lib.callback.await('mri_Qbox:server:getVip')
+    local vipPeople = lib.callback.await('mri_Qbox:server:getVip')
     local ctx = {
         id = 'list_vip',
         menu = 'menu_vip',

@@ -1,3 +1,5 @@
+if not cfg.vipmenu.Enable then return end
+
 local QBCore = exports['qb-core']:GetCoreObject()
 
 local function fetchPlayers()
@@ -78,23 +80,23 @@ lib.addCommand('vipadm', {
         sendNotification(source, "error", "Id não informado.")
         return
     end
-    
+
     if not args.tipo then
         sendNotification(source, "error", "Tipo não informado.")
         return
     end
-    
+
     if args.tipo == 'add' and not args.tier then
         sendNotification(source, "error", "Vip não informado.")
         return
     end
-    
+
     local player = exports.qbx_core:GetPlayer(args.id)
     if not player then
         sendNotification(source, "error", "Nenhum player encontrado.")
         return
     end
-    
+
     if args.tipo == 'add' then
         lib.addPrincipal(args.id, args.tier)
         player.Functions.SetMetaData('vip', args.tier)
@@ -171,6 +173,7 @@ local function pay(player)
 end
 
 CreateThread(function()
+    if cfg.vipmenu.PaycheckInterval <= 0 then return end
     local interval = 60000 * cfg.vipmenu.PaycheckInterval
     while true do
         Wait(interval)
