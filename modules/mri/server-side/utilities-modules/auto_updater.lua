@@ -1,3 +1,4 @@
+if true then return end -- Em construcao por enquanto
 local relaseInfoUrl = "https://github.com/%s/%s/releases/latest"
 local fileDownloadUrl = "https://raw.githubusercontent.com/%s/%s/%s/%s"
 local gitUser = "mri-Qbox-Brasil"
