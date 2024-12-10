@@ -1,58 +1,69 @@
 #!/bin/bash
 
+# Atualizar o repositório local
 git fetch --all --tags
 
 # Função para encontrar a branch principal automaticamente (main ou master)
 get_main_branch() {
+  local main_branch
   main_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
 
-  # Verifica se a branch principal foi detectada
   if [[ -z "$main_branch" ]]; then
-    echo "Erro: Nao foi possivel detectar a branch principal. Certifique-se de que voce esta no diretorio correto do repositorio Git."
+    echo "Erro: Não foi possível detectar a branch principal. Certifique-se de que você está no diretório correto do repositório Git."
     exit 1
   fi
-
   echo "$main_branch"
 }
 
 # Função para obter a última tag e sugerir a próxima versão
 suggest_next_version() {
+  local last_tag="$1"
   if [[ -z "$last_tag" ]]; then
-    next_version="v1.0.0"
+    echo "v1.0.0"
   else
-    # Extrai a versão e sugere a próxima, incrementando o último dígito
     IFS='.' read -r major minor patch <<< "${last_tag//v/}"
-    next_version="v$major.$minor.$((patch + 1))"
+    echo "v$major.$minor.$((patch + 1))"
   fi
-  echo "$next_version"
 }
-# Obtém a branch principal
+
+# Detectar branch principal
 main_branch=$(get_main_branch)
 echo "Branch principal detectada: $main_branch"
 
-# Sugere a próxima versão com base na última tag
-last_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null)
-next_version=$(suggest_next_version)
-echo "Ultima versao: ${last_tag:-Nenhuma}"
+# Obter a última tag e calcular a próxima versão
+last_tag=$(git tag --sort=-v:refname | head -n 1)
+if [[ -z "$last_tag" ]]; then
+  echo "Nenhuma tag encontrada. Sugerindo v1.0.0 como primeira tag."
+fi
+next_version=$(suggest_next_version "$last_tag")
 
-# Solicita ao usuário a versão ou usa a sugestão
-read -p "Digite a versao da tag ($next_version): " tag_version
+echo "Última versão: ${last_tag:-Nenhuma}"
+echo "Próxima versão sugerida: $next_version"
+
+# Solicitar ao usuário a versão ou usar a sugestão
+read -p "Digite a versão da tag ($next_version): " tag_version
 tag_version=${tag_version:-$next_version}
 
-# Confirmação da criação da tag e envio
-echo "Criando tag $tag_version na branch '$main_branch' e enviando para o GitHub..."
+# Confirmação para continuar ou cancelar
+read -p "Deseja continuar criando a tag $tag_version? (S/N): " confirmacao
+case $confirmacao in
+  [Ss]* ) echo "Continuando com a operação...";;
+  [Nn]* ) echo "Operação cancelada pelo usuário."; exit 0;;
+  * ) echo "Resposta inválida. Operação cancelada."; exit 1;;
+esac
 
-# Cria a tag
+# Criar e enviar tag
+echo "Criando tag $tag_version na branch '$main_branch'..."
 git tag "$tag_version" "$main_branch"
 if [[ $? -ne 0 ]]; then
-  echo "Erro: Falha ao criar a tag $tag_version. Verifique se a tag ja existe ou se você tem permissoes adequadas."
+  echo "Erro: Falha ao criar a tag $tag_version. Verifique se a tag já existe ou se você tem permissões adequadas."
   exit 1
 fi
 
-# Envia a tag para o repositório
+echo "Enviando a tag $tag_version para o GitHub..."
 git push origin "$tag_version"
 if [[ $? -ne 0 ]]; then
-  echo "Erro: Falha ao enviar a tag $tag_version para o GitHub. Verifique sua conexão e permissoes."
+  echo "Erro: Falha ao enviar a tag $tag_version para o GitHub. Verifique sua conexão e permissões."
   exit 1
 fi
 
