@@ -1,4 +1,4 @@
-if not Config.mercosulPlates then return end
+if not cfg.mercosulplates.toggle then return end
 
 imageUrl = "https://assets.mriqbox.com.br/dui/platebr_image.png" 
 

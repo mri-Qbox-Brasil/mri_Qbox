@@ -155,7 +155,7 @@ cfg.drift = {
 }
 
 cfg.mercosulplates = {
-    toggle = true,                          -- true para ativar placas do mercosul nos veículos
+    toggle = false,                          -- (deprecated, use a versão do gordela: mri_Qcarplates) true para ativar placas do mercosul nos veículos
 }
 
 return cfg
