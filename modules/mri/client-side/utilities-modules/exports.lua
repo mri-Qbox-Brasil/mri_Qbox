@@ -1,26 +1,33 @@
 local ColorScheme = GlobalState.UIColors
 
 local function GetRayCoords()
-    lib.notify({
-        title = "Selecionar coordenadas",
-        description = "Confirme pressionando [E]",
-        type = "info",
-        duration = 10000
-    })
     while true do
+        lib.notify({
+            id = "mri_Qbox:client:raycast",
+            title = "Selecionar coordenadas",
+            type = "info",
+            duration = 1000,
+            showDuration = false
+        })
         local hit, entity, coords = lib.raycast.cam(1, 4)
         lib.showTextUI(
-            string.format('PARA  \nCONFIRMAR  \n**LOCAL**  \n  \nX: %.2f  \nY: %.2f  \nZ: %.2f', coords.x, coords.y, coords.z),
-            {
-                icon = "e"
-            })
-
+            string.format(
+                "[E] Confirmar  \n [Q] Cancelar  \n  \nX: %.2f  \nY: %.2f  \nZ: %.2f",
+                coords.x,
+                coords.y,
+                coords.z
+            )
+        )
         if hit then
             DrawSphere(coords.x, coords.y, coords.z, 0.2, 0, 0, 255, 0.2)
             if IsControlJustReleased(1, 38) then -- E
                 lib.hideTextUI()
                 return coords
             end
+        end
+        if IsControlJustReleased(0, 44)then -- Q
+            lib.hideTextUI()
+            return false
         end
     end
 end
