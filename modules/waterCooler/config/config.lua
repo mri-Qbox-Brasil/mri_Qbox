@@ -14,18 +14,7 @@ return {
         "prop_watercooler_dark",
         "prop_sink_02",
         "prop_sink_03",
-        "prop_sink_04",
-        "prop_kitchen_sink_01",
-        "prop_bathroom_sink_01",
-        "prop_bathroom_sink_02",
-        "prop_bathroom_sink_03",
-        "prop_bathroom_sink_04",
-        "v_ret_fh_kitchen_sink",
-        "v_ret_fh_bathroom_sink",
-        "v_res_m_sink_04",
-        "v_res_m_sink_03",
-        "v_res_m_sink_02",
-        "v_res_m_sink_01",
+        "prop_sink_04"
     },
 
     -- Distance and Progress Settings
