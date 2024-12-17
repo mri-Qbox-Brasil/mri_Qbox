@@ -11,6 +11,7 @@ return {
         "prop_w_fountain_01",
         "prop_fountain1",
         "prop_watercooler",
+        "prop_watercooler_dark",
         "prop_sink_02",
         "prop_sink_03",
         "prop_sink_04",
