@@ -77,38 +77,36 @@ AddEventHandler('mri_Qwaterbottle:client:emote', function(entity, setDrinkingFla
     setDrinkingFlag(false)
 end)
 
-
-exports.ox_target:addModel('prop_watercooler', {
-    {
-        icon = 'fas fa-tint',
-        label = 'Beber Água',
-        canInteract = function(entity, distance, coords, name, bone)
-            local thirst = QBX.PlayerData.metadata["thirst"]
-            if thirst >= 100 then
-                return false
-            end
-            return true
-        end,
-        onSelect = function(data)
-            local targetEntity = data.entity or nil
-            drink(targetEntity)
-        end,
-        distance = TARGET_DISTANCE
-    },
-    {
-        icon = 'fa-solid fa-bottle-water',
-        label = 'Encher garrafa',
-        canInteract = function(entity, distance, coords, name, bone)
-            local count = exports.ox_inventory:Search('count', 'empty_water_bottle')            
-            return count > 0
-        end,
-        onSelect = function(data)
-            local targetEntity = data.entity or nil
-            TriggerEvent('mri_Qwaterbottle:client:FillWaterBottle', targetEntity)
-        end,
-        distance = TARGET_DISTANCE
-    },
-})
+for _, model in ipairs(Config.targetmodels) do
+    exports.ox_target:addModel(model, {
+        {
+            icon = 'fas fa-tint',
+            label = 'Beber Água',
+            canInteract = function(entity, distance, coords, name, bone)
+                local thirst = QBX.PlayerData.metadata["thirst"]
+                return thirst < 100
+            end,
+            onSelect = function(data)
+                local targetEntity = data.entity or nil
+                drink(targetEntity)
+            end,
+            distance = TARGET_DISTANCE
+        },
+        {
+            icon = 'fa-solid fa-bottle-water',
+            label = 'Encher garrafa',
+            canInteract = function(entity, distance, coords, name, bone)
+                local count = exports.ox_inventory:Search('count', 'empty_water_bottle')
+                return count > 0
+            end,
+            onSelect = function(data)
+                local targetEntity = data.entity or nil
+                TriggerEvent('mri_Qwaterbottle:client:FillWaterBottle', targetEntity)
+            end,
+            distance = TARGET_DISTANCE
+        },
+    })
+end
 
 RegisterNetEvent('mri_Qwaterbottle:client:FillWaterBottle', function(targetEntity)
     if targetEntity and isPlayerWithinRange(targetEntity) then
