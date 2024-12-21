@@ -1,4 +1,7 @@
-RegisterCommand('models', function ()
+lib.addCommand('models', {
+    help = 'List all missing models',
+    restricted = 'group.admin'
+}, function(source)
     local models = GetAllVehicleModels()
     local missingVehicles = {}
     for i = 1, #models do
