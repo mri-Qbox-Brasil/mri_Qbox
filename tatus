@@ -1,0 +1,69 @@
+warning: in the working copy of 'config.lua', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'modules/mri/client-side/ox_lib-modules/context.lua', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'modules/mri/client-side/target-modules/dumpsters.lua', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/config.lua b/config.lua[m
+[1mindex 55a8337..9e4e693 100644[m
+[1m--- a/config.lua[m
+[1m+++ b/config.lua[m
+[36m@@ -69,7 +69,7 @@[m [mcfg.dumpsters = {[m
+         Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951 }, -- modelo da lixeira[m
+     },[m
+     TrashProps = { -- props para vasculhar[m
+[31m-        Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951, -1426008804}, -- modelo da lixeira[m
+[32m+[m[32m        Model = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951, -1426008804, 651101403, 1437508529, -1096777189, -228596739, 1614656839}, -- modelo da lixeira[m
+     }[m
+ }[m
+ [m
+[1mdiff --git a/modules/mri/client-side/ox_lib-modules/context.lua b/modules/mri/client-side/ox_lib-modules/context.lua[m
+[1mindex 884662b..1feaee7 100644[m
+[1m--- a/modules/mri/client-side/ox_lib-modules/context.lua[m
+[1m+++ b/modules/mri/client-side/ox_lib-modules/context.lua[m
+[36m@@ -434,6 +434,26 @@[m [mfunction OpenManageMenu()[m
+             onSelect = function()[m
+                 MenuSpotlight()[m
+             end[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            title = 'Plantas', --ADD By felpsdev[m
+[32m+[m[32m            description = 'Gerenciar as Plantas Ilícitas do Servidor',[m
+[32m+[m[32m            icon = 'seedling',[m
+[32m+[m[32m            iconAnimation = 'fade',[m
+[32m+[m[32m            arrow = true,[m
+[32m+[m[32m            onSelect = function()[m
+[32m+[m[32m                ExecuteCommand('drugadmin plants')[m
+[32m+[m[32m            end[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            title = 'Mesas', --ADD By felpsdev[m
+[32m+[m[32m            description = 'Gerenciar as Mesas De Drogas do Servidor',[m
+[32m+[m[32m            icon = 'flask-vial',[m
+[32m+[m[32m            iconAnimation = 'fade',[m
+[32m+[m[32m            arrow = true,[m
+[32m+[m[32m            onSelect = function()[m
+[32m+[m[32m                ExecuteCommand('drugadmin tables')[m
+[32m+[m[32m            end[m
+         }[m
+     }[m
+ [m
+[1mdiff --git a/modules/mri/client-side/target-modules/dumpsters.lua b/modules/mri/client-side/target-modules/dumpsters.lua[m
+[1mindex 45d7334..a750bbe 100644[m
+[1m--- a/modules/mri/client-side/target-modules/dumpsters.lua[m
+[1m+++ b/modules/mri/client-side/target-modules/dumpsters.lua[m
+[36m@@ -66,8 +66,8 @@[m [mfunction Enter()[m
+     if inside then return end[m
+     local ped = PlayerPedId()[m
+     local pedCoords = GetEntityCoords(PlayerPedId())[m
+[31m-    for k,v in pairs(cfg.dumpsters.TrashCans.Model) do[m
+[31m-        local objectId = GetClosestObjectOfType(pedCoords, 1.0, cfg.dumpsters.TrashCans.Model[k], false)[m
+[32m+[m[32m    for k,v in pairs(cfg.dumpsters.HideProps.Model) do[m
+[32m+[m[32m        local objectId = GetClosestObjectOfType(pedCoords, 1.0, cfg.dumpsters.HideProps.Model[k], false)[m
+         if DoesEntityExist(objectId) then[m
+             inside = true[m
+             local objectcoords = GetEntityCoords(objectId)[m
+[36m@@ -97,4 +97,4 @@[m [mfunction Exit()[m
+     SetEntityCoords(ped,oldcoords.x,oldcoords.y,oldcoords.z - 1)[m
+     FreezeEntityPosition(ped, false)[m
+     SetEntityVisible(ped, true)[m
+[31m-end[m
+\ No newline at end of file[m
+[32m+[m[32mend[m
