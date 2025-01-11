@@ -32,7 +32,7 @@ local function updateResource(source, args)
             return
         end
         fileList = Split(resultData, "\n")
-        -- Acho que da pra implementar um controle do download dos arquivos arquivos
+        -- Acho que da pra implementar um controle do download dos arquivos
         -- Usariamos pcall para capturar algum erro e callback para incrementar o contador
         -- dessa forma, se houver uma falha, conseguiremos aletar o usuário e também teremos a notificação no término.
         for k, v in pairs(fileList) do

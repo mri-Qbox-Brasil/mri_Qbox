@@ -4,9 +4,14 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm run clearbuild && npm run typecheck && node build/build-bundle.js",
+        "format": "prettier --write '**/*.{ts,js,json,md}'",
+        "lint": "eslint 'src/**/*.{ts,js}' --max-warnings=0",
+        "build": "npm run clearbuild && npm run typecheck && npm run bundle",
+        "bundle": "node build/build-bundle.js",
         "clearbuild": "rimraf ./dist",
-        "typecheck": "tsc --noEmit -p client_src/tsconfig.json && tsc --noEmit -p server_src/tsconfig.json",
+        "typecheck": "npm run typecheck:client && npm run typecheck:server",
+        "typecheck:client": "tsc --noEmit -p client_src/tsconfig.json",
+        "typecheck:server": "tsc --noEmit -p server_src/tsconfig.json",
         "watch": "npm run clearbuild && cross-env IS_WATCH_MODE=1 node build/build-bundle.js"
     },
     "author": "MRI QBOX Team",
