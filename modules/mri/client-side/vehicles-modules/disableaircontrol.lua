@@ -29,7 +29,7 @@ Citizen.CreateThread(function()
     }
     local disableIfFlying = true        -- Enable/disable control disable while flying
   
-    while cfg.disableaircontrol.toogle do
+    while cfg.disableaircontrol.toggle do
       if not IsPedInAnyVehicle(playerPed) then
         -- Player not in vehicle, reset variables
         playerPed = GetPlayerPed(-1)
@@ -45,7 +45,7 @@ Citizen.CreateThread(function()
             vehicleClass = GetVehicleClass(vehicle)
           end
         end
-  
+
         if vehicleClass and  vehicleClassDisableControl[vehicleClass] and (GetPedInVehicleSeat(vehicle, -1) == playerPed) then
           if disableIfFlying and IsEntityInAir(vehicle) then
             DisableControlAction(2, 59)  -- Disable jump control
@@ -53,7 +53,7 @@ Citizen.CreateThread(function()
           end
         end
       end
-  
+
       Citizen.Wait(0) -- Wait for next frame without unnecessary delay
     end
   end)
