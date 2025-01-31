@@ -22,11 +22,13 @@ end
 
 local function getPlayerInformation(data)
     return string.format(
-        '**ID**: %s | **RG**: %s %s **Nome**: %s',
+        '**ID**: %s | **RG**: %s %s **Nome**: %s %s **Coins**: %s',
         data.source,
         data.citizenid,
         getSpaces(130),
-        data.name
+        data.name,
+        getSpaces(130),
+        data.money.coin
     )
 end
 
