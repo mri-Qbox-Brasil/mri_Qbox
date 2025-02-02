@@ -436,6 +436,26 @@ function OpenManageMenu()
             onSelect = function()
                 MenuSpotlight()
             end
+        },
+        {
+            title = 'Plantas', --ADD By felpsdev
+            description = 'Gerenciar as Plantas Ilícitas do Servidor',
+            icon = 'seedling',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('drugadmin plants')
+            end
+        },
+        {
+            title = 'Mesas', --ADD By felpsdev
+            description = 'Gerenciar as Mesas De Drogas do Servidor',
+            icon = 'flask-vial',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('drugadmin tables')
+            end
         }
     }
 

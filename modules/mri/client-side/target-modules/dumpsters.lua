@@ -66,8 +66,8 @@ function Enter()
     if inside then return end
     local ped = PlayerPedId()
     local pedCoords = GetEntityCoords(PlayerPedId())
-    for k,v in pairs(cfg.dumpsters.TrashCans.Model) do
-        local objectId = GetClosestObjectOfType(pedCoords, 1.0, cfg.dumpsters.TrashCans.Model[k], false)
+    for k,v in pairs(cfg.dumpsters.HideProps.Model) do
+        local objectId = GetClosestObjectOfType(pedCoords, 1.0, cfg.dumpsters.HideProps.Model[k], false)
         if DoesEntityExist(objectId) then
             inside = true
             local objectcoords = GetEntityCoords(objectId)
