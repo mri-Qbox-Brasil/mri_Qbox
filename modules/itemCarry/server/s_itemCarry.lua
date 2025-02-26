@@ -62,7 +62,9 @@ local function findCarryItem(source)
             end
         end
 
-        playerState:set("carryItem", carryData, true)
+        if carryData then
+            playerState:set("carryItem", carryData, true)
+        end
 
     end)
 end
