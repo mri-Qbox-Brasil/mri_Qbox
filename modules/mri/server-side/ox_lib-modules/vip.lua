@@ -54,6 +54,18 @@ lib.callback.register('mri_Qbox:server:getVip', function(source)
     return getMenuEntries()
 end)
 
+local function updateInventoryWeight(source)
+    local player = exports.qbx_core:GetPlayer(source)
+
+    if player then
+        local vip = player.PlayerData.metadata['vip'] or 'nenhum'
+        local invWeight = cfg.vipmenu.Roles[vip].inventory
+
+        print(string.format("[VIP] atualizando tamanho do inventário para: '%s'", invWeight*1000))
+        exports.ox_inventory:SetMaxWeight(source, invWeight*1000)
+    end
+end
+
 lib.addCommand('vipadm', {
     help = 'Dar permissão ao vip permanentemente',
     params = {
@@ -110,24 +122,17 @@ lib.addCommand('vipadm', {
         string.format("Permissão %s %s a: %d", args.tier or player.PlayerData.metadata['vip'],
             (args.tipo == 'add' and "concedida") or "revogada", args.id))
 
-    updateInventoryWeight(targetSource)
+    updateInventoryWeight(args.id)
 end)
 
-function updateInventoryWeight(source)
-    local player = exports.qbx_core:GetPlayer(source)
 
-    if player then 
-        local vip = player.PlayerData.metadata['vip'] or 'nenhum'
-        local invWeight = cfg.vipmenu.Roles[vip].inventory
-
-        exports.ox_inventory:SetMaxWeight(source, invWeight*1000)
-    end
-end
 
 RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
     local player = exports.qbx_core:GetPlayer(source)
     if player and player.PlayerData.metadata['vip'] then
+        print(string.format("[VIP] setando vip: '%s', para: '%s'", player.PlayerData.charinfo.firstname, player.PlayerData.metadata['vip']))
         lib.addPrincipal(source, player.PlayerData.metadata['vip'])
+        print(string.format("[VIP] setado vip: '%s', para: '%s'", player.PlayerData.charinfo.firstname, player.PlayerData.metadata['vip']))
         updateInventoryWeight(source)
     end
 end)
@@ -155,7 +160,7 @@ RegisterNetEvent('mri_Qbox:server:manageVip', function(data)
         exports.qbx_core:SaveOffline(player.PlayerData)
         sendNotification(source, "success",
             string.format("Permissão '%s' %s a: %s", data.role or player.PlayerData.metadata['vip'],
-                (data.action == 'add' and "concedida") or "revogada", data.name))        
+                (data.action == 'add' and "concedida") or "revogada", data.name))
     end
 end)
 
