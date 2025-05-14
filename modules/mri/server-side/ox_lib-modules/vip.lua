@@ -66,28 +66,7 @@ local function updateInventoryWeight(source)
     end
 end
 
-lib.addCommand('vipadm', {
-    help = 'Dar permissão ao vip permanentemente',
-    params = {
-        {
-            name = 'id',
-            type = 'playerId',
-            help = 'Source ID do player',
-        },
-        {
-            name = 'tipo',
-            type = 'string',
-            help = 'Tipo de permissão (add ou rem)',
-        },
-        {
-            name = 'tier',
-            type = 'string',
-            help = 'Tier de vip',
-            optional = true
-        },
-    },
-    restricted = 'group.admin'
-}, function(source, args, raw)
+local function executeVip()
     if not args.id then
         sendNotification(source, "error", "Id não informado.")
         return
@@ -123,9 +102,34 @@ lib.addCommand('vipadm', {
             (args.tipo == 'add' and "concedida") or "revogada", args.id))
 
     updateInventoryWeight(args.id)
+end
+
+exports("VipAdm", executeVip)
+
+lib.addCommand('vipadm', {
+    help = 'Dar permissão ao vip permanentemente',
+    params = {
+        {
+            name = 'id',
+            type = 'playerId',
+            help = 'Source ID do player',
+        },
+        {
+            name = 'tipo',
+            type = 'string',
+            help = 'Tipo de permissão (add ou rem)',
+        },
+        {
+            name = 'tier',
+            type = 'string',
+            help = 'Tier de vip',
+            optional = true
+        },
+    },
+    restricted = 'group.admin'
+}, function(source, args, raw)
+    executeVip(source, args)
 end)
-
-
 
 RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
     local player = exports.qbx_core:GetPlayer(source)
