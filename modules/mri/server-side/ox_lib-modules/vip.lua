@@ -102,6 +102,7 @@ local function executeVip()
             (args.tipo == 'add' and "concedida") or "revogada", args.id))
 
     updateInventoryWeight(args.id)
+    return true
 end
 
 exports("VipAdm", executeVip)
