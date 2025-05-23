@@ -66,7 +66,7 @@ local function updateInventoryWeight(source)
     end
 end
 
-local function executeVip(args)
+local function executeVip(source, args)
     if not args.id then
         sendNotification(source, "error", "Id não informado.")
         return
