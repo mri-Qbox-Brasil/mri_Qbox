@@ -8,18 +8,25 @@ cfg.printidentifiers = true                 -- true para mostrar os identificado
 cfg.vipmenu = {
     Enable = true,
     PaycheckInterval = 30,
-    CashType = 'bank', -- money, bank, crypto
+    CashType = 'bank',
     CoinType = "R$",
     Roles = {
         nenhum = {
             label = "Sem vip",
             payment = 0,
-            inventory = 100, -- 100 KG
+            inventory = 100,
         },
         tier1 = {
             label = "Tier 1",
             payment = 5000,
-            inventory = 200 , -- 200 KG
+            inventory = 200,
+            items = { { name = "burger", count = 2 }, { name = "water", count = 1 } }
+        },
+        tier2 = {
+            label = "Tier 2",
+            payment = 10000,
+            inventory = 300,
+            items = { { name = "soda", count = 3 }, { name = "sandwich", count = 2 } }
         }
     }
 }
