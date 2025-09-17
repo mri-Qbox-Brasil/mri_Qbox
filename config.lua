@@ -101,18 +101,18 @@ cfg.disableblindfiring = {
 }
 
 cfg.realisticrecoil = {
-    hideCrosshair = true,                  -- Hide builtin GTA crosshair while aiming?
-    drunkAiming = true,                    -- Enable "drunk" aiming?
-    verticalRecoil = true,                 -- Enable realistic vertical recoil while shooting?
-    disableAimPunching = true,             -- Disables punching with [R] and other keys while aiming
-    disableHeadshots = true,               -- Disables one-shots to head
+    hideCrosshair = false,                  -- Hide builtin GTA crosshair while aiming?
+    drunkAiming = false,                    -- Enable "drunk" aiming?
+    verticalRecoil = false,                 -- Enable realistic vertical recoil while shooting?
+    disableAimPunching = false,             -- Disables punching with [R] and other keys while aiming
+    disableHeadshots = false,               -- Disables one-shots to head
     drunkAimingPower = 0.20,                -- Higher number = Higher screen shake
     whitelistedWeapons = {                  -- Table of weapons with no recoil
-    ["WEAPON_SNIPERRIFLE"] = true,
-    ["WEAPON_HEAVYSNIPER"] = true,
-    ["WEAPON_HEAVYSNIPER_MK2"] = true,
-    ["WEAPON_MARKSMANRIFLE"] = true,
-    ["WEAPON_MARKSMANRIFLE_MK2"] = true,
+        ["WEAPON_SNIPERRIFLE"] = true,
+        ["WEAPON_HEAVYSNIPER"] = true,
+        ["WEAPON_HEAVYSNIPER_MK2"] = true,
+        ["WEAPON_MARKSMANRIFLE"] = true,
+        ["WEAPON_MARKSMANRIFLE_MK2"] = true,
     -- Add more weapons if needed
     },
     recoilMultipliers = {                   -- [ONLY FOR VERTICAL RECOIL] Edit the power of the recoil for each weapon type
@@ -131,7 +131,7 @@ cfg.realisticrecoil = {
 ---- VEHICLES-MODULES
 -----------------------------------------------------------------------------------------
 cfg.wheelbreak = {
-    toggle = true,                         -- true para ativar as rodas quebrarem/soltarem ao bater o veículo
+    toggle = false,                         -- true para ativar as rodas quebrarem/soltarem ao bater o veículo
     speed = 150,                            -- velocidade em km/h que a roda vai quebrar/soltar (100 = hardcore)
 }
 
