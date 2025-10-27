@@ -66,7 +66,7 @@ local function setPlayerGang(targetPlayer, gang)
     end
 
     if not gang then 
-        local gang = lib.inputDialog('Escolher a Gang', {
+        gang = lib.inputDialog('Escolher a Gang', {
             { type = 'select', label = 'Gangs disponíveis:', options = options, required = true, searchable = true, clearable = true }
         })
         if not gang then return end
