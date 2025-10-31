@@ -9,33 +9,72 @@ local function GetRayCoords()
             duration = 1000,
             showDuration = false
         })
+
         local hit, entity, coords = lib.raycast.cam(1, 4)
+        local camRot = GetGameplayCamRot(2)
+        local heading = camRot.z
+
         lib.showTextUI(
             string.format(
-                "[E] Confirmar  \n [Q] Cancelar  \n  \nX: %.2f  \nY: %.2f  \nZ: %.2f",
+                "[E] Confirmar vec3  \n[G] Confirmar vec4  \n[Q] Cancelar  \n  \nX: %.2f  \nY: %.2f  \nZ: %.2f  \nH: %.2f",
                 coords.x,
                 coords.y,
-                coords.z
+                coords.z,
+                heading
             )
         )
+
         if hit then
-            DrawSphere(coords.x, coords.y, coords.z, 0.2, 0, 0, 255, 0.2)
-            if IsControlJustReleased(1, 38) then -- E
+        DrawMarker(28, coords.x, coords.y, coords.z - 0.15, 0, 0, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0, 0, 255, 100, false, true, 2, nil, nil, false)
+
+            if IsControlJustReleased(1, 38) then
                 lib.hideTextUI()
-                return coords
+                lib.setClipboard(string.format("vector3(%.2f, %.2f, %.2f)", coords.x, coords.y, coords.z))
+                lib.notify({
+                    title = "Coordenadas copiadas",
+                    description = "vector3 copiado pro clipboard!",
+                    type = "success"
+                })
+                return vec3(coords.x, coords.y, coords.z)
+            end
+
+            if IsControlJustReleased(1, 47) then
+                lib.hideTextUI()
+                lib.setClipboard(string.format("vector4(%.2f, %.2f, %.2f, %.2f)", coords.x, coords.y, coords.z, heading))
+                lib.notify({
+                    title = "Coordenadas copiadas",
+                    description = "vector4 copiado pro clipboard!",
+                    type = "success"
+                })
+                return vec4(coords.x, coords.y, coords.z, heading)
             end
         end
-        if IsControlJustReleased(0, 44)then -- Q
+
+        if IsControlJustReleased(0, 44) then
             lib.hideTextUI()
+            lib.notify({
+                title = "Cancelado",
+                description = "Seleção de coordenadas cancelada.",
+                type = "error"
+            })
             return false
         end
+        Wait(0)
     end
 end
 
+
 lib.callback.register('mri_Qbox:client:raycast', function()
     local coords = GetRayCoords()
-    lib.setClipboard(string.format("vector3(%.2f, %.2f, %.2f)", coords.x, coords.y, coords.z))
+    if coords then
+        if coords.w then
+            lib.setClipboard(string.format("vector4(%.2f, %.2f, %.2f, %.2f)", coords.x, coords.y, coords.z, coords.w))
+        else
+            lib.setClipboard(string.format("vector3(%.2f, %.2f, %.2f)", coords.x, coords.y, coords.z))
+        end
+    end
 end)
+
 
 exports('GetRayCoords', GetRayCoords)
 
