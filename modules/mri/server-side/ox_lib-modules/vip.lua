@@ -92,6 +92,10 @@ local function executeVip(source, args)
         lib.addPrincipal(args.id, args.tier)
         player.Functions.SetMetaData('vip', args.tier)
         sendNotification(args.id, "success", string.format("Recebeu o vip: %s", args.tier))
+        local items = cfg.vipmenu.Roles[args.tier].items or {}
+        for _, item in ipairs(items) do
+            exports.ox_inventory:AddItem(args.id, item.name, item.count or 1)
+        end
     elseif args.tipo == 'rem' and player.PlayerData.metadata['vip'] then
         lib.removePrincipal(args.id, player.PlayerData.metadata['vip'])
         player.Functions.SetMetaData('vip', nil)
@@ -160,6 +164,10 @@ RegisterNetEvent('mri_Qbox:server:manageVip', function(data)
             if targetSource > 0 then
                 lib.addPrincipal(targetSource, data.role)
                 targetPlayer.Functions.SetMetaData('vip', data.role)
+                local items = cfg.vipmenu.Roles[data.role].items or {}
+                for _, item in ipairs(items) do
+                    exports.ox_inventory:AddItem(targetSource, item.name, item.count or 1)
+                end
             end
         end
         exports.qbx_core:SaveOffline(player.PlayerData)
