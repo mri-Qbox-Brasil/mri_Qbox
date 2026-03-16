@@ -1,4 +1,13 @@
-local wheelBreakSpeed = cfg.wheelbreak.speed -- Speed at which the wheel breaks
+local wheelBreakSpeed = cfg.wheelbreak.speed
+local wheelBreakMode = cfg.wheelbreak.mode or "impact"
+local wheelBreakImpactDamage = cfg.wheelbreak.impactDamage or 120.0
+local wheelBreakCooldown = cfg.wheelbreak.cooldown or 5000
+local wheelBreakMinImpactSpeed = cfg.wheelbreak.minImpactSpeed or 20.0
+local wheelBreakImpactDeltaSpeed = cfg.wheelbreak.impactDeltaSpeed or 35.0
+local vehicleBodyHealthCache = {}
+local vehicleCooldownCache = {}
+local vehicleSpeedCache = {}
+local setVehicleWheelsCanBreakOff = SetVehicleWheelsCanBreakOff
 
 --[[ Vehicle classes:
 0: Compacts   1: Sedans   2: SUVs   3: Coupes   4: Muscle
@@ -14,27 +23,76 @@ local excludedClasses = {
     [16] = true
 }
 
----@param class string Vehicle class 
+---@param class string Vehicle class
 ---@return boolean
 local function isVehicleClassValid(class)
     return not excludedClasses[class]
 end
 
+local function getRandomWheelIndex(vehicle)
+    local numWheels = GetVehicleNumberOfWheels(vehicle)
+    if numWheels == 2 then
+        return (math.random(2) - 1) * 4
+    end
+    if numWheels == 4 then
+        local index = math.random(4) - 1
+        if index > 1 then
+            index = index + 2
+        end
+        return index
+    end
+    if numWheels == 6 then
+        return math.random(6) - 1
+    end
+    return 0
+end
+
 CreateThread(function()
-    while cfg.wheelbreak.toogle do
+    while cfg.wheelbreak and cfg.wheelbreak.toggle do
         local waitLoop = 5000
         local playerPed = PlayerPedId()
         if IsPedInAnyVehicle(playerPed, false) then
-            local vehicle = GetVehiclePedIsIn(playerPed,false)
-            if GetPedInVehicleSeat(vehicle, -1) ~= 0 and isVehicleClassValid(GetVehicleClass(vehicle)) then
-                waitLoop = 10
-                local vehicleSpeed = math.ceil(GetEntitySpeed(vehicle) * 3.6)
-                if HasEntityCollidedWithAnything(vehicle) and vehicleSpeed >= wheelBreakSpeed then
-                    local randomWheelIndex = math.random(0,3) -- Wheel index to break off
-                    ---@see https://github.com/citizenfx/fivem/commit/46205c9ff15bdc9e19d81dd126500a854c8547e9
-                    BreakOffVehicleWheel(vehicle, randomWheelIndex, true, false, true, false)
-                    waitLoop = 5000
+            local vehicle = GetVehiclePedIsIn(playerPed, false)
+            if GetPedInVehicleSeat(vehicle, -1) == playerPed and isVehicleClassValid(GetVehicleClass(vehicle)) then
+                waitLoop = 100
+                local gameTimer = GetGameTimer()
+                local canBreakWheel = (vehicleCooldownCache[vehicle] or 0) <= gameTimer
+                local hasCollision = HasEntityCollidedWithAnything(vehicle)
+                local shouldBreakWheel = false
+                local currentSpeed = GetEntitySpeed(vehicle) * 3.6
+                local previousSpeed = vehicleSpeedCache[vehicle] or currentSpeed
+                vehicleSpeedCache[vehicle] = currentSpeed
+
+                if wheelBreakMode == "impact" then
+                    local currentBodyHealth = GetVehicleBodyHealth(vehicle)
+                    local previousBodyHealth = vehicleBodyHealthCache[vehicle] or currentBodyHealth
+                    local bodyHealthLoss = previousBodyHealth - currentBodyHealth
+                    local speedLoss = math.max(0.0, previousSpeed - currentSpeed)
+                    vehicleBodyHealthCache[vehicle] = currentBodyHealth
+                    local hasStrongImpact = bodyHealthLoss >= wheelBreakImpactDamage or speedLoss >= wheelBreakImpactDeltaSpeed
+                    if canBreakWheel and hasStrongImpact and (hasCollision or previousSpeed >= wheelBreakMinImpactSpeed) then
+                        shouldBreakWheel = true
+                    end
+                else
+                    local vehicleSpeed = math.ceil(currentSpeed)
+                    if hasCollision and canBreakWheel and vehicleSpeed >= wheelBreakSpeed then
+                        shouldBreakWheel = true
+                    end
                 end
+
+                if shouldBreakWheel then
+                    local randomWheelIndex = getRandomWheelIndex(vehicle)
+                    if setVehicleWheelsCanBreakOff then
+                        setVehicleWheelsCanBreakOff(vehicle, true)
+                    end
+                    BreakOffVehicleWheel(vehicle, randomWheelIndex, true, false, true, false)
+                    SetVehicleTyreBurst(vehicle, randomWheelIndex, false, 1000.0)
+                    vehicleCooldownCache[vehicle] = gameTimer + wheelBreakCooldown
+                    waitLoop = wheelBreakCooldown
+                end
+            else
+                vehicleBodyHealthCache[vehicle] = GetVehicleBodyHealth(vehicle)
+                vehicleSpeedCache[vehicle] = GetEntitySpeed(vehicle) * 3.6
             end
         end
         Wait(waitLoop)
