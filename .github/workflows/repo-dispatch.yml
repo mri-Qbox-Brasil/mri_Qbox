@@ -10,6 +10,9 @@ on:
       - MANUAL.md  # Só dispara quando o MANUAL for alterado
   workflow_dispatch:  # Permite execução manual
 
+env:
+  FRIENDLY_NAME: "MRI Qbox"  # ⚠️ Altere para o nome que aparecerá na sidebar
+
 jobs:
   notify-docs:
     name: Notify Documentation Repo
@@ -21,4 +24,4 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}  # PAT com acesso ao repo da documentação
           repository: mri-Qbox-Brasil/docs-mriqbox  # Ajuste conforme necessário
           event-type: update-manual
-          client-payload: '{"org": "mri-Qbox-Brasil", "repo": "${{ github.event.repository.name }}", "name": "${{ github.repository }}"}'
+          client-payload: '{"org": "mri-Qbox-Brasil", "repo": "${{ github.event.repository.name }}", "name": "${{ env.FRIENDLY_NAME }}"}'
