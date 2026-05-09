@@ -29,6 +29,7 @@ client_scripts {
 }
 
 files {
+	"data/vip.json",
 	"web-side/*",
 	"web-side/**/*"
 }
