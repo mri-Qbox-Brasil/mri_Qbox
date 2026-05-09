@@ -13,7 +13,7 @@ shared_scripts {
 	"@ox_lib/init.lua",
 	"@qbx_core/modules/playerdata.lua",
 	"shared/*.lua",
-	"shared/vip.json",
+	"data/vip.json",
 	"**/**/config.lua",
 	"**/**/shared/*.lua",
 }
@@ -30,7 +30,6 @@ client_scripts {
 }
 
 files {
-	"shared/vip.json",
 	"web-side/*",
 	"web-side/**/*"
 }
