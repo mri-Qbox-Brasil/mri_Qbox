@@ -5,7 +5,24 @@ cfg = {}
 -----------------------------------------------------------------------------------------
 cfg.printidentifiers = true -- true para mostrar os identificadores no console
 
--- cfg.vipmenu removido — configuração VIP migrada para shared/vip.lua (VipCfg)
+cfg.vipmenu = {
+    Enable = true,
+    PaycheckInterval = 30,
+    CashType = 'bank', -- money, bank, crypto
+    CoinType = "R$",
+    Roles = {
+        nenhum = {
+            label = "Sem vip",
+            payment = 0,
+            inventory = 100, -- 100 KG
+        },
+        tier1 = {
+            label = "Tier 1",
+            payment = 5000,
+            inventory = 200, -- 200 KG
+        }
+    }
+}
 
 cfg.indestructibleProps = true -- true para ativar as props indestrutíveis
 
