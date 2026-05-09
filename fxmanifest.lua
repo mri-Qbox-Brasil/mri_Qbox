@@ -12,9 +12,10 @@ lua54 "yes"
 shared_scripts {
 	"@ox_lib/init.lua",
 	"@qbx_core/modules/playerdata.lua",
-	"config.lua",
+	"shared/*.lua",
+	"shared/vip.json",
 	"**/**/config.lua",
-	"**/**/shared/*",
+	"**/**/shared/*.lua",
 }
 
 server_scripts {
@@ -29,6 +30,7 @@ client_scripts {
 }
 
 files {
+	"shared/vip.json",
 	"web-side/*",
 	"web-side/**/*"
 }
