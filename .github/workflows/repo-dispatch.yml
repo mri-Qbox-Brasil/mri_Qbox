@@ -1,27 +1,27 @@
 name: Notify Docs Update
 
-# Este workflow deve ser adicionado aos repositórios que querem notificar a documentação
-# Copie este arquivo para .github/workflows/update-docs.yml no repositório desejado
+# Publica o MANUAL.md deste repo na documentação (docs-mriqbox).
+#
+# Este arquivo é IDÊNTICO em todos os repositórios — não edite nada aqui.
+# O que varia por repo são variáveis (Settings → Secrets and variables → Actions):
+#
+#   DOC_NAME  nome exibido na sidebar   (vazio => nome do repositório)
+#   DOC_SLUG  slug da página publicada  (vazio => nome do repositório;
+#             usado apenas em repos de fonte privada "<repo>-source")
 
 on:
   push:
     branches: [main, master]
     paths:
-      - MANUAL.md  # Só dispara quando o MANUAL for alterado
-  workflow_dispatch:  # Permite execução manual
-
-env:
-  FRIENDLY_NAME: "MRI Qbox"  # ⚠️ Altere para o nome que aparecerá na sidebar
+      - MANUAL.md
+  workflow_dispatch:
 
 jobs:
   notify-docs:
-    name: Notify Documentation Repo
-    runs-on: ubuntu-latest
-    steps:
-      - name: Disparar atualização na documentação
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.GH_TOKEN }}  # PAT com acesso ao repo da documentação
-          repository: mri-Qbox-Brasil/docs-mriqbox  # Ajuste conforme necessário
-          event-type: update-manual
-          client-payload: '{"org": "mri-Qbox-Brasil", "repo": "${{ github.event.repository.name }}", "name": "${{ env.FRIENDLY_NAME }}"}'
+    uses: mri-Qbox-Brasil/workflows/.github/workflows/callable-repo-dispatch.yml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    with:
+      friendly-name: ${{ vars.DOC_NAME }}
+      doc-file: MANUAL.md
+      publish-as: ${{ vars.DOC_SLUG }}
