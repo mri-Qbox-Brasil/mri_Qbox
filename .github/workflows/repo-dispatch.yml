@@ -18,6 +18,8 @@ on:
 
 jobs:
   notify-docs:
+    permissions:
+      id-token: write # OIDC do Infisical
     uses: mri-Qbox-Brasil/workflows/.github/workflows/callable-repo-dispatch.yml@main
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
