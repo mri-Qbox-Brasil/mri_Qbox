@@ -7,46 +7,46 @@ local delay = 1500
 
 --[[ List of props that should be 'invicible' ]]
 local indestructibleModels = {
-    `prop_traffic_03b`,
-    `prop_traffic_lightset_01`,
-    `prop_traffic_01a`,
-    `prop_traffic_01b`,
-    `prop_traffic_01d`,
-    `prop_traffic_02b`,
-    `prop_traffic_02a`,
-    `prop_streetlight_11c`,
-    `prop_streetlight_10`,
-    `prop_streetlight_12a`,
-    `prop_streetlight_11b`,
-    `prop_streetlight_06`,
-    `prop_streetlight_07a`,
-    `prop_streetlight_11a`,
-    `prop_streetlight_15a`,
-    `prop_streetlight_07b`,
-    `prop_streetlight_09`,
-    `prop_snow_streetlight_09`,
-    `prop_streetlight_12b`,
-    `prop_streetlight_08`,
-    `prop_streetlight_04`,
-    `prop_streetlight_14a`,
-    `prop_streetlight_02`,
-    `prop_streetlight_03c`,
-    `prop_snow_streetlight01`,
-    `prop_streetlight_05_b`,
-    `prop_streetlight_03`,
-    `prop_streetlight_01b`,
-    `prop_streetlight_03b`,
-    `prop_streetlight_03d`,
-    `prop_traffic_03a`,
-    `prop_snow_streetlight_01_frag_`,
-    `prop_streetlight_03e`,
-    `prop_streetlight_05`,
-    `prop_streetlight_16a`,
-    `prop_streetlight_01`,
-    `prop_fire_hydrant_2`,
-    `prop_fire_hydrant_1`,
-    `prop_fire_hydrant_4`,
-    `prop_fire_hydrant_2_l1`
+    [`prop_traffic_03b`] = true,
+    [`prop_traffic_lightset_01`] = true,
+    [`prop_traffic_01a`] = true,
+    [`prop_traffic_01b`] = true,
+    [`prop_traffic_01d`] = true,
+    [`prop_traffic_02b`] = true,
+    [`prop_traffic_02a`] = true,
+    [`prop_streetlight_11c`] = true,
+    [`prop_streetlight_10`] = true,
+    [`prop_streetlight_12a`] = true,
+    [`prop_streetlight_11b`] = true,
+    [`prop_streetlight_06`] = true,
+    [`prop_streetlight_07a`] = true,
+    [`prop_streetlight_11a`] = true,
+    [`prop_streetlight_15a`] = true,
+    [`prop_streetlight_07b`] = true,
+    [`prop_streetlight_09`] = true,
+    [`prop_snow_streetlight_09`] = true,
+    [`prop_streetlight_12b`] = true,
+    [`prop_streetlight_08`] = true,
+    [`prop_streetlight_04`] = true,
+    [`prop_streetlight_14a`] = true,
+    [`prop_streetlight_02`] = true,
+    [`prop_streetlight_03c`] = true,
+    [`prop_snow_streetlight01`] = true,
+    [`prop_streetlight_05_b`] = true,
+    [`prop_streetlight_03`] = true,
+    [`prop_streetlight_01b`] = true,
+    [`prop_streetlight_03b`] = true,
+    [`prop_streetlight_03d`] = true,
+    [`prop_traffic_03a`] = true,
+    [`prop_snow_streetlight_01_frag_`] = true,
+    [`prop_streetlight_03e`] = true,
+    [`prop_streetlight_05`] = true,
+    [`prop_streetlight_16a`] = true,
+    [`prop_streetlight_01`] = true,
+    [`prop_fire_hydrant_2`] = true,
+    [`prop_fire_hydrant_1`] = true,
+    [`prop_fire_hydrant_4`] = true,
+    [`prop_fire_hydrant_2_l1`] = true
 }
 
 --[[ Redeclaring the natives to improve performance ]]
@@ -63,13 +63,10 @@ Citizen.CreateThread(function()
         for _, prop in ipairs(props) do
             local model = GetEntityModel(prop)
 
-            for _, indestructibleModel in ipairs(indestructibleModels) do
-                if model == indestructibleModel then
-                    if not IsEntityPositionFrozen(prop) then
-                        FreezeEntityPosition(prop, true)
-                        SetEntityCanBeDamaged(prop, false)
-                    end
-                    break
+            if indestructibleModels[model] then
+                if not IsEntityPositionFrozen(prop) then
+                    FreezeEntityPosition(prop, true)
+                    SetEntityCanBeDamaged(prop, false)
                 end
             end
         end

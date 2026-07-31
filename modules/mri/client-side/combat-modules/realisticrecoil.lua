@@ -55,19 +55,23 @@ if cfg.realisticrecoil.verticalRecoil then
 	end)
 end
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
-        HideHudComponentThisFrame(6)
-        HideHudComponentThisFrame(7)
-        HideHudComponentThisFrame(8)
-        HideHudComponentThisFrame(9)
+if cfg.realisticrecoil.hideDefaultHUDComponents or cfg.realisticrecoil.hideCrosshair then
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(0)
+            if cfg.realisticrecoil.hideDefaultHUDComponents then
+                HideHudComponentThisFrame(6)
+                HideHudComponentThisFrame(7)
+                HideHudComponentThisFrame(8)
+                HideHudComponentThisFrame(9)
+            end
 
-        if cfg.realisticrecoil.hideCrosshair then
-            HideHudComponentThisFrame(14)
+            if cfg.realisticrecoil.hideCrosshair then
+                HideHudComponentThisFrame(14)
+            end
         end
-    end
-end)
+    end)
+end
 
 if cfg.realisticrecoil.drunkAiming then
     local drunkAiming = false

@@ -101,6 +101,7 @@ cfg.disableblindfiring = {
 }
 
 cfg.realisticrecoil = {
+    hideDefaultHUDComponents = false, -- Hide default GTA HUD cash/stars/weapon components?
     hideCrosshair = false,      -- Hide builtin GTA crosshair while aiming?
     drunkAiming = false,        -- Enable "drunk" aiming?
     verticalRecoil = false,     -- Enable realistic vertical recoil while shooting?

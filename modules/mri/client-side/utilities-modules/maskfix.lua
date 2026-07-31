@@ -188,6 +188,6 @@
   CreateThread(function()
     while true do
       fixClothing()
-      Wait(10)
+      Wait(2000)
     end
   end)
