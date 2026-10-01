@@ -1,34 +1,44 @@
-fx_version "cerulean"
-game "gta5"
+fx_version 'cerulean'
+game 'gta5'
 
-description "Responsável por fazer as principais conexões entre os resources da mri Qbox"
-author "MRI QBOX Team"
-version "__VERSION__"
+name 'mri_Qbox'
+description 'Coleção de módulos da MRI Qbox (menus F9/F10, staff, VIP, combate, veículos e interação) com painel de configuração'
+author 'MRI QBOX Team'
+version '1.0.0'
 
-ui_page "web-side/index.html"
-
-lua54 "yes"
-
+-- Cada módulo é uma pasta em resources/modules/ com config.lua (registro e
+-- padrões), client.lua e server.lua. O núcleo (resources/core) carrega antes dos
+-- módulos: registra, lê o data/config.json e replica a config.
 shared_scripts {
-	"@ox_lib/init.lua",
-	"@qbx_core/modules/playerdata.lua",
-	"config.lua",
-	"**/**/config.lua",
-	"**/**/shared/*",
-}
-
-server_scripts {
-    "@oxmysql/lib/MySQL.lua",
-    "**/**/server/*",
-    "**/**/server-side/**/*",
+    '@ox_lib/init.lua',
+    'resources/core/shared.lua',
+    'resources/modules/**/config.lua',
 }
 
 client_scripts {
-	"**/**/client/*",
-	"**/**/client-side/**/*",
+    '@qbx_core/modules/playerdata.lua',
+    'resources/core/client/*.lua',
+    'resources/modules/**/client.lua',
 }
 
-files {
-	"web-side/*",
-	"web-side/**/*"
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'resources/core/server/*.lua',
+    'resources/modules/**/server.lua',
 }
+
+ui_page 'html/index.html'
+
+files {
+    'html/**/*',
+    -- dados que os módulos carregam por require no client
+    'resources/modules/**/recipes.lua',
+}
+
+dependencies {
+    'ox_lib',
+    'qbx_core',
+}
+
+lua54 'yes'
+use_experimental_fxv2_oal 'yes'

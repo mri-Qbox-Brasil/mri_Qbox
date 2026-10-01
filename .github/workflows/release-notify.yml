@@ -1,0 +1,47 @@
+# ATENCAO: arquivo gerado/injetado automaticamente nos espelhos publicos
+# pelo callable-mirror-release. Nao editar aqui: e sobrescrito a cada release.
+#
+# Wrapper fino — toda a logica esta no callable-release-notify.yml do repo
+# mri-Qbox-Brasil/workflows, como todo o resto da CI da org. Roda NO REPO
+# PUBLICO porque e ele que enxerga a release publicada e pode usar secrets de
+# org no plano Free.
+name: Release Notify
+
+# NAO adicione `release: [published]` aqui. Ja esteve, e o resultado era DUAS
+# notificacoes no Discord por release, com ~4s de diferenca: o mirror cria a
+# release com o GH_TOKEN (PAT do Infisical) e PAT dispara evento normalmente —
+# quem nao dispara e o GITHUB_TOKEN padrao. Entao o `release:published` rodava,
+# e logo depois o `gh workflow run` do mirror disparava o segundo run.
+#
+# O disparo explicito e a fonte unica: e determinista, passa a versao de
+# proposito e sobrevive a uma eventual troca do GH_TOKEN por GITHUB_TOKEN ou
+# token de App — cenario em que depender do evento apagaria a notificacao em
+# silencio, sem erro e sem log.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag da release (ex: v1.2.3)"
+        required: true
+
+jobs:
+  notify:
+    # ATENCAO: declarar `permissions` SUBSTITUI as permissoes padrao, nao soma.
+    # Todo escopo omitido vira `none`, e o callable pede mais do que isso — o
+    # run morre em startup_failure, sem job e sem log. Este bloco tem que
+    # espelhar o `permissions` do callable-release-notify.
+    permissions:
+      contents: read
+      models: read # GitHub Models (resumo por IA)
+      id-token: write # OIDC do Infisical
+    uses: mri-Qbox-Brasil/workflows/.github/workflows/callable-release-notify.yml@main
+    with:
+      version: ${{ github.event.inputs.version }}
+    secrets:
+      UPDATE_DISCORD_WEBHOOK: ${{ secrets.UPDATE_DISCORD_WEBHOOK }}
+      AI_API_KEY: ${{ secrets.AI_API_KEY }}
+      GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}
+      LOGO_MRIQBOX_URL: ${{ secrets.LOGO_MRIQBOX_URL }}
+      RESOURCE_MRIQBOX_URL: ${{ secrets.RESOURCE_MRIQBOX_URL }}
+      INVITE_DISCORD_URL: ${{ secrets.INVITE_DISCORD_URL }}
+      DOCS_MRIQBOX_URL: ${{ secrets.DOCS_MRIQBOX_URL }}
