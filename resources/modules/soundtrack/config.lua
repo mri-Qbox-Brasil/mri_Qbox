@@ -1,3 +1,15 @@
+-- Same 8 spots as ox_lib notify; bottom-left sits above the minimap.
+SOUNDTRACK_POSITIONS = {
+    { value = 'top-left', label = 'Em cima, à esquerda' },
+    { value = 'top', label = 'Em cima, no meio' },
+    { value = 'top-right', label = 'Em cima, à direita' },
+    { value = 'center-left', label = 'No meio, à esquerda' },
+    { value = 'center-right', label = 'No meio, à direita' },
+    { value = 'bottom-left', label = 'Embaixo, à esquerda (acima do minimapa)' },
+    { value = 'bottom', label = 'Embaixo, no meio' },
+    { value = 'bottom-right', label = 'Embaixo, à direita' },
+}
+
 Mri.module({
     id = 'soundtrack',
     label = 'Trilha sonora',
@@ -10,6 +22,8 @@ Mri.module({
         duckOnTalk = true,
         duckLevel = 35,
         nowPlaying = true,
+        toastPosition = 'bottom-left',
+        playerPosition = 'bottom-left',
         moments = {},
         places = {},
     },
@@ -18,7 +32,9 @@ Mri.module({
         { key = 'crossfadeMs', type = 'number', label = 'Tempo da troca de faixa', min = 0, max = 10000, step = 100, unit = 'ms' },
         { key = 'duckOnTalk', type = 'boolean', label = 'Abaixar quando o jogador fala', help = 'Voz e rádio' },
         { key = 'duckLevel', type = 'number', label = 'Volume falando', min = 0, max = 100, step = 5, unit = '%' },
-        { key = 'nowPlaying', type = 'boolean', label = 'Mostrar a faixa que começou', help = 'Cartão com capa, título e artista no canto esquerdo, acima do minimapa' },
+        { key = 'nowPlaying', type = 'boolean', label = 'Mostrar a faixa que começou', help = 'Aviso com capa, título e artista quando a música não diz como aparecer (display)' },
+        { key = 'toastPosition', type = 'select', label = 'Posição do aviso', options = SOUNDTRACK_POSITIONS },
+        { key = 'playerPosition', type = 'select', label = 'Posição do player', help = 'Player com play e pause, quando a música pede display = player', options = SOUNDTRACK_POSITIONS },
         {
             key = 'moments',
             type = 'moments',

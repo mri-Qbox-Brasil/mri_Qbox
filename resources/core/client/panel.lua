@@ -16,7 +16,7 @@ RegisterCommand('mriqbox', function()
         return
     end
     panelOpen = true
-    SetNuiFocus(true, true)
+    Mri.focus('panel', true)
     SendNUIMessage({ action = 'openPanel' })
 end, false)
 
@@ -40,7 +40,7 @@ RegisterNUICallback('panelClose', function(data, cb)
         return
     end
     panelOpen = false
-    SetNuiFocus(false, false)
+    Mri.focus('panel', false)
     SendNUIMessage({ action = 'closePanel' })
 end)
 

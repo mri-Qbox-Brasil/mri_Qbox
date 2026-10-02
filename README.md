@@ -166,7 +166,7 @@ Ligado ou desligado de fábrica entre parênteses.
 
 | Módulo | O que faz |
 |---|---|
-| Trilha sonora (ligado) | Player de música do servidor: scripts pedem música por prioridade e a trilha toca a mais importante, com troca suave. Abaixa quando o jogador fala. O volume segue o slider de efeitos sonoros das configurações de áudio do GTA (zerado, não toca). Ao trocar de faixa, mostra capa, título e artista no canto esquerdo, acima do minimapa. Opções: volume da trilha, tempo da troca, abaixar falando e quanto, aviso da faixa, os momentos e os locais |
+| Trilha sonora (ligado) | Player de música do servidor: scripts pedem música por prioridade e a trilha toca a mais importante, com troca suave. Abaixa quando o jogador fala. O volume segue o slider de efeitos sonoros das configurações de áudio do GTA (zerado, não toca). Ao trocar de faixa, mostra um aviso com capa, título e artista, ou um player com play e pause, numa das 8 posições das notificações do ox_lib. Opções: volume da trilha, tempo da troca, abaixar falando e quanto, aviso da faixa, posição do aviso e do player, os momentos e os locais |
 
 ### Mundo
 
@@ -445,9 +445,34 @@ TriggerClientEvent('mri_Qbox:soundtrack:stinger', source, { moment = 'alerta' })
 
 Opções do pedido: `volume` (0 a 1), `loop`, `fade` (ms) e `title` (nome no aviso).
 
+**Como aparece na tela** (no pedido ou no momento; sem nada, vale o painel):
+
+| Opção | Valores | Efeito |
+|---|---|---|
+| `display` | `toast` (padrão), `player`, `none` | Aviso que some em alguns segundos, player com play/pause e progresso que fica enquanto a música é a da vez, ou nada na tela |
+| `position` | `top`, `top-right`, `top-left`, `bottom`, `bottom-right`, `bottom-left`, `center-right`, `center-left` | As mesmas 8 posições das notificações do ox_lib. `bottom-left` fica acima do minimapa. Sem ela, a posição do aviso ou do player do painel |
+| `autoplay` | `true` (padrão), `false` | Só no player: com `false` ele aparece pausado, esperando o play |
+| `focus` | `true` | Só no pedido: o player ganha o mouse até a pessoa dar play, fechar (X) ou apertar ESC |
+
+```lua
+-- caixa de som: aparece no meio da tela, pausada, com o mouse pra pessoa dar play
+LocalPlayer.state:set('music:caixa', {
+    url = '@meu_script/sounds/radio.ogg',
+    priority = 'activity',
+    display = 'player',
+    autoplay = false,
+    focus = true,
+    position = 'center-right',
+}, false)
+```
+
+Pausar segura a vez da música: ela fica em silêncio sem pular pra outra de prioridade
+menor, e o play continua de onde parou. Sem `focus`, o player só mostra e não dá pra
+clicar (clicar na NUI tira o controle do personagem, então quem decide é o script).
+
 Os momentos se cadastram no painel (módulo Trilha sonora, campo **Momentos**): nome,
-uma ou mais faixas (com várias, sorteia uma a cada vez), volume e loop. Cada faixa tem
-um ▶ pra ouvir na hora.
+uma ou mais faixas (com várias, sorteia uma a cada vez), volume, loop, como aparece,
+posição e se o player começa tocando. Cada faixa tem um ▶ pra ouvir na hora.
 
 ### Locais da trilha (painel)
 

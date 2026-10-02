@@ -10,6 +10,12 @@ lib.callback.register('mri_Qbox:panel:isAdmin', function(source)
     return isAdmin(source)
 end)
 
+local MOMENT_DISPLAYS = { toast = true, player = true, none = true }
+local MOMENT_POSITIONS = {
+    top = true, ['top-right'] = true, ['top-left'] = true, bottom = true,
+    ['bottom-right'] = true, ['bottom-left'] = true, ['center-right'] = true, ['center-left'] = true,
+}
+
 -- Valor válido pro campo, ou nil (descartado).
 local function clean(field, value)
     local t = field.type
@@ -81,6 +87,9 @@ local function clean(field, value)
                         urls = urls,
                         volume = math.max(0, math.min(1, tonumber(m.volume) or 1)),
                         loop = m.loop ~= false,
+                        display = MOMENT_DISPLAYS[m.display] and m.display or nil,
+                        autoplay = m.autoplay ~= false,
+                        position = MOMENT_POSITIONS[m.position] and m.position or nil,
                     }
                     count = count + 1
                 end

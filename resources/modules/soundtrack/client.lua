@@ -13,15 +13,27 @@
 -- Faixa: `moment` (cadastrado no painel) ou `url`: link do YouTube, link direto
 -- (https://...ogg) ou arquivo de um resource no formato @resource/caminho (o resource
 -- precisa ter o arquivo no `files` do fxmanifest).
+--
+-- Como aparece (opcional, no pedido ou no momento):
+--   display = 'toast' (aviso que some), 'player' (fica com play/pause) ou 'none'
+--   autoplay = false   o player começa pausado, esperando o play
+--   position = uma das 8 do ox_lib (top, top-right, top-left, bottom, bottom-right,
+--              bottom-left, center-right, center-left); sem ela, a do painel
+--   focus = true       (só no pedido) o player ganha o mouse até a pessoa dar play ou fechar
 
 local PRIORITY = { ambient = 10, zone = 20, activity = 30, scene = 40, ui = 50 }
+local DISPLAYS = { toast = true, player = true, none = true }
+local POSITIONS = {
+    top = true, ['top-right'] = true, ['top-left'] = true, bottom = true,
+    ['bottom-right'] = true, ['bottom-left'] = true, ['center-right'] = true, ['center-left'] = true,
+}
 local MUSIC_PREFIX = 'music:'
 local DUCK_PREFIX = 'musicDuck:'
 
 local stack = {}   -- 'p:<id>' (jogador) ou 'g:<id>' (servidor inteiro) -> { priority, track, seq }
 local ducks = {}   -- 'p:<id>' -> nível (0..1)
 local seq = 0
-local playing      -- { key, url } do que a NUI está tocando
+local playing      -- { key, url, ui } do que a NUI está tocando
 local talking = false
 
 local function cfg() return Mri.cfg('soundtrack') end
@@ -67,7 +79,7 @@ local function normalizeUrl(url)
     return nil
 end
 
----@param opts table { moment? | url? | urls?, volume?, loop?, title? }
+---@param opts table { moment? | url? | urls?, volume?, loop?, title?, display?, autoplay?, position?, focus? }
 ---@return table|nil track
 local function resolveTrack(opts)
     local source = opts
@@ -92,6 +104,10 @@ local function resolveTrack(opts)
         volume = tonumber(opts.volume or source.volume) or 1.0,
         loop = (opts.loop == nil and source.loop ~= false) or opts.loop == true,
         title = opts.title or source.title,
+        display = DISPLAYS[opts.display] and opts.display or DISPLAYS[source.display] and source.display or nil,
+        autoplay = (opts.autoplay == nil and source.autoplay ~= false) or opts.autoplay == true,
+        position = POSITIONS[opts.position] and opts.position or POSITIONS[source.position] and source.position or nil,
+        focus = opts.focus == true,
     }
 end
 
@@ -115,6 +131,28 @@ local function level()
     return l
 end
 
+-- What the NUI shows for this entry: request/moment fields over the panel defaults.
+local function uiFor(entry)
+    local c = cfg()
+    local display = entry.track.display or (c.nowPlaying and 'toast' or 'none')
+    local position = entry.track.position
+        or (display == 'player' and c.playerPosition or c.toastPosition)
+    return {
+        display = display,
+        position = POSITIONS[position] and position or 'bottom-left',
+        autoplay = entry.track.autoplay ~= false,
+        focus = display == 'player' and entry.track.focus and not entry.focusDone or false,
+    }
+end
+
+local function uiKey(ui)
+    return ('%s|%s|%s|%s'):format(ui.display, ui.position, tostring(ui.autoplay), tostring(ui.focus))
+end
+
+local function setPlayerFocus(on)
+    Mri.focus('soundtrack', on)
+end
+
 -- Leva a NUI pro estado certo: faixa do topo da pilha (ou silêncio).
 local function refresh(fadeMs)
     local fade = fadeMs or tonumber(cfg().crossfadeMs) or 2200
@@ -126,11 +164,24 @@ local function refresh(fadeMs)
             nui('stop', { fade = fade })
             playing = nil
         end
+        setPlayerFocus(false)
         return
     end
-    if playing and playing.key == key and playing.url == entry.track.url then return end
-    playing = { key = key, url = entry.track.url }
-    nui('play', { track = entry.track, fade = fade, toast = cfg().nowPlaying == true })
+    local ui = uiFor(entry)
+    local signature = uiKey(ui)
+    if playing and playing.key == key and playing.url == entry.track.url then
+        -- same track: only how it is shown changed
+        if playing.ui ~= signature then
+            playing.ui = signature
+            nui('ui', ui)
+            setPlayerFocus(ui.focus)
+        end
+        return
+    end
+    playing = { key = key, url = entry.track.url, ui = signature }
+    ui.track, ui.fade = entry.track, fade
+    nui('play', ui)
+    setPlayerFocus(ui.focus)
 end
 
 local function sendLevel(fadeMs)
@@ -327,6 +378,16 @@ CreateThread(function()
     end
 end)
 
+-- ----- player: a pessoa deu play ou fechou (devolve o mouse) -------------
+
+RegisterNUICallback('soundtrackPlayerDone', function(_, cb)
+    cb({ success = true })
+    local _, entry = topEntry()
+    if entry then entry.focusDone = true end
+    refresh()
+    setPlayerFocus(false)
+end)
+
 -- ----- painel: posição, testar e mostrar no mundo -----------------------
 
 RegisterNUICallback('soundtrackCoords', function(_, cb)
@@ -373,5 +434,6 @@ end, function()
         if playing then nui('stop', { fade = 1500 }) end
         playing = nil
         stack, ducks = {}, {}
+        setPlayerFocus(false)
     end
 end)
