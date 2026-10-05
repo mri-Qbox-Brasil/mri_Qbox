@@ -565,17 +565,15 @@ precisa de script.
 
 ### Estoque de veículos (servidor)
 
-Com o nome antigo, pra quem já chamava o mri_Qvehicles (o mri_Qbox faz `provide` dele):
+| Export | Nome antigo | Descrição |
+|---|---|---|
+| `exports.mri_Qbox:GetVehicleStock(model)` | `GetStock` | Estoque do modelo (0 quando não há linha) |
+| `exports.mri_Qbox:GetVehicleStocks()` | `GetStocks` | Estoque de todos os modelos com linha na tabela |
+| `exports.mri_Qbox:TakeVehicleStock(model)` | `TakeStock` | Tira uma unidade. Retorna `false` sem estoque. Atômico no banco |
+| `exports.mri_Qbox:ReturnVehicleStock(model)` | `ReturnStock` | Devolve uma unidade (ex.: pagamento falhou) |
+| `exports.mri_Qbox:SetVehicleStock(model, stock)` | `SetStock` | Define o estoque |
 
-| Export | Descrição |
-|---|---|
-| `exports.mri_Qvehicles:GetStock(model)` | Estoque do modelo (0 quando não há linha) |
-| `exports.mri_Qvehicles:GetStocks()` | Estoque de todos os modelos com linha na tabela |
-| `exports.mri_Qvehicles:TakeStock(model)` | Tira uma unidade. Retorna `false` sem estoque. Atômico no banco |
-| `exports.mri_Qvehicles:ReturnStock(model)` | Devolve uma unidade (ex.: pagamento falhou) |
-| `exports.mri_Qvehicles:SetStock(model, stock)` | Define o estoque |
-
-O `qbx_vehicleshop` e o `mri_Qadmin` do MRI usam esses exports.
+O nome antigo (`exports.mri_Qvehicles:GetStock` e os outros) continua respondendo, pra quem já chamava o mri_Qvehicles (o mri_Qbox faz `provide` dele). Script novo usa o nome do mri_Qbox.
 
 ### GlobalState `UIColors`
 

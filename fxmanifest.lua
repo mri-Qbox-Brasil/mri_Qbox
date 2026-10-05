@@ -4,7 +4,7 @@ game 'gta5'
 name 'mri_Qbox'
 description 'Coleção de módulos da MRI Qbox (menus F9/F10, staff, VIP, combate, veículos e interação) com painel de configuração'
 author 'MRI QBOX Team'
-version '2.2.0'
+version '2.3.0'
 
 -- Cada módulo é uma pasta em resources/modules/ com config.lua (registro e
 -- padrões), client.lua e server.lua. O núcleo (resources/core) carrega antes dos

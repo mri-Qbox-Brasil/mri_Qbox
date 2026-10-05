@@ -314,17 +314,19 @@ local function setStock(model, stock)
     saveRow(model)
 end
 
--- Public contract kept under the old name (qbx_vehicleshop, mri_Qadmin and third parties call exports.mri_Qvehicles)
+-- old name -> new name; the old contract stays while qbx_vehicleshop and third parties call exports.mri_Qvehicles
 local stockExports = {
-    GetStock = getStock,
-    GetStocks = getStocks,
-    TakeStock = takeStock,
-    ReturnStock = returnStock,
-    SetStock = setStock,
+    GetStock = { 'GetVehicleStock', getStock },
+    GetStocks = { 'GetVehicleStocks', getStocks },
+    TakeStock = { 'TakeVehicleStock', takeStock },
+    ReturnStock = { 'ReturnVehicleStock', returnStock },
+    SetStock = { 'SetVehicleStock', setStock },
 }
 
-for name, fn in pairs(stockExports) do
-    AddEventHandler(('__cfx_export_mri_Qvehicles_%s'):format(name), function(setCB)
+for oldName, export in pairs(stockExports) do
+    local name, fn = export[1], export[2]
+    exports(name, fn)
+    AddEventHandler(('__cfx_export_mri_Qvehicles_%s'):format(oldName), function(setCB)
         setCB(fn)
     end)
 end
