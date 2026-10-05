@@ -26,6 +26,8 @@ Mri = Mri or {}
 ---@field category 'menus'|'admin'|'combat'|'vehicles'|'interaction'|'inventory'|'world'|'sound'
 ---@field description string
 ---@field restart? boolean ligar, desligar ou mudar campos só vale depois de reiniciar o mri_Qbox
+---@field required? boolean parte da base: sempre ligado, o painel não mostra o botão de desligar
+---@field page? string tela própria no painel no lugar do formulário de campos (ex.: 'vehicles')
 ---@field defaults table deve ter `enabled`
 ---@field fields? MriField[]
 
@@ -38,7 +40,7 @@ Mri.order = Mri.order or {}
 function Mri.module(def)
     assert(type(def.id) == 'string', 'Mri.module: id obrigatório')
     def.defaults = def.defaults or {}
-    if def.defaults.enabled == nil then def.defaults.enabled = true end
+    if def.defaults.enabled == nil or def.required then def.defaults.enabled = true end
     def.fields = def.fields or {}
     if not Mri.modules[def.id] then Mri.order[#Mri.order + 1] = def.id end
     Mri.modules[def.id] = def
@@ -59,7 +61,7 @@ function Mri.merge(id, saved)
     local def = Mri.modules[id]
     local out = copy(def.defaults)
     if type(saved) ~= 'table' then return out end
-    if type(saved.enabled) == 'boolean' then out.enabled = saved.enabled end
+    if type(saved.enabled) == 'boolean' and not def.required then out.enabled = saved.enabled end
     for _, field in ipairs(def.fields) do
         if saved[field.key] ~= nil then out[field.key] = copy(saved[field.key]) end
     end

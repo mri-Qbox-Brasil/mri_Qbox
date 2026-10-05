@@ -1,5 +1,4 @@
--- Comandos de admin e atalhos (/tpway, /god, /item, /tuning, /menu_admin,
--- /customs, /raycast).
+-- Comandos de admin e atalhos (/item, /tuning, /menu_admin, /customs, /raycast).
 -- Comandos ficam registrados (o FiveM não remove comando); desligado no painel,
 -- avisam e não fazem nada.
 local function guarded(fn)
@@ -13,23 +12,6 @@ local function guarded(fn)
         return fn(source, ...)
     end
 end
-
-lib.addCommand('tpway', {
-    help = "Teleporta você para a posição marcada no mapa",
-    -- restricted = "group.admin"
-}, guarded(function(source)
-    TriggerClientEvent("mri_Qbox:ExecuteCommand",source,"tpm")
-end))
-
-lib.addCommand('god', {
-    help = "Revive um jogador ou você mesmo",
-    -- restricted = "group.admin"
-    params = {
-        { name = 'id', help = "Digite o id do player", type = 'playerId', optional = true },
-    }
-}, guarded(function(source,args)
-    TriggerClientEvent("mri_Qbox:ExecuteCommand",source,"revive", args.id)
-end))
 
 lib.addCommand({'item'}, {
 	help = 'Dá o item para o player id',

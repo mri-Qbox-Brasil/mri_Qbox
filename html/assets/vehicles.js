@@ -1,0 +1,1 @@
+import{B as i,j as s,E as t,w as a,z as n,x as r,V as o}from"./index.js";function l(){const e=a();return n(e),r(e.requestClose,e.initialized),e.initialized?s.jsx("div",{className:"fixed inset-0",children:s.jsx(o,{})}):null}i.createRoot(document.getElementById("root")).render(s.jsx(t.StrictMode,{children:s.jsx(l,{})}));

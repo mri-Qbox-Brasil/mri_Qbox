@@ -146,6 +146,8 @@ local function snapshot()
             category = def.category,
             description = def.description,
             restart = def.restart == true,
+            required = def.required == true,
+            page = def.page,
             fields = def.fields,
             values = values,
             defaults = defaults,
@@ -166,7 +168,7 @@ lib.callback.register('mri_Qbox:panel:save', function(source, id, values)
 
     -- (sem `cond and x or y`: com x = false ele sempre caía no valor atual e desligar não gravava)
     local enabled = values.enabled
-    if type(enabled) ~= 'boolean' then enabled = Mri.cfg(id).enabled == true end
+    if type(enabled) ~= 'boolean' or def.required then enabled = Mri.cfg(id).enabled == true end
     local saved = { enabled = enabled }
     for _, field in ipairs(def.fields) do
         local value = clean(field, values[field.key])

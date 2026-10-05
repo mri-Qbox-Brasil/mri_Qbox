@@ -18,9 +18,10 @@ pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, s
 8. [Menus F9 e F10](#menus-f9-e-f10)
 9. [Staff](#staff)
 10. [VIP](#vip)
-11. [Integrações](#integrações)
-12. [Entrypoints para outros recursos](#entrypoints-para-outros-recursos)
-13. [Estrutura de arquivos](#estrutura-de-arquivos)
+11. [Veículos: cadastro e estoque](#veículos-cadastro-e-estoque)
+12. [Integrações](#integrações)
+13. [Entrypoints para outros recursos](#entrypoints-para-outros-recursos)
+14. [Estrutura de arquivos](#estrutura-de-arquivos)
 
 ---
 
@@ -29,13 +30,13 @@ pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, s
 | Recurso | Obrigatório | Observação |
 |---|---|---|
 | `ox_lib` | Sim | Menus, comandos, callbacks, keybinds, principals e o `/uiconfig` do tema |
-| `qbx_core` | Sim | `QBX.PlayerData`, jobs, gangs e metadata (staff, VIP) |
-| `oxmysql` | Sim | Lista de personagens dos painéis de staff e VIP |
+| `qbx_core` | Sim | `QBX.PlayerData`, jobs, gangs e metadata (staff, VIP); o fork MRI, com a API de veículos em runtime |
+| `oxmysql` | Sim | Lista de personagens dos painéis de staff e VIP e a tabela `vehicles_data` |
 | `ox_inventory` | Sim | Peso, drop de itens, craft arrastando, carregar nos braços, pegar do chão, `/viewallitems` |
 | `ox_target` | Sim | Lixeiras, entrar pela porta, bebedouros, pegar do chão |
 | `qbx_management` | Para os painéis | Jogadores próximos nos painéis de staff e VIP e o `/menu <job>` |
 | `mri_Qjobsystem` | Não | Mostra "Gerenciar Emprego" e "Gerenciar Gangue" no F9 pra chefe e recrutador. Sem ele, essas duas opções só não aparecem |
-| `mri_Qadmin` | Não | Aba "MRI Qbox" com o painel embutido; destino preferido de `setPlayerJob`/`setPlayerGang` |
+| `mri_Qadmin` | Não | Abas "MRI Qbox" (painel) e "Veículos"; destino preferido de `setPlayerJob`/`setPlayerGang` |
 | `ps-adminmenu` | Não | Alternativa de `setPlayerJob`/`setPlayerGang` sem o mri_Qadmin |
 | `mri_Qvinewood` | Não | Entrada "Vinewood" no menu de gerenciamento |
 
@@ -56,7 +57,9 @@ Os menus F9/F10 disparam comandos de outros recursos (`doorlock`, `blip`, `bau`,
 3. Libere a ACE de admin (ver [Permissões](#permissões-ace)).
 4. Abra o `/mriqbox` e ligue os módulos que quiser. Os valores ficam em `data/config.json`.
 5. Não há SQL para importar: staff e VIP ficam na metadata do personagem
-   (`players.metadata`), que o `qbx_core` já cria.
+   (`players.metadata`), que o `qbx_core` já cria, e a tabela `vehicles_data` é criada
+   sozinha.
+6. Vindo do mri_Qvehicles: tire ele do servidor (ver [Vindo do mri_Qvehicles](#vindo-do-mri_qvehicles)).
 
 ---
 
@@ -65,6 +68,7 @@ Os menus F9/F10 disparam comandos de outros recursos (`doorlock`, `blip`, `bau`,
 | Permissão | Libera |
 |---|---|
 | `mri_Qbox.admin` ou `command` | O painel `/mriqbox` e a aba no mri_Qadmin |
+| `mri_Qvehicles.admin`, `mri_Qbox.admin` ou `command` | A tela de veículos (aba "Veículos" no mri_Qadmin) |
 | `group.admin` | Comandos de admin (`/item`, `/staff`, `/vipadm`...) e os eventos dos painéis de staff e VIP |
 
 ```
@@ -84,9 +88,11 @@ recebe o principal com o nome do tier. Não é preciso mexer no `server.cfg` pra
 
 - **Lateral:** categorias (Menus, Admin, Combate, Veículos, Interação, Inventário, Mundo, Som) e
   busca por nome ou descrição.
-- **Lista:** cada módulo com descrição e o liga/desliga na própria linha.
+- **Lista:** cada módulo com descrição e o liga/desliga na própria linha. Módulo que faz
+  parte da base mostra o selo "Base" no lugar do liga/desliga: fica sempre ligado.
 - **Detalhe:** as opções do módulo (número com unidade, texto, seleção, listas, tabela
-  chave e valor, JSON), "Restaurar padrão", "Descartar" e "Salvar".
+  chave e valor, JSON), "Restaurar padrão", "Descartar" e "Salvar". O módulo Veículos abre
+  a tela de cadastro inteira, com "Módulos" pra voltar.
 
 Tudo vale na hora pra todos os jogadores:
 
@@ -114,7 +120,8 @@ Ligado ou desligado de fábrica entre parênteses.
 | Staff (ligado) | Cargos de staff gravados no personagem e aplicados como ACE ao logar |
 | VIP (desligado) | Tiers com ACE, peso do inventário e salário periódico. Opções: intervalo do salário, conta, símbolo da moeda e os tiers (JSON) |
 | Setar job e gang (ligado) | Diálogos de job/gang e cargo (`setPlayerJob`, `setPlayerGang`, `/setargang`) |
-| Comandos de admin (ligado) | `/tpway`, `/god`, `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
+| Comandos de admin (ligado) | `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
+| Atalhos de comando (ligado) | Outro nome pra um comando que já existe, editado no painel (atalho -> comando). Já vem com `/tpto` -> `/tp`, `/tpway` -> `/tpm` e `/god` -> `/revive`, pra quem vem do creative ou vRP. Vale a permissão do comando original; atalho com nome de comando que já existe ou que aponta pra outro atalho é ignorado, com aviso no console |
 | Ver todos os itens (ligado) | `/viewallitems` |
 | Identificadores no console (ligado) | Mostra os identificadores de quem conecta |
 | Tocar cutscene (ligado) | `/cutscene <nome>` |
@@ -136,6 +143,7 @@ Ligado ou desligado de fábrica entre parênteses.
 
 | Módulo | O que faz |
 |---|---|
+| Veículos (sempre ligado) | Cadastro, edição e estoque dos veículos sem reiniciar. Ver [Veículos: cadastro e estoque](#veículos-cadastro-e-estoque) |
 | Drift no Shift (ligado) | Perde aderência segurando Shift até a velocidade máxima (padrão 80 km/h) |
 | Pontos de drift (desligado) | Contador de pontos de drift na tela |
 | Roda solta em batida (desligado) | Roda solta por força do impacto ou por velocidade da colisão |
@@ -184,8 +192,8 @@ Ligado ou desligado de fábrica entre parênteses.
 | Comando | Permissão | Descrição |
 |---|---|---|
 | `/mriqbox` | `mri_Qbox.admin` ou `command` | Abre o painel de configuração |
-| `/tpway` | Nenhuma | Teleporta pro waypoint do mapa |
-| `/god [id]` | Nenhuma | Revive o jogador informado ou você mesmo |
+| `/tpway` | A do `/tpm` | Atalho de `/tpm`: teleporta pro waypoint do mapa |
+| `/god [id]` | A do `/revive` | Atalho de `/revive`: revive o jogador informado ou você mesmo |
 | `/menu <job>` | Nenhuma | Abre o boss menu do job (`qbx_management`) |
 | `/cutscene <nome>` | Nenhuma | Toca uma cutscene do jogo |
 | `/setargang <id>` | Nenhuma | Diálogo de setar gangue do jogador |
@@ -200,8 +208,9 @@ Ligado ou desligado de fábrica entre parênteses.
 | `/vipadm <id> <add\|rem> [tier]` | `group.admin` | Dá ou tira um tier de VIP |
 | `/cinematic` | `group.admin` | Toca a cinematic de boas-vindas pra quem digitou |
 
-Cada comando pertence a um módulo e só faz algo com o módulo ligado. `/god`, `/tpway`,
-`/setargang`, `/cutscene` e `/menu` não têm restrição de permissão.
+Cada comando pertence a um módulo e só faz algo com o módulo ligado. `/setargang`,
+`/cutscene` e `/menu` não têm restrição de permissão. `/tpway` e `/god` são atalhos
+(módulo Atalhos de comando) e seguem a permissão do comando que chamam.
 
 ---
 
@@ -269,13 +278,76 @@ Tiers no painel, em JSON:
 }
 ```
 
+## Veículos: cadastro e estoque
+
+Módulo da base (sempre ligado, substitui o antigo mri_Qvehicles). Cadastra, edita e controla
+o estoque dos veículos sem editar o `shared/vehicles.lua` do qbx_core e sem reiniciar.
+
+- **Onde abre:** aba **Veículos** do mri_Qadmin, ou `/mriqbox` > Veículos > Veículos.
+- **Adicionar** veículos (carros addon) com nome, marca, preço, categoria, tipo e estoque.
+- **Modelos fora da lista:** mostra os veículos que o jogo conhece (base e packs rodando) e
+  que não estão na lista do qbx_core. "Cadastrar" abre o formulário já com o nome, a marca e
+  o tipo que o jogo dá. É o antigo `/models`, agora na tela.
+- **Editar veículos do jogo:** só os campos alterados ficam salvos; o resto segue o
+  `shared/vehicles.lua`, então atualizações do Qbox continuam chegando.
+- **Remover e restaurar:** veículo do jogo removido fica no filtro "Removidos" e volta ao
+  original com um clique.
+- **Aviso de modelo ausente:** marca veículos cujo modelo não existe no jogo (nome errado ou
+  pack do carro parado).
+- Tudo vale na hora pra concessionária, garagem, painel admin e demais scripts que usam a
+  lista do qbx_core. Com a tela aberta, compras e mudanças de outro admin atualizam sozinhas.
+
+Precisa do `qbx_core` com a API de veículos em runtime (`UpsertVehicleData` e
+`RemoveVehicleData`, na pasta `mri/` do fork MRI).
+
+### Tabela `vehicles_data`
+
+Criada ou ajustada sozinha no start.
+
+| Coluna | Significado |
+|---|---|
+| `model` | nome de spawn do veículo |
+| `stock` | estoque da concessionária |
+| `name`, `brand`, `price`, `category`, `type` | `NULL` = valor do `shared/vehicles.lua`; preenchido = editado pelo painel |
+| `removed` | veículo do jogo removido pelo painel |
+
+A versão antiga do `qbx_vehicleshop` gravava uma cópia completa de cada veículo nessa
+tabela. No primeiro start, o estoque fica, os campos iguais ao `shared/vehicles.lua` viram
+`NULL` e os diferentes ficam como edição. Nada é apagado.
+
+### Vindo do mri_Qvehicles
+
+Tire o `mri_Qvehicles` do servidor (pasta e `ensure`). O mri_Qbox faz `provide` dele e
+continua com a mesma tabela, a mesma permissão (`mri_Qvehicles.admin`), a mesma aba no
+mri_Qadmin e os mesmos exports. Se os dois estiverem rodando juntos, o módulo de veículos do
+mri_Qbox não sobe e avisa no console.
+
+### Para scripts que guardam a lista de veículos
+
+Quem pega a lista uma vez (`exports.qbx_core:GetVehiclesByName()` ou
+`GetCoreObject().Shared.Vehicles`) recebe uma cópia. Pra acompanhar as mudanças do painel,
+escute o evento do qbx_core:
+
+```lua
+-- server
+AddEventHandler('qbx_core:server:onVehicleUpdate', function(model, vehicle)
+    VEHICLES[model] = vehicle -- vehicle nil = removido
+end)
+
+-- client
+RegisterNetEvent('qbx_core:client:onVehicleUpdate', function(model, vehicle)
+    VEHICLES[model] = vehicle
+end)
+```
+
 ---
 
 ## Integrações
 
 ### mri_Qadmin
 
-O painel aparece como a aba "MRI Qbox" (plugin). `setPlayerJob` e `setPlayerGang` usam os
+O painel aparece como a aba "MRI Qbox" e a tela de veículos como a aba "Veículos" (dois
+plugins do mesmo resource). `setPlayerJob` e `setPlayerGang` usam os
 eventos `mri_Qadmin:server:SetJob`/`SetGang` quando ele está iniciado; sem ele, caem no
 `ps-adminmenu`.
 
@@ -491,6 +563,20 @@ precisa de script.
 - Usa as zonas do ox_lib: só acordam ao entrar e sair. Cada jogador roda os próprios
   locais, então ninguém dispara a música de outro.
 
+### Estoque de veículos (servidor)
+
+Com o nome antigo, pra quem já chamava o mri_Qvehicles (o mri_Qbox faz `provide` dele):
+
+| Export | Descrição |
+|---|---|
+| `exports.mri_Qvehicles:GetStock(model)` | Estoque do modelo (0 quando não há linha) |
+| `exports.mri_Qvehicles:GetStocks()` | Estoque de todos os modelos com linha na tabela |
+| `exports.mri_Qvehicles:TakeStock(model)` | Tira uma unidade. Retorna `false` sem estoque. Atômico no banco |
+| `exports.mri_Qvehicles:ReturnStock(model)` | Devolve uma unidade (ex.: pagamento falhou) |
+| `exports.mri_Qvehicles:SetStock(model, stock)` | Define o estoque |
+
+O `qbx_vehicleshop` e o `mri_Qadmin` do MRI usam esses exports.
+
 ### GlobalState `UIColors`
 
 Cores de status que os recursos MRI leem:
@@ -506,7 +592,7 @@ Cores de status que os recursos MRI leem:
 ```
 mri_Qbox/
 ├── data/config.json            # valores salvos pelo painel
-├── html/                       # NUI (painel e contador de drift)
+├── html/                       # NUI (painel, contador de drift, trilha) e vehicles.html (aba Veículos)
 ├── resources/
 │   ├── core/                   # núcleo: registro dos módulos, config, painel, exports
 │   └── modules/<módulo>/       # um módulo por pasta: config.lua, client.lua, server.lua

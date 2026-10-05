@@ -6,14 +6,6 @@ local function guarded(fn)
     end
 end
 
-RegisterNetEvent("mri_Qbox:ExecuteCommand", guarded(function(command,args)
-    if not args then
-        ExecuteCommand(command)
-    else
-        ExecuteCommand(command.." "..args)
-    end
-end))
-
 -- RegisterNetEvent("vehtuning", function()
 lib.callback.register("vehtuning", guarded(function()
     local ped = PlayerPedId()
@@ -68,6 +60,12 @@ lib.callback.register("vehtuning", guarded(function()
         -- SetVehicleNeonLightEnabled(vehicle,3,true)
         -- SetVehicleNeonLightsColour(vehicle,255,255,255)
     end
+end))
+
+lib.callback.register('mri_Qbox:customs:client', guarded(function()
+    if GetResourceState('qbx_customs') ~= 'started' then return end
+    lib.hideTextUI()
+    exports.qbx_customs:OpenMenu()
 end))
 
 -- RegisterCommand("addskill", function(source, args)
