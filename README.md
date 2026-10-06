@@ -122,7 +122,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | Setar job e gang (ligado) | Diálogos de job/gang e cargo (`setPlayerJob`, `setPlayerGang`, `/setargang`) |
 | Comandos de admin (ligado) | `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
 | Atalhos de comando (ligado) | Outro nome pra um comando que já existe, editado no painel (atalho -> comando). Já vem com `/tpto` -> `/tp`, `/tpway` -> `/tpm` e `/god` -> `/revive`, pra quem vem do creative ou vRP. Vale a permissão do comando original; atalho com nome de comando que já existe ou que aponta pra outro atalho é ignorado, com aviso no console |
-| Passaporte (ligado) | Número fixo de cada personagem, como o passaporte do creative e do vRP: é o `id` da tabela `players`, que não muda quando o jogador reconecta e não é reaproveitado. Fica no statebag `passport` do jogador (a HUD e outros scripts leem dali). Opção: **Comandos usam o passaporte** (desligada), que faz todo comando com jogador feito no `lib.addCommand` (`/tp`, `/revive`, `/kick`, `/ban`...) pedir o passaporte no lugar do id do servidor; `me` continua valendo |
+| Passaporte (ligado) | Número fixo de cada personagem, como o passaporte do creative e do vRP: é o `id` da tabela `players`, que não muda quando o jogador reconecta e não é reaproveitado. Fica no statebag `passport` do jogador (a HUD e outros scripts leem dali). Opção **Primeiro passaporte** (1): personagens novos começam nele e os números abaixo ficam reservados pra dar ou vender. O botão **Gerenciar** (e a aba **Passaportes** do mri_Qadmin, com o módulo ligado) abre a lista de personagens com o passaporte de cada um, busca e troca de passaporte (só número reservado ou livre abaixo do próximo; ACE `mri_Qbox.admin` ou `command`). Opção: **Comandos usam o passaporte** (desligada), que faz todo comando com jogador feito no `lib.addCommand` (`/tp`, `/revive`, `/kick`, `/ban`...) pedir o passaporte no lugar do id do servidor; `me` continua valendo |
 | Ver todos os itens (ligado) | `/viewallitems` |
 | Identificadores no console (ligado) | Mostra os identificadores de quem conecta |
 | Tocar cutscene (ligado) | `/cutscene <nome>` |
@@ -583,6 +583,7 @@ O nome antigo (`exports.mri_Qvehicles:GetStock` e os outros) continua respondend
 | `exports.mri_Qbox:GetPlayerPassport(source)` | Passaporte do jogador online (`nil` sem personagem carregado) |
 | `exports.mri_Qbox:GetPlayerByPassport(passport)` | `source` do jogador online com esse passaporte, ou `nil` |
 | `exports.mri_Qbox:GetCitizenIdByPassport(passport)` | `citizenid` do personagem, mesmo offline |
+| `exports.mri_Qbox:SetCitizenPassport(citizenId, passport)` | Troca o passaporte do personagem, mesmo offline. Devolve `true` ou `false, motivo`: `invalid`, `not_found`, `taken` (já é de outro) ou `not_reserved` (número igual ou acima do próximo passaporte, que um personagem novo ainda vai pegar) |
 
 No cliente e em outros resources, o passaporte está em `Player(source).state.passport` (no próprio cliente, `LocalPlayer.state.passport`). Serve pra mostrar; pra decidir alguma coisa no servidor, use os exports, porque o cliente consegue escrever no próprio statebag.
 

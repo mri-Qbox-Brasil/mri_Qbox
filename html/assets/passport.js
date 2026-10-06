@@ -1,0 +1,1 @@
+import{R as t,j as s,w as i,q as r,v as a,s as o}from"./index.js";import{P as n}from"./PassportPanel.js";function d(){const e=r();return a(e),o(e.requestClose,e.initialized),e.initialized?s.jsx("div",{className:"fixed inset-0",children:s.jsx(n,{})}):null}t.createRoot(document.getElementById("root")).render(s.jsx(i.StrictMode,{children:s.jsx(d,{})}));
