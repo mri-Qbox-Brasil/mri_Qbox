@@ -583,7 +583,8 @@ O nome antigo (`exports.mri_Qvehicles:GetStock` e os outros) continua respondend
 | `exports.mri_Qbox:GetPlayerPassport(source)` | Passaporte do jogador online (`nil` sem personagem carregado) |
 | `exports.mri_Qbox:GetPlayerByPassport(passport)` | `source` do jogador online com esse passaporte, ou `nil` |
 | `exports.mri_Qbox:GetCitizenIdByPassport(passport)` | `citizenid` do personagem, mesmo offline |
-| `exports.mri_Qbox:SetCitizenPassport(citizenId, passport)` | Troca o passaporte do personagem, mesmo offline. Devolve `true` ou `false, motivo`: `invalid`, `not_found`, `taken` (já é de outro) ou `not_reserved` (número igual ou acima do próximo passaporte, que um personagem novo ainda vai pegar) |
+| `exports.mri_Qbox:SetCitizenPassport(citizenId, passport)` | Troca o passaporte do personagem, mesmo offline. Devolve `true` ou `false, motivo`: `disabled` (módulo desligado), `invalid`, `not_found`, `taken` (já é de outro) ou `not_reserved` (número igual ou acima do próximo passaporte, que um personagem novo ainda vai pegar) |
+| `exports.mri_Qbox:IsPassportEnabled()` | `true` com o módulo ligado. Pra acompanhar sem perguntar, ouça a chave `GlobalState['mri:passportEnabled']` com `AddStateBagChangeHandler` |
 
 No cliente e em outros resources, o passaporte está em `Player(source).state.passport` (no próprio cliente, `LocalPlayer.state.passport`). Serve pra mostrar; pra decidir alguma coisa no servidor, use os exports, porque o cliente consegue escrever no próprio statebag.
 

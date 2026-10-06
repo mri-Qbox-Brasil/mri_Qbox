@@ -1,5 +1,7 @@
 -- Passport = players.id, kept by qbx_core but never loaded; ox_lib resolves playerId params through it
 local COMMANDS_KEY = 'mri:passportCommands'
+-- true while the module is on; other resources (mri_Qadmin) show passports only then
+local ENABLED_KEY = 'mri:passportEnabled'
 local ADMIN_ACES = { 'mri_Qbox.admin', 'command' }
 
 local running = false
@@ -83,8 +85,10 @@ Mri.lifecycle('passport', function(cfg)
         assign(player.PlayerData.source)
     end
     registerPlugin()
+    GlobalState[ENABLED_KEY] = true
 end, function()
     running = false
+    GlobalState[ENABLED_KEY] = false
     if GetResourceState('mri_Qadmin') == 'started' then pcall(function() exports['mri_Qadmin']:UnregisterPlugin('passport') end) end
     GlobalState[COMMANDS_KEY] = false
     for source in pairs(passports) do
@@ -120,8 +124,9 @@ end
 -- only reserved or freed numbers: one above the counter would later collide with a new character
 ---@param citizenId string
 ---@param passport integer
----@return boolean ok, 'invalid'|'not_found'|'taken'|'not_reserved'? reason
+---@return boolean ok, 'disabled'|'invalid'|'not_found'|'taken'|'not_reserved'? reason
 local function setCitizenPassport(citizenId, passport)
+    if not running then return false, 'disabled' end
     passport = tonumber(passport)
     if type(citizenId) ~= 'string' or not passport or passport < 1 or passport % 1 ~= 0 then return false, 'invalid' end
     local row = MySQL.single.await('SELECT id, (SELECT MAX(id) FROM players) AS maxId FROM players WHERE citizenid = ?', { citizenId })
@@ -133,7 +138,7 @@ local function setCitizenPassport(citizenId, passport)
     local ok, changed = pcall(MySQL.update.await, 'UPDATE players SET id = ? WHERE citizenid = ?', { passport, citizenId })
     if not ok or changed ~= 1 then return false, 'taken' end
     local player = exports.qbx_core:GetPlayerByCitizenId(citizenId)
-    if player and running then setPassport(player.PlayerData.source, passport) end
+    if player then setPassport(player.PlayerData.source, passport) end
     return true
 end
 
@@ -187,3 +192,4 @@ exports('GetPlayerPassport', getPlayerPassport)
 exports('GetPlayerByPassport', getPlayerByPassport)
 exports('GetCitizenIdByPassport', getCitizenIdByPassport)
 exports('SetCitizenPassport', setCitizenPassport)
+exports('IsPassportEnabled', function() return running end)
