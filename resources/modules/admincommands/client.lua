@@ -63,9 +63,11 @@ lib.callback.register("vehtuning", guarded(function()
 end))
 
 lib.callback.register('mri_Qbox:customs:client', guarded(function()
-    if GetResourceState('qbx_customs') ~= 'started' then return end
+    -- By its own name first: a provided alias only reaches clients that joined after it started.
+    local shop = GetResourceState('mri_Qcustoms') == 'started' and 'mri_Qcustoms' or GetResourceState('qbx_customs') == 'started' and 'qbx_customs'
+    if not shop then return end
     lib.hideTextUI()
-    exports.qbx_customs:OpenMenu()
+    exports[shop]:OpenMenu()
 end))
 
 -- RegisterCommand("addskill", function(source, args)

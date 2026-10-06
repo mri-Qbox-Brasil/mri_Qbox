@@ -122,6 +122,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | Setar job e gang (ligado) | Diálogos de job/gang e cargo (`setPlayerJob`, `setPlayerGang`, `/setargang`) |
 | Comandos de admin (ligado) | `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
 | Atalhos de comando (ligado) | Outro nome pra um comando que já existe, editado no painel (atalho -> comando). Já vem com `/tpto` -> `/tp`, `/tpway` -> `/tpm` e `/god` -> `/revive`, pra quem vem do creative ou vRP. Vale a permissão do comando original; atalho com nome de comando que já existe ou que aponta pra outro atalho é ignorado, com aviso no console |
+| Passaporte (ligado) | Número fixo de cada personagem, como o passaporte do creative e do vRP: é o `id` da tabela `players`, que não muda quando o jogador reconecta e não é reaproveitado. Fica no statebag `passport` do jogador (a HUD e outros scripts leem dali). Opção: **Comandos usam o passaporte** (desligada), que faz todo comando com jogador feito no `lib.addCommand` (`/tp`, `/revive`, `/kick`, `/ban`...) pedir o passaporte no lugar do id do servidor; `me` continua valendo |
 | Ver todos os itens (ligado) | `/viewallitems` |
 | Identificadores no console (ligado) | Mostra os identificadores de quem conecta |
 | Tocar cutscene (ligado) | `/cutscene <nome>` |
@@ -574,6 +575,16 @@ precisa de script.
 | `exports.mri_Qbox:SetVehicleStock(model, stock)` | `SetStock` | Define o estoque |
 
 O nome antigo (`exports.mri_Qvehicles:GetStock` e os outros) continua respondendo, pra quem já chamava o mri_Qvehicles (o mri_Qbox faz `provide` dele). Script novo usa o nome do mri_Qbox.
+
+### Passaporte (servidor)
+
+| Export | Descrição |
+|---|---|
+| `exports.mri_Qbox:GetPlayerPassport(source)` | Passaporte do jogador online (`nil` sem personagem carregado) |
+| `exports.mri_Qbox:GetPlayerByPassport(passport)` | `source` do jogador online com esse passaporte, ou `nil` |
+| `exports.mri_Qbox:GetCitizenIdByPassport(passport)` | `citizenid` do personagem, mesmo offline |
+
+No cliente e em outros resources, o passaporte está em `Player(source).state.passport` (no próprio cliente, `LocalPlayer.state.passport`). Serve pra mostrar; pra decidir alguma coisa no servidor, use os exports, porque o cliente consegue escrever no próprio statebag.
 
 ### GlobalState `UIColors`
 
