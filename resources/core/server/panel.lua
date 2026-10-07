@@ -97,6 +97,21 @@ local function clean(field, value)
             if count >= 200 then break end
         end
         return out
+    elseif t == 'traffic' then
+        -- models on in the traffic module: only names its groups know
+        if type(value) ~= 'table' then return nil end
+        local known = {}
+        for _, group in ipairs(field.groups or {}) do
+            for _, model in ipairs(group.models) do known[model[1]] = true end
+        end
+        local out, seen = {}, {}
+        for _, model in ipairs(value) do
+            if known[model] and not seen[model] then
+                out[#out + 1] = model
+                seen[model] = true
+            end
+        end
+        return out
     elseif t == 'places' then
         -- locais da trilha sonora: círculo no mapa que toca um momento
         if type(value) ~= 'table' then return nil end

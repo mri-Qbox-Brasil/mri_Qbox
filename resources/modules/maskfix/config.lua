@@ -4,6 +4,6 @@ Mri.module({
     category = 'world',
     description = 'Encolhe cabeça e traços do rosto enquanto a máscara pede, pra não atravessar.',
     defaults = {
-        enabled = true,
+        enabled = false,
     },
 })

@@ -36,8 +36,7 @@ pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, s
 | `ox_target` | Sim | Lixeiras, entrar pela porta, bebedouros, pegar do chão |
 | `qbx_management` | Para os painéis | Jogadores próximos nos painéis de staff e VIP e o `/menu <job>` |
 | `mri_Qjobsystem` | Não | Mostra "Gerenciar Emprego" e "Gerenciar Gangue" no F9 pra chefe e recrutador. Sem ele, essas duas opções só não aparecem |
-| `mri_Qadmin` | Não | Abas "MRI Qbox" (painel) e "Veículos"; destino preferido de `setPlayerJob`/`setPlayerGang` |
-| `ps-adminmenu` | Não | Alternativa de `setPlayerJob`/`setPlayerGang` sem o mri_Qadmin |
+| `mri_Qadmin` | Não | Abas "MRI Qbox" (painel) e "Veículos" |
 | `mri_Qvinewood` | Não | Entrada "Vinewood" no menu de gerenciamento |
 
 Os menus F9/F10 disparam comandos de outros recursos (`doorlock`, `blip`, `bau`, `npc`,
@@ -119,7 +118,6 @@ Ligado ou desligado de fábrica entre parênteses.
 | Menus F9 e F10 (ligado) | Menu do jogador e de administração. Os exports pra outros recursos continuam valendo com ele desligado |
 | Staff (ligado) | Cargos de staff gravados no personagem e aplicados como ACE ao logar |
 | VIP (desligado) | Tiers com ACE, peso do inventário e salário periódico. Opções: intervalo do salário, conta, símbolo da moeda e os tiers (JSON) |
-| Setar job e gang (ligado) | Diálogos de job/gang e cargo (`setPlayerJob`, `setPlayerGang`, `/setargang`) |
 | Comandos de admin (ligado) | `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
 | Atalhos de comando (ligado) | Outro nome pra um comando que já existe, editado no painel (atalho -> comando). Já vem com `/tpto` -> `/tp`, `/tpway` -> `/tpm` e `/god` -> `/revive`, pra quem vem do creative ou vRP. Vale a permissão do comando original; atalho com nome de comando que já existe ou que aponta pra outro atalho é ignorado, com aviso no console |
 | Passaporte (ligado) | Número fixo de cada personagem, como o passaporte do creative e do vRP: é o `id` da tabela `players`, que não muda quando o jogador reconecta e não é reaproveitado. Fica no statebag `passport` do jogador (a HUD e outros scripts leem dali). Opção **Primeiro passaporte** (1): personagens novos começam nele e os números abaixo ficam reservados pra dar ou vender. O botão **Gerenciar** (e a aba **Passaportes** do mri_Qadmin, com o módulo ligado) abre a lista de personagens com o passaporte de cada um, busca e troca de passaporte (só número reservado ou livre abaixo do próximo; ACE `mri_Qbox.admin` ou `command`). Opção: **Comandos usam o passaporte** (desligada), que faz todo comando com jogador feito no `lib.addCommand` (`/tp`, `/revive`, `/kick`, `/ban`...) pedir o passaporte no lugar do id do servidor; `me` continua valendo |
@@ -181,10 +179,11 @@ Ligado ou desligado de fábrica entre parênteses.
 
 | Módulo | O que faz |
 |---|---|
-| Cinematic de boas-vindas (ligado) | Planos da cidade com legenda (`mth-cinematic:start` ou `/cinematic`) |
 | Sem capacete automático (ligado) | O personagem não põe capacete sozinho na moto |
-| Máscara sem atravessar o rosto (ligado) | Encolhe cabeça e traços enquanto a máscara pede |
+| Máscara sem atravessar o rosto (desligado) | Encolhe cabeça e traços enquanto a máscara pede |
 | Postes indestrutíveis (ligado) | Postes, semáforos e hidrantes não quebram (modelos no painel) |
+| Densidade (ligado) | Quantidade de carros estacionados, no trânsito e aleatórios, pedestres e NPCs de cenário (0 a 1, padrão 0.8). A opção Cidade vazia tira todos de uma vez. NPCs de gangue, polícia, bombeiros, médicos e presos não atacam o jogador. Sem veículos parados no aeroporto, na base militar e em mais dois pontos. Substitui o qbx_density |
+| Trânsito (ligado) | Escolhe no painel quais carros e motos aparecem no trânsito, grupo por grupo (bairros pobres, classe média, ricos, centro, rodovias, interior e motos), entre os do GTA e os das DLCs. Muda na hora: o carro desligado para de aparecer e os que já estão na rua somem com o tempo. Vem com a lista de cara brasileira ligada e o resto desligado. Substitui o mri_replacetraffic |
 
 ---
 
@@ -197,7 +196,6 @@ Ligado ou desligado de fábrica entre parênteses.
 | `/god [id]` | A do `/revive` | Atalho de `/revive`: revive o jogador informado ou você mesmo |
 | `/menu <job>` | Nenhuma | Abre o boss menu do job (`qbx_management`) |
 | `/cutscene <nome>` | Nenhuma | Toca uma cutscene do jogo |
-| `/setargang <id>` | Nenhuma | Diálogo de setar gangue do jogador |
 | `/mri_carradio` | Nenhuma | Liga e desliga o rádio do carro |
 | `/item <item> [qtd] [alvo] [tipo]` | `group.admin` | Dá um item a você ou ao alvo |
 | `/tuning` | `group.admin` | Aplica todos os mods no veículo atual |
@@ -207,10 +205,9 @@ Ligado ou desligado de fábrica entre parênteses.
 | `/viewallitems` | `group.admin` | Baú temporário com um de cada item |
 | `/staff <id> <add\|rem> [cargo]` | `group.admin` | Dá ou tira cargo de staff (`admin`, `mod`, `support`) |
 | `/vipadm <id> <add\|rem> [tier]` | `group.admin` | Dá ou tira um tier de VIP |
-| `/cinematic` | `group.admin` | Toca a cinematic de boas-vindas pra quem digitou |
 
-Cada comando pertence a um módulo e só faz algo com o módulo ligado. `/setargang`,
-`/cutscene` e `/menu` não têm restrição de permissão. `/tpway` e `/god` são atalhos
+Cada comando pertence a um módulo e só faz algo com o módulo ligado. `/cutscene` e
+`/menu` não têm restrição de permissão. `/tpway` e `/god` são atalhos
 (módulo Atalhos de comando) e seguem a permissão do comando que chamam.
 
 ---
@@ -323,6 +320,14 @@ continua com a mesma tabela, a mesma permissão (`mri_Qvehicles.admin`), a mesma
 mri_Qadmin e os mesmos exports. Se os dois estiverem rodando juntos, o módulo de veículos do
 mri_Qbox não sobe e avisa no console.
 
+### Vindo do qbx_density
+
+Tire o `qbx_density` do servidor (pasta e `ensure`) e ajuste os valores no módulo Densidade. O
+mri_Qbox faz `provide` dele e responde `exports.qbx_density:SetDensity(tipo, valor)` (tipos
+`parked`, `vehicle`, `randomvehicles`, `peds`, `scenario`; `nil` volta ao valor do painel).
+Os `.ymap` que desligavam veículos parados viraram áreas no código, sem `stream/`. Se os dois
+estiverem rodando juntos, o módulo não sobe e avisa no console do F8.
+
 ### Para scripts que guardam a lista de veículos
 
 Quem pega a lista uma vez (`exports.qbx_core:GetVehiclesByName()` ou
@@ -341,6 +346,24 @@ RegisterNetEvent('qbx_core:client:onVehicleUpdate', function(model, vehicle)
 end)
 ```
 
+### Classe de desempenho
+
+A nota de desempenho que a base mostra (garagem do mri_Qgarage, oficina do mri_Qcustoms) vem de
+um lugar só, o export de cliente `GetVehicleRating`:
+
+```lua
+local rating = exports.mri_Qbox:GetVehicleRating(vehicle)
+-- { speed, acceleration, braking, traction (0 a 1), value (100 a 1000), letter }
+```
+
+- Cada barra é o valor do carro como ele está (peças instaladas contam:
+  `GetVehicleEstimatedMaxSpeed`, `GetVehicleAcceleration`, `GetVehicleMaxBraking`,
+  `GetVehicleMaxTraction`) dividido pelo melhor da categoria do GTA vezes 1,15.
+- A nota pesa velocidade e aceleração 32% cada, freio e tração 18% cada, e vai de 100 a 1000.
+- Letra pela nota: até 400 D, até 500 C, até 600 B, até 700 A, até 800 S1, até 900 S2, acima X.
+- Pesos e faixas ficam no topo da seção em `resources/modules/vehicles/client.lua`.
+- Devolve `nil` se a entidade não for um veículo. Quem usa esconde a nota nesse caso.
+
 ---
 
 ## Integrações
@@ -348,9 +371,7 @@ end)
 ### mri_Qadmin
 
 O painel aparece como a aba "MRI Qbox" e a tela de veículos como a aba "Veículos" (dois
-plugins do mesmo resource). `setPlayerJob` e `setPlayerGang` usam os
-eventos `mri_Qadmin:server:SetJob`/`SetGang` quando ele está iniciado; sem ele, caem no
-`ps-adminmenu`.
+plugins do mesmo resource).
 
 ### mri_Qjobsystem
 
@@ -417,11 +438,10 @@ local confirmou = exports.mri_Qbox:Request('Título', 'Texto da pergunta', 'top-
 local pode = exports.mri_Qbox:CanCarryItem('water', 5)
 ```
 
-### `setPlayerJob` / `setPlayerGang` (cliente)
+### `SetDensity` (cliente)
 
 ```lua
-exports.mri_Qbox:setPlayerJob(targetServerId)   -- job opcional; sem ele abre o seletor
-exports.mri_Qbox:setPlayerGang(targetServerId)
+exports.mri_Qbox:SetDensity('peds', 0.2) -- nil volta ao valor do painel
 ```
 
 ### `addVip` / `removeVip` (cliente)

@@ -165,6 +165,10 @@ local function getColumn(column)
     ]], { column })
 end
 
+-- Bump when a new adjustment is added below; the KVP skips the column checks once applied.
+local SCHEMA_VERSION = 1
+local SCHEMA_KVP = 'vehicles:schemaVersion'
+
 ---Creates the table or adjusts the one the old qbx_vehicleshop created (a full copy of each car).
 local function prepareSchema()
     MySQL.query.await([[
@@ -182,6 +186,8 @@ local function prepareSchema()
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ]])
 
+    if GetResourceKvpInt(SCHEMA_KVP) >= SCHEMA_VERSION then return end
+
     if not getColumn('type') then
         MySQL.query.await('ALTER TABLE `vehicles_data` ADD COLUMN `type` VARCHAR(20) DEFAULT NULL')
     end
@@ -194,6 +200,8 @@ local function prepareSchema()
     if price and price.IS_NULLABLE == 'NO' then
         MySQL.query.await('ALTER TABLE `vehicles_data` MODIFY `price` INT DEFAULT NULL')
     end
+
+    SetResourceKvpInt(SCHEMA_KVP, SCHEMA_VERSION)
 end
 
 ---Loads the table. A field equal to shared/vehicles.lua becomes NULL (the old

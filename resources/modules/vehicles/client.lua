@@ -71,3 +71,39 @@ end)
 RegisterNetEvent('mri_Qbox:vehicles:changed', function()
     SendNUIMessage({ action = 'vehiclesChanged' })
 end)
+
+-- Performance rating shared by the base (garage, customs); formula in MANUAL.md, "Classe de desempenho"
+local RATING_WEIGHTS = { speed = 0.32, acceleration = 0.32, braking = 0.18, traction = 0.18 }
+local RATING_BANDS = { { 400, 'D' }, { 500, 'C' }, { 600, 'B' }, { 700, 'A' }, { 800, 'S1' }, { 900, 'S2' } }
+local CLASS_HEADROOM = 1.15 -- the class best still leaves room to grow
+
+local function ratio(value, max)
+    if not max or max <= 0 then return 0.0 end
+    return math.max(0.0, math.min(1.0, value / max))
+end
+
+---@param vehicle integer
+---@return { speed: number, acceleration: number, braking: number, traction: number, value: integer, letter: string }?
+local function getVehicleRating(vehicle)
+    if not vehicle or not DoesEntityExist(vehicle) or GetEntityType(vehicle) ~= 2 then return nil end
+    local class = GetVehicleClass(vehicle)
+    local rating = {
+        speed = ratio(GetVehicleEstimatedMaxSpeed(vehicle), GetVehicleClassEstimatedMaxSpeed(class) * CLASS_HEADROOM),
+        acceleration = ratio(GetVehicleAcceleration(vehicle), GetVehicleClassMaxAcceleration(class) * CLASS_HEADROOM),
+        braking = ratio(GetVehicleMaxBraking(vehicle), GetVehicleClassMaxBraking(class) * CLASS_HEADROOM),
+        traction = ratio(GetVehicleMaxTraction(vehicle), GetVehicleClassMaxTraction(class) * CLASS_HEADROOM),
+    }
+    local score = 0.0
+    for key, weight in pairs(RATING_WEIGHTS) do score = score + rating[key] * weight end
+    rating.value = math.floor(100 + 900 * math.max(0.0, math.min(1.0, score)) + 0.5)
+    rating.letter = 'X'
+    for i = 1, #RATING_BANDS do
+        if rating.value <= RATING_BANDS[i][1] then
+            rating.letter = RATING_BANDS[i][2]
+            break
+        end
+    end
+    return rating
+end
+
+exports('GetVehicleRating', getVehicleRating)
