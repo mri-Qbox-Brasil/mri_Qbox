@@ -5,7 +5,7 @@ Mri.module({
     page = 'passport',
     description = 'Número fixo de cada personagem, como o passaporte do creative e do vRP. Não muda quando o jogador reconecta e não é reaproveitado.',
     defaults = {
-        enabled = true,
+        enabled = false,
         commands = false,
         firstPassport = 1,
     },

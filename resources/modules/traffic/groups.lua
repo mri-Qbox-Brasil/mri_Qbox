@@ -1111,6 +1111,7 @@ return {
         { 'zombieb', 'Zombie Chopper' },
         { 'powersurge', 'Powersurge' },
         { 'rallytruck', 'Dune' },
+        { 'brickade', 'Brickade' },
         { 'benson2', 'Benson (Cluckin\' Bell)' },
         { 'flashgt', 'Flash GT' },
         { 'pizzaboy', 'Pizza Boy' },

@@ -3,20 +3,23 @@
 
 local muted = Mri.cfg('carradio').startMuted == true
 
-local function silence(vehicle)
+local function silence(vehicle, blocked)
     SetVehRadioStation(vehicle, 'OFF')
     SetUserRadioControlEnabled(false)
+    SetVehicleRadioEnabled(vehicle, not blocked)
 end
 
 local function release()
     SetUserRadioControlEnabled(true)
+    if cache.vehicle then SetVehicleRadioEnabled(cache.vehicle, true) end
 end
 
 -- Estado do rádio pro veículo atual (ou só destrava, a pé).
 local function sync()
     local vehicle = cache.vehicle
-    if muted and vehicle and vehicle ~= 0 then
-        silence(vehicle)
+    local blocked = Mri.cfg('carradio').blocked == true
+    if (muted or blocked) and vehicle and vehicle ~= 0 then
+        silence(vehicle, blocked)
     else
         release()
     end
@@ -24,6 +27,9 @@ end
 
 RegisterCommand('mri_carradio', function()
     if not Mri.enabled('carradio') or not cache.vehicle then return end
+    if Mri.cfg('carradio').blocked then
+        return lib.notify({ type = 'error', description = 'O rádio do carro está bloqueado neste servidor' })
+    end
     muted = not muted
     sync()
     lib.notify({

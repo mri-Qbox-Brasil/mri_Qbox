@@ -1,5 +1,5 @@
 -- Exports do núcleo no client, usados por outros resources (contrato público:
--- não renomear). Request é chamado pelo qbx_management via callback.
+-- não renomear).
 
 local function colors()
     return GlobalState.UIColors or {}

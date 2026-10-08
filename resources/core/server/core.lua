@@ -1,6 +1,6 @@
 -- Utilidades do núcleo no server, usadas pelos módulos e por outros resources.
 
--- Cores de status que outros resources MRI leem (ex.: mri_Qjobsystem colore o menu).
+-- Cores de status que outros resources MRI leem (ex.: mri_Qfarm e mri_Qfps).
 GlobalState:set('UIColors', {
     success = '#51CF66',
     info = '#668CFF',

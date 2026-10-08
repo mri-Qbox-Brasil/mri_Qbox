@@ -12,6 +12,12 @@
         padding: 0;
         overflow: hidden;
       }
+      /* the Qadmin tab sizes the iframe; without a height the panel never scrolls */
+      html,
+      body,
+      #root {
+        height: 100%;
+      }
     </style>
     <script type="module" crossorigin src="./assets/main.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/index.js">

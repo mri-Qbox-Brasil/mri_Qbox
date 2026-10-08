@@ -34,8 +34,7 @@ pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, s
 | `oxmysql` | Sim | Lista de personagens dos painéis de staff e VIP e a tabela `vehicles_data` |
 | `ox_inventory` | Sim | Peso, drop de itens, craft arrastando, carregar nos braços, pegar do chão, `/viewallitems` |
 | `ox_target` | Sim | Lixeiras, entrar pela porta, bebedouros, pegar do chão |
-| `qbx_management` | Para os painéis | Jogadores próximos nos painéis de staff e VIP e o `/menu <job>` |
-| `mri_Qjobsystem` | Não | Mostra "Gerenciar Emprego" e "Gerenciar Gangue" no F9 pra chefe e recrutador. Sem ele, essas duas opções só não aparecem |
+| `mri_Qbossmenu` | Para os painéis | Jogadores próximos nos painéis de staff e VIP, o `/menu <job>` e "Gerenciar Emprego" e "Gerenciar Gangue" no F9. Atende pelos nomes antigos `qbx_management` e `mri_Qjobsystem`, que também servem. Sem ele, as opções de gerenciar só não aparecem |
 | `mri_Qadmin` | Não | Abas "MRI Qbox" (painel) e "Veículos" |
 | `mri_Qvinewood` | Não | Entrada "Vinewood" no menu de gerenciamento |
 
@@ -120,7 +119,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | VIP (desligado) | Tiers com ACE, peso do inventário e salário periódico. Opções: intervalo do salário, conta, símbolo da moeda e os tiers (JSON) |
 | Comandos de admin (ligado) | `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
 | Atalhos de comando (ligado) | Outro nome pra um comando que já existe, editado no painel (atalho -> comando). Já vem com `/tpto` -> `/tp`, `/tpway` -> `/tpm` e `/god` -> `/revive`, pra quem vem do creative ou vRP. Vale a permissão do comando original; atalho com nome de comando que já existe ou que aponta pra outro atalho é ignorado, com aviso no console |
-| Passaporte (ligado) | Número fixo de cada personagem, como o passaporte do creative e do vRP: é o `id` da tabela `players`, que não muda quando o jogador reconecta e não é reaproveitado. Fica no statebag `passport` do jogador (a HUD e outros scripts leem dali). Opção **Primeiro passaporte** (1): personagens novos começam nele e os números abaixo ficam reservados pra dar ou vender. O botão **Gerenciar** (e a aba **Passaportes** do mri_Qadmin, com o módulo ligado) abre a lista de personagens com o passaporte de cada um, busca e troca de passaporte (só número reservado ou livre abaixo do próximo; ACE `mri_Qbox.admin` ou `command`). Opção: **Comandos usam o passaporte** (desligada), que faz todo comando com jogador feito no `lib.addCommand` (`/tp`, `/revive`, `/kick`, `/ban`...) pedir o passaporte no lugar do id do servidor; `me` continua valendo |
+| Passaporte (desligado) | Número fixo de cada personagem, como o passaporte do creative e do vRP: é o `id` da tabela `players`, que não muda quando o jogador reconecta e não é reaproveitado. Fica no statebag `passport` do jogador (a HUD e outros scripts leem dali). Opção **Primeiro passaporte** (1): personagens novos começam nele e os números abaixo ficam reservados pra dar ou vender. O botão **Gerenciar** (e a aba **Passaportes** do mri_Qadmin, com o módulo ligado) abre a lista de personagens com o passaporte de cada um, busca e troca de passaporte (só número reservado ou livre abaixo do próximo; ACE `mri_Qbox.admin` ou `command`). Opção: **Comandos usam o passaporte** (desligada), que faz todo comando com jogador feito no `lib.addCommand` (`/tp`, `/revive`, `/kick`, `/ban`...) pedir o passaporte no lugar do id do servidor; `me` continua valendo |
 | Ver todos os itens (ligado) | `/viewallitems` |
 | Identificadores no console (ligado) | Mostra os identificadores de quem conecta |
 | Tocar cutscene (ligado) | `/cutscene <nome>` |
@@ -150,7 +149,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | Sem controle no ar (desligado) | Carro no ar não gira pelo controle |
 | Explosão em queda (desligado) | Explode ao cair de uma altura (padrão 40 m) |
 | Entrar pela porta (ligado) | Olhinho em cada porta; carro de concessionária não deixa |
-| Rádio do carro (ligado) | `/mri_carradio` liga e desliga o rádio e a escolha vale em todo veículo. Sem tecla padrão (dá pra definir no painel) |
+| Rádio do carro (ligado) | Rádio bloqueado por padrão: desligado em todo veículo, sem como ligar. Sem o bloqueio, `/mri_carradio` liga e desliga o rádio e a escolha vale em todo veículo. Sem tecla padrão (dá pra definir no painel) |
 | Placas Mercosul (desligado) | Textura de placa Mercosul. Obsoleto: prefira o `mri_Qcarplates` |
 
 ### Interação
@@ -194,7 +193,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | `/mriqbox` | `mri_Qbox.admin` ou `command` | Abre o painel de configuração |
 | `/tpway` | A do `/tpm` | Atalho de `/tpm`: teleporta pro waypoint do mapa |
 | `/god [id]` | A do `/revive` | Atalho de `/revive`: revive o jogador informado ou você mesmo |
-| `/menu <job>` | Nenhuma | Abre o boss menu do job (`qbx_management`) |
+| `/menu <job>` | Nenhuma | Abre o painel da organização no `mri_Qbossmenu` (admin entra em qualquer uma) |
 | `/cutscene <nome>` | Nenhuma | Toca uma cutscene do jogo |
 | `/mri_carradio` | Nenhuma | Liga e desliga o rádio do carro |
 | `/item <item> [qtd] [alvo] [tipo]` | `group.admin` | Dá um item a você ou ao alvo |
@@ -230,7 +229,7 @@ trocar nas configurações do FiveM. O rádio do carro (`/mri_carradio`) vem sem
 
 Identificação (`/id`), Emprego (`/job`), Gangue (`/gang`), Ver Reputação (`/rep`), Ver
 Habilidades (`/skill`) e Waypoints (limpar marcadores e configurações). "Gerenciar Emprego"
-e "Gerenciar Gangue" aparecem pra chefe ou recrutador, segundo o `mri_Qjobsystem`.
+e "Gerenciar Gangue" aparecem pra chefe ou recrutador, segundo o `mri_Qbossmenu`.
 
 ### F10: menu de administração
 
@@ -373,16 +372,11 @@ local rating = exports.mri_Qbox:GetVehicleRating(vehicle)
 O painel aparece como a aba "MRI Qbox" e a tela de veículos como a aba "Veículos" (dois
 plugins do mesmo resource).
 
-### mri_Qjobsystem
+### mri_Qbossmenu (qbx_management e mri_Qjobsystem)
 
-O F9 consulta `CheckPlayerIsbossByJobSystemData` e `CheckPlayerIrecruiterByJobSystemData`
-pra mostrar as opções de gerenciar.
-
-### qbx_management
-
-Jogadores próximos nos painéis de staff e VIP (`qbx_management:server:getPlayers`), boss
-menu do `/menu <job>` e o pedido de confirmação de recrutamento
-(`mri_Qbox:client:request`).
+O `mri_Qbossmenu` substitui os dois e responde pelos nomes deles. O F9 consulta `CheckPlayerIsbossByJobSystemData` e `CheckPlayerIrecruiterByJobSystemData`
+pra mostrar as opções de gerenciar. Os painéis de staff e VIP pegam os jogadores próximos por
+`qbx_management:server:getPlayers`, e o `/menu <job>` abre o painel por `OpenBossMenu`.
 
 ### ox_inventory
 

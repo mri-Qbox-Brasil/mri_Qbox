@@ -5,10 +5,17 @@ Mri.module({
     description = 'O jogador liga e desliga o rádio do carro com /mri_carradio, e a escolha vale em todo veículo em que ele entrar.',
     defaults = {
         enabled = true,
+        blocked = true,
         startMuted = false,
         key = '',
     },
     fields = {
+        {
+            key = 'blocked',
+            type = 'boolean',
+            label = 'Rádio bloqueado',
+            help = 'Ninguém liga o rádio do carro: fica desligado em todo veículo e o /mri_carradio não funciona.',
+        },
         {
             key = 'startMuted',
             type = 'boolean',

@@ -125,7 +125,7 @@ end
 
 exports('RemovePlayerMenu', removePlayerMenu)
 
--- Chefe ou recrutador do grupo, pelo mri_Qjobsystem. Sem ele rodando, as opções de
+-- Chefe ou recrutador do grupo, pelo contrato do mri_Qjobsystem (hoje o mri_Qbossmenu). Sem ele, as opções de
 -- gerenciar só não aparecem (o resto do F9 segue funcionando).
 local function canManage(groupType, playerData)
     if GetResourceState('mri_Qjobsystem') ~= 'started' then return false end
