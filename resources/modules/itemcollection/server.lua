@@ -23,7 +23,7 @@ end
 RegisterNetEvent("itemcollection:pickup", function(netid, entityModel)
     if not Mri.enabled('itemcollection') then return end
     local src = source
-    local entity = entityModel and false or NetworkGetEntityFromNetworkId(netid)
+    local entity = not entityModel and NetworkGetEntityFromNetworkId(netid) or nil
     local model = entityModel or GetEntityModel(entity)
 
     if not cfg_itemcollection[model] then return end

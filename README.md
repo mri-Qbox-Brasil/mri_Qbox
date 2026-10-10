@@ -19,9 +19,10 @@ pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, s
 9. [Staff](#staff)
 10. [VIP](#vip)
 11. [Veículos: cadastro e estoque](#veículos-cadastro-e-estoque)
-12. [Integrações](#integrações)
-13. [Entrypoints para outros recursos](#entrypoints-para-outros-recursos)
-14. [Estrutura de arquivos](#estrutura-de-arquivos)
+12. [Editor do inventário](#editor-do-inventário)
+13. [Integrações](#integrações)
+14. [Entrypoints para outros recursos](#entrypoints-para-outros-recursos)
+15. [Estrutura de arquivos](#estrutura-de-arquivos)
 
 ---
 
@@ -163,6 +164,7 @@ Ligado ou desligado de fábrica entre parênteses.
 
 | Módulo | O que faz |
 |---|---|
+| Editor do inventário (base) | Itens, armas, lojas, crafting, licenças, baús, evidências, espaço dos veículos e animações do ox_inventory, editados no jogo. Ver [Editor do inventário](#editor-do-inventário) |
 | Pegar itens do chão (ligado) | Olhinho pra pegar o prop de um item do ox_inventory. O export `itemPlace` continua valendo desligado |
 | Carregar nos braços (ligado) | Itens como caixas ficam nos braços com animação (lista em `resources/modules/itemcarry/items.lua`) |
 | Craft arrastando (ligado) | Arrastar um item sobre o outro faz a receita (em `resources/modules/dragcraft/recipes.lua`) |
@@ -362,6 +364,40 @@ local rating = exports.mri_Qbox:GetVehicleRating(vehicle)
 - Letra pela nota: até 400 D, até 500 C, até 600 B, até 700 A, até 800 S1, até 900 S2, acima X.
 - Pesos e faixas ficam no topo da seção em `resources/modules/vehicles/client.lua`.
 - Devolve `nil` se a entidade não for um veículo. Quem usa esconde a nota nesse caso.
+
+## Editor do inventário
+
+Módulo da base (sempre ligado). Edita o ox_inventory no jogo sem mexer nos arquivos dele: as
+mudanças ficam em `data/inventory.json` do mri_Qbox, e o ox_inventory junta tudo por cima dos
+arquivos `data/*.lua` dele quando carrega.
+
+- **Onde abre:** aba **Editor do inventário** do mri_Qadmin, ou `/mriqbox` > Inventário > Editor
+  do inventário.
+- **Abas:** Itens, Armas, Lojas, Crafting, Licenças, Baús, Evidências, Veículos (porta-malas e
+  porta-luvas por classe ou por modelo) e Animações.
+- **Itens e lojas da MRI:** vêm do mri_Qbox (`resources/modules/inventory/base/items.lua` e
+  `shops.lua`), não do ox_inventory, e o editor mostra eles como original. Se o dono mexeu no
+  `items.lua` ou no `shops.lua` do ox_inventory, o arquivo dele vale: do mri_Qbox só entra o que
+  falta lá.
+- **Editar o que vem do ox_inventory:** só o que mudou fica salvo, então atualizações do
+  ox_inventory continuam chegando. Partes em código do original (botões, efeitos) continuam valendo.
+- **Novo, remover e voltar ao original:** removido fica no filtro Removidos e volta com um clique.
+- **Pegar 1:** dá um do item ou da arma pra testar.
+- **Posições:** não se digitam. **Minha posição** usa onde você está (no atendente da loja, também
+  a direção pra onde você olha) e **Ir até** leva você até lá. Zona do ox_target e ajuste fino
+  ficam no Avançado (JSON).
+- **Avançado (JSON):** todos os campos da entrada, inclusive os que o formulário não mostra.
+
+| Aba | Vale na hora | Vale no próximo restart do servidor |
+|---|---|---|
+| Itens e armas | Criar e editar | Remover |
+| Lojas | Produtos e preços | Locais, blip e loja nova |
+| Crafting | | Tudo |
+| Licenças | Preço | Local e licença nova |
+| Baús, evidências, veículos e animações | Tudo | |
+
+Precisa do ox_inventory da MRI com `mri/data.lua` e `mri/live.lua`. Permissão: ACE
+`mri_Qbox.admin` ou `command`. Ao atualizar o mri_Qbox à mão, guarde o `data/inventory.json`.
 
 ---
 

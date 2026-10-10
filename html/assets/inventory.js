@@ -1,0 +1,1 @@
+import{a as t,j as e,b as r,N as i}from"./index.js";import{I as n}from"./Panel.js";import"./VehiclesPanel.js";import"./PassportPanel.js";function o(){return i().initialized?e.jsx("div",{className:"fixed inset-0",children:e.jsx(n,{})}):null}t.createRoot(document.getElementById("root")).render(e.jsx(r.StrictMode,{children:e.jsx(o,{})}));
