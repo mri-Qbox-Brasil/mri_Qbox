@@ -185,6 +185,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | Postes indestrutíveis (ligado) | Postes, semáforos e hidrantes não quebram (modelos no painel) |
 | Densidade (ligado) | Quantidade de carros estacionados, no trânsito e aleatórios, pedestres e NPCs de cenário (0 a 1, padrão 0.8). A opção Cidade vazia tira todos de uma vez. NPCs de gangue, polícia, bombeiros, médicos e presos não atacam o jogador. Sem veículos parados no aeroporto, na base militar e em mais dois pontos. Substitui o qbx_density |
 | Trânsito (ligado) | Escolhe no painel quais carros e motos aparecem no trânsito, grupo por grupo (bairros pobres, classe média, ricos, centro, rodovias, interior e motos), entre os do GTA e os das DLCs. Muda na hora: o carro desligado para de aparecer e os que já estão na rua somem com o tempo. Vem com a lista de cara brasileira ligada e o resto desligado. Substitui o mri_replacetraffic |
+| Necessidades (ligado) | Liga e desliga fome, sede e estresse e ajusta quanto a fome e a sede caem a cada ciclo do qbx_core (padrão 4,2 e 3,8). Fome ou sede desligada fica sempre cheia e não tira vida; estresse desligado fica em zero, sem aviso nem tremor, e a barra some do mri_Qhud. Precisa do qbx_core 1.24.1 ou mais novo |
 
 ---
 
