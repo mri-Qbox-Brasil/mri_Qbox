@@ -1,6 +1,8 @@
--- Ambient traffic: popgroups with the MRI list plus vanilla and DLC cars; the panel suppresses what is off.
+-- Ambient traffic: popgroups with the panel list (server.lua); turning a model off suppresses it on the street right away.
 
 local FILE = 'resources/modules/traffic/popgroups.xml'
+-- written by server.lua from the panel; served from the next server start
+local GENERATED = 'data/popgroups.xml'
 -- Reloading popgroups wipes every car around, the one the player drives included: load once per session.
 local STATE = 'mriTrafficPopgroups'
 
@@ -32,7 +34,7 @@ end
 
 Mri.lifecycle('traffic', function(cfg)
     if not LocalPlayer.state[STATE] then
-        OverridePopGroups(FILE)
+        OverridePopGroups(LoadResourceFile(GetCurrentResourceName(), GENERATED) and GENERATED or FILE)
         LocalPlayer.state:set(STATE, true, false)
     end
     local on = {}

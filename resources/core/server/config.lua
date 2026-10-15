@@ -16,6 +16,18 @@ end
 
 local saved = load()
 
+-- Campos que saíram de um módulo pra um módulo próprio: o que o dono já tinha mudado vai junto.
+local MOVED = {
+    { from = 'worldmap', to = 'clearparking', key = 'clearGenerators' },
+    { from = 'worldmap', to = 'anticheat', key = 'blockedModels' },
+}
+for _, move in ipairs(MOVED) do
+    local old = saved[move.from]
+    if type(old) == 'table' and old[move.key] ~= nil and not saved[move.to] then
+        saved[move.to] = { enabled = old.enabled, [move.key] = old[move.key] }
+    end
+end
+
 Mri.current = {}
 for _, id in ipairs(Mri.order) do
     Mri.current[id] = Mri.merge(id, saved[id])

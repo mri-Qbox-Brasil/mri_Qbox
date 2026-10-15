@@ -2,7 +2,6 @@
 return {
     'akuma',
     'alpha',
-    'ardent',
     'asbo',
     'asea',
     'asterope2',

@@ -4,7 +4,7 @@ game 'gta5'
 name 'mri_Qbox'
 description 'Coleção de módulos da MRI Qbox (menus F9/F10, staff, VIP, combate, veículos e interação) com painel de configuração'
 author 'MRI QBOX Team'
-version '2.10.0'
+version '2.11.0'
 
 -- Cada módulo é uma pasta em resources/modules/ com config.lua (registro e
 -- padrões), client.lua e server.lua. O núcleo (resources/core) carrega antes dos
@@ -35,6 +35,9 @@ files {
     'resources/modules/**/recipes.lua',
     'resources/modules/traffic/*.lua',
     'resources/modules/traffic/popgroups.xml',
+    -- traffic popgroups written from the panel (traffic/server.lua)
+    'data/popgroups*.xml',
+    'resources/modules/worldmap/emitters.lua',
     -- MRI items ox_inventory reads on both sides (mri/data.lua)
     'resources/modules/inventory/base/*.lua',
 }

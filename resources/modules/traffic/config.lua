@@ -12,7 +12,7 @@ Mri.module({
             key = 'models',
             type = 'traffic',
             label = 'Veículos no trânsito',
-            help = 'Desligar um modelo tira ele de todos os grupos. Os que já estão na rua somem quando o jogo trocar o trânsito.',
+            help = 'Desligar um modelo tira ele da rua na hora (os que já estão rodando somem quando o jogo trocar o trânsito). Ligar um modelo, e tirar um desligado dos estacionamentos, vale a partir do próximo reinício do servidor.',
             groups = require 'resources.modules.traffic.groups',
         },
     },

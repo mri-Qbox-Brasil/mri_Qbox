@@ -33,7 +33,7 @@ pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, s
 | `ox_lib` | Sim | Menus, comandos, callbacks, keybinds, principals e o `/uiconfig` do tema |
 | `qbx_core` | Sim | `QBX.PlayerData`, jobs, gangs e metadata (staff, VIP); o fork MRI, com a API de veículos em runtime |
 | `oxmysql` | Sim | Lista de personagens dos painéis de staff e VIP e a tabela `vehicles_data` |
-| `ox_inventory` | Sim | Peso, drop de itens, craft arrastando, carregar nos braços, pegar do chão, `/viewallitems` |
+| `ox_inventory` | Sim | Peso, drop de itens, craft arrastando, carregar nos braços, pegar do chão |
 | `ox_target` | Sim | Lixeiras, entrar pela porta, bebedouros, pegar do chão |
 | `mri_Qbossmenu` | Para os painéis | Jogadores próximos nos painéis de staff e VIP, o `/menu <job>` e "Gerenciar Emprego" e "Gerenciar Gangue" no F9. Atende pelos nomes antigos `qbx_management` e `mri_Qjobsystem`, que também servem. Sem ele, as opções de gerenciar só não aparecem |
 | `mri_Qadmin` | Não | Abas "MRI Qbox" (painel) e "Veículos" |
@@ -121,9 +121,10 @@ Ligado ou desligado de fábrica entre parênteses.
 | Comandos de admin (ligado) | `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
 | Atalhos de comando (ligado) | Outro nome pra um comando que já existe, editado no painel (atalho -> comando). Já vem com `/tpto` -> `/tp`, `/tpway` -> `/tpm` e `/god` -> `/revive`, pra quem vem do creative ou vRP. Vale a permissão do comando original; atalho com nome de comando que já existe ou que aponta pra outro atalho é ignorado, com aviso no console |
 | Passaporte (desligado) | Número fixo de cada personagem, como o passaporte do creative e do vRP: é o `id` da tabela `players`, que não muda quando o jogador reconecta e não é reaproveitado. Fica no statebag `passport` do jogador (a HUD e outros scripts leem dali). Opção **Primeiro passaporte** (1): personagens novos começam nele e os números abaixo ficam reservados pra dar ou vender. O botão **Gerenciar** (e a aba **Passaportes** do mri_Qadmin, com o módulo ligado) abre a lista de personagens com o passaporte de cada um, busca e troca de passaporte (só número reservado ou livre abaixo do próximo; ACE `mri_Qbox.admin` ou `command`). Opção: **Comandos usam o passaporte** (desligada), que faz todo comando com jogador feito no `lib.addCommand` (`/tp`, `/revive`, `/kick`, `/ban`...) pedir o passaporte no lugar do id do servidor; `me` continua valendo |
-| Ver todos os itens (ligado) | `/viewallitems` |
 | Identificadores no console (ligado) | Mostra os identificadores de quem conecta |
-| Tocar cutscene (ligado) | `/cutscene <nome>` |
+| Expulsar AFK (desligado) | Igual ao qbx_afk: confere a cada segundo e expulsa quem fica no mesmo ponto exato por tempo demais (padrão 1000 s), com avisos a 15, 10, 5, 2,5 e 1 minuto e a 30, 20 e 10 segundos. Os grupos da lista (padrão mod e admin, permissões do qbx_core) não são expulsos |
+| Gravação (ligado) | Item **Gravação** no F9: tela pra gravar, gravar em replay (guarda os últimos segundos), salvar, descartar e abrir o Rockstar Editor (pede confirmação, porque tira do servidor). Gravando com a tela fechada, fica um aviso REC no canto. Substitui os comandos do qbx_editor |
+| Anticheat (ligado) | Veículos e peds proibidos: o servidor cancela na hora quem tentar criar, inclusive script de garagem (proteção contra menu de cheat). Substitui o qbx_entitiesblacklist; saiu do módulo Mapa |
 
 ### Combate
 
@@ -133,10 +134,13 @@ Ligado ou desligado de fábrica entre parênteses.
 | Sem tiro cego (desligado) | Não atira da cobertura sem mirar |
 | Sem rolamento (desligado) | Tira o rolamento de combate mirando |
 | Sem soco sem mirar (desligado) | Só bate ou atira segurando a mira |
-| Recuo realista (desligado) | Recuo vertical por tipo de arma, mira bêbada, sem headshot de um tiro, sem soco mirando, armas sem recuo |
+| Recuo realista (ligado) | A câmera sobe a cada tiro com a força de cada arma (os valores do qbx_recoils, editáveis no painel), em passos como no qbx_recoils e sem recuo no drive-by (multiplicador VEHICLE 0). Opções: multiplicador por tipo, mira bêbada, sem headshot de um tiro, sem soco mirando e armas sem recuo. Substitui o qbx_recoils |
 | Só duas câmeras a pé (desligado) | Primeira e terceira pessoa (V alterna) |
 | Primeira pessoa armado no carro (desligado) | Motorista armado vai pra primeira pessoa (sempre ou só segurando a mira) |
-| Esconder HUD nativa (ligado) | Esconde nome do veículo, área, classe e rua; opcional, a mira |
+| Esconder HUD nativa (ligado) | Esconde estrelas de procurado, dinheiro, área e rua, nome e classe do veículo, roda e ícone da arma; opcional, a mira. Bloqueia a tecla da roda de armas (TAB). Responde os exports do qbx_hudcomponents pelo nome antigo (`exports.qbx_smallresources:AddDisableHudComponents` e os outros). Substitui o qbx_hudcomponents |
+| Armas do GTA (ligado) | NPC morto não solta arma, ninguém pega do chão a arma que o GTA solta, sem coronhada e extintor e galão de gasolina sem acabar. Substitui o qbx_itempickup e parte do qbx_ignore |
+| Tempo no chão do taser (ligado) | Quem leva taser fica no chão um tempo sorteado entre o mínimo e o máximo (padrão 4 a 7 s). Substitui o qbx_stun |
+| Derrubar correndo (ligado) | Igual ao qbx_tackle: correndo, a tecla `tackle` (padrão E) derruba quem está logo à frente (7 s no chão, ajustável); quem derruba cai por um instante. O servidor confere a distância (2 m). Substitui o qbx_tackle |
 
 ### Veículos
 
@@ -152,6 +156,10 @@ Ligado ou desligado de fábrica entre parênteses.
 | Entrar pela porta (ligado) | Olhinho em cada porta; carro de concessionária não deixa |
 | Rádio do carro (ligado) | Rádio bloqueado por padrão: desligado em todo veículo, sem como ligar. Sem o bloqueio, `/mri_carradio` liga e desliga o rádio e a escolha vale em todo veículo. Sem tecla padrão (dá pra definir no painel) |
 | Placas Mercosul (desligado) | Textura de placa Mercosul. Obsoleto: prefira o `mri_Qcarplates` |
+| Sem pular de banco (ligado) | Igual ao qbx_noshuff: quem entra no banco do passageiro não pula sozinho pro do motorista. A tecla `shuffleSeat` (padrão O) troca de banco de propósito, menos algemado ou de cinto. Substitui o qbx_noshuff |
+| Piloto automático (ligado) | Igual ao qbx_cruise: o motorista mantém a velocidade atual com a tecla `toggle_cruise_control` (padrão Y). Apertar de novo ou perder velocidade sem frear nem virar desliga. Não vale pra bicicleta, barco, helicóptero, avião e trem. Substitui o qbx_cruise |
+| Desvirar veículo (ligado) | Desvira veículo capotado com barra de progresso (padrão 15 s, até 2 m): pelo olhinho ou pelo export do qbx_flipvehicle (`exports.qbx_smallresources:FlipVehicle`). Substitui o qbx_flipvehicle |
+| Empurrar veículo (ligado) | Igual ao qbx_vehiclepush: a pé, segurando Shift e E (teclas `push_vehicle` e `push_vehicle_e`) perto de um veículo sem motorista, empurra; A e D viram as rodas e soltar o Shift para. Opções: vida do motor pra poder empurrar (padrão 1000, qualquer um; sem gasolina sempre pode) e classes que não empurram. Substitui o qbx_vehiclepush |
 
 ### Interação
 
@@ -169,6 +177,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | Carregar nos braços (ligado) | Itens como caixas ficam nos braços com animação (lista em `resources/modules/itemcarry/items.lua`) |
 | Craft arrastando (ligado) | Arrastar um item sobre o outro faz a receita (em `resources/modules/dragcraft/recipes.lua`) |
 | Item no chão vira prop (desligado) | Item largado aparece como o prop dele (tabela item e prop no painel) |
+| Consumíveis (ligado) | Igual ao qbx_consumables: comida, bebida e álcool no painel (fome ou sede sorteada entre o mínimo e o máximo, alívio de estresse com aviso, animação e objeto na mão), contador de álcool com os eventos de evidência, drogas (baseado, cocaína, crack, ecstasy, oxy e metanfetamina), lockpick e lockpick avançado (evento `lockpicks:UseLockpick`) e a garrafa vazia depois da água. Mantém os eventos `consumables:*` e os exports pelo nome antigo (`exports.qbx_smallresources:AddHunger` e os outros). O baseado usa a animação do rpemotes-reborn. Substitui o qbx_consumables |
 
 ### Som
 
@@ -186,6 +195,9 @@ Ligado ou desligado de fábrica entre parênteses.
 | Densidade (ligado) | Quantidade de carros estacionados, no trânsito e aleatórios, pedestres e NPCs de cenário (0 a 1, padrão 0.8). A opção Cidade vazia tira todos de uma vez. NPCs de gangue, polícia, bombeiros, médicos e presos não atacam o jogador. Sem veículos parados no aeroporto, na base militar e em mais dois pontos. Substitui o qbx_density |
 | Trânsito (ligado) | Escolhe no painel quais carros e motos aparecem no trânsito, grupo por grupo (bairros pobres, classe média, ricos, centro, rodovias, interior e motos), entre os do GTA e os das DLCs. Muda na hora: o carro desligado para de aparecer e os que já estão na rua somem com o tempo. Vem com a lista de cara brasileira ligada e o resto desligado. Substitui o mri_replacetraffic |
 | Necessidades (ligado) | Liga e desliga fome, sede e estresse e ajusta quanto a fome e a sede caem a cada ciclo do qbx_core (padrão 4,2 e 3,8). Fome ou sede desligada fica sempre cheia e não tira vida; estresse desligado fica em zero, sem aviso nem tremor, e a barra some do mri_Qhud. Precisa do qbx_core 1.24.1 ou mais novo |
+| Polícia e serviços do GTA (ligado) | Igual ao qbx_disableservices: desliga a polícia, os bombeiros, a ambulância, as gangues de reforço e o exército que o GTA manda sozinho (as barreiras da polícia continuam ligadas), os policiais a pé, o rádio da polícia e as sirenes ao longe, e trava o nível de procurado em 0. Cada serviço pode ser religado no painel. Substitui o qbx_disableservices e parte do qbx_ignore |
+| Mapa (ligado) | Igual ao qbx_ignore e companhia: sem câmera parada e sem som ambiente, sem caminhão de lixo, carros não desenhados de longe, cenários e grupos de cenário desligados e veículos fora do trânsito (reaplicados a cada 10 s) e sons fixos desligados. O comando `/staticemitters` (admin) lista os sons fixos do mapa por interior, com marcadores e teleporte. Substitui o qbx_ignore e o qbx_staticemitters (props do mapa removidos ficam com o mri_Qobjects) |
+| Áreas sem carro estacionado (ligado) | O GTA não estaciona carro nas áreas da lista (hospitais, delegacias, praia de nudismo e helicópteros de Vespucci). Saiu do módulo Mapa |
 
 ---
 
@@ -197,19 +209,17 @@ Ligado ou desligado de fábrica entre parênteses.
 | `/tpway` | A do `/tpm` | Atalho de `/tpm`: teleporta pro waypoint do mapa |
 | `/god [id]` | A do `/revive` | Atalho de `/revive`: revive o jogador informado ou você mesmo |
 | `/menu <job>` | Nenhuma | Abre o painel da organização no `mri_Qbossmenu` (admin entra em qualquer uma) |
-| `/cutscene <nome>` | Nenhuma | Toca uma cutscene do jogo |
 | `/mri_carradio` | Nenhuma | Liga e desliga o rádio do carro |
 | `/item <item> [qtd] [alvo] [tipo]` | `group.admin` | Dá um item a você ou ao alvo |
 | `/tuning` | `group.admin` | Aplica todos os mods no veículo atual |
 | `/customs` | `group.admin` | Abre a customização do veículo atual |
 | `/menu_admin` | `group.admin` | Abre o menu F10 |
 | `/raycast` | `group.admin` | Pega coordenadas por raycast e copia |
-| `/viewallitems` | `group.admin` | Baú temporário com um de cada item |
 | `/staff <id> <add\|rem> [cargo]` | `group.admin` | Dá ou tira cargo de staff (`admin`, `mod`, `support`) |
-| `/vipadm <id> <add\|rem> [tier]` | `group.admin` | Dá ou tira um tier de VIP |
+| `/vipadm <id> <add\| `/staticemitters` | `admin` | Lista os sons fixos do mapa (módulo Mapa) |
+|rem> [tier]` | `group.admin` | Dá ou tira um tier de VIP |
 
-Cada comando pertence a um módulo e só faz algo com o módulo ligado. `/cutscene` e
-`/menu` não têm restrição de permissão. `/tpway` e `/god` são atalhos
+Cada comando pertence a um módulo e só faz algo com o módulo ligado. `/menu` não tem restrição de permissão. `/tpway` e `/god` são atalhos
 (módulo Atalhos de comando) e seguem a permissão do comando que chamam.
 
 ---
@@ -220,9 +230,13 @@ Cada comando pertence a um módulo e só faz algo com o módulo ligado. `/cutsce
 |---|---|
 | `F9` | Menu do jogador |
 | `F10` | Menu de administração (executa `/menu_admin`, que exige `group.admin`) |
+| `E` | Derrubar correndo (`tackle`) |
+| `O` | Trocar de banco no veículo (`shuffleSeat`) |
+| `Y` | Piloto automático (`toggle_cruise_control`) |
+| `Shift` + `E` | Empurrar veículo (`push_vehicle` e `push_vehicle_e`) |
 
 São keybinds do `ox_lib` (`menu_jogador_keybind` e `menu_admin_keybind`); o jogador pode
-trocar nas configurações do FiveM. O rádio do carro (`/mri_carradio`) vem sem tecla.
+trocar nas configurações do FiveM. As teclas vindas do qbx_smallresources mantêm o nome do keybind de lá, então quem já tinha escolhido outra tecla continua com ela. O rádio do carro (`/mri_carradio`) vem sem tecla.
 
 ---
 
