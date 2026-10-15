@@ -220,6 +220,120 @@ local function cleanId(catalog, id)
     return id
 end
 
+-- One path for the editor, the exports and the console: validate, keep the smallest patch, publish.
+---@return boolean ok, string idOrMessage
+local function saveEntry(catalog, id, value)
+    if not CATALOGS[catalog] then return false, 'invalid_catalog' end
+    id = cleanId(catalog, id)
+    if not id then return false, 'invalid_id' end
+    if type(value) ~= 'table' then return false, 'invalid_data' end
+
+    local edits = saved[catalog] or {}
+    local base = baseEntries(catalog)[id]
+
+    -- a file entry keeps only what changed; a new one is saved whole
+    if base ~= nil then
+        edits[id] = diff(plain(base, {}), value)
+    else
+        edits[id] = value
+    end
+
+    saved[catalog] = next(edits) and edits or nil
+    publish(catalog)
+    return true, id
+end
+
+---@return boolean ok, string? message
+local function removeEntry(catalog, id)
+    if not CATALOGS[catalog] or type(id) ~= 'string' then return false, 'invalid_data' end
+    local edits = saved[catalog] or {}
+    -- a file entry is marked false; an added one is just deleted (`x and false or nil` is always nil)
+    if baseEntries(catalog)[id] ~= nil then
+        edits[id] = false
+    else
+        edits[id] = nil
+    end
+    saved[catalog] = next(edits) and edits or nil
+    publish(catalog)
+    return true
+end
+
+---@return boolean ok, string? message
+local function restoreEntry(catalog, id)
+    if not CATALOGS[catalog] or type(id) ~= 'string' then return false, 'invalid_data' end
+    local edits = saved[catalog]
+    if edits then
+        edits[id] = nil
+        saved[catalog] = next(edits) and edits or nil
+        publish(catalog)
+    end
+    return true
+end
+
+-- The entry as the inventory sees it now (plain values), plus where it comes from.
+---@return table? value, string? status
+local function getEntry(catalog, id)
+    if not CATALOGS[catalog] or type(id) ~= 'string' then return end
+    local edit = (saved[catalog] or {})[id]
+    local base = baseEntries(catalog)[id]
+    if edit == false then return nil, 'removed' end
+    if base == nil then return edit and Mri.copy(edit) or nil, edit and 'added' or nil end
+    local value = plain(base, {})
+    if edit == nil then return value, 'base' end
+    return merge(value, edit), 'edited'
+end
+
+---@return { id: string, status: string }[]?
+local function listEntries(catalog)
+    if not CATALOGS[catalog] then return end
+    local edits, list, base = saved[catalog] or {}, {}, baseEntries(catalog)
+    for id in pairs(base) do
+        local edit = edits[id]
+        list[#list + 1] = { id = id, status = edit == false and 'removed' or edit ~= nil and 'edited' or 'base' }
+    end
+    for id, edit in pairs(edits) do
+        if edit and base[id] == nil then list[#list + 1] = { id = id, status = 'added' } end
+    end
+    table.sort(list, function(a, b) return a.id < b.id end)
+    return list
+end
+
+exports('GetInventoryEntry', getEntry)
+exports('ListInventoryEntries', listEntries)
+exports('SaveInventoryEntry', saveEntry)
+exports('RemoveInventoryEntry', removeEntry)
+exports('RestoreInventoryEntry', restoreEntry)
+
+-- Server console only (agents through txAdmin): one JSON line per answer, easy to parse.
+RegisterCommand('mri_inventory', function(source, _, raw)
+    if source ~= 0 then return end
+    local action, catalog, id, body = raw:match('^%S+%s+(%S+)%s*(%S*)%s*(%S*)%s*(.-)%s*$')
+    local result
+
+    if action == 'list' then
+        local list = listEntries(catalog)
+        result = list and { success = true, entries = list } or { success = false, message = 'invalid_catalog' }
+    elseif action == 'get' then
+        local value, status = getEntry(catalog, id)
+        result = { success = status ~= nil, status = status, value = value }
+    elseif action == 'set' then
+        local ok, value = pcall(json.decode, body)
+        if not ok or type(value) ~= 'table' then
+            result = { success = false, message = 'invalid_json' }
+        else
+            local saveOk, info = saveEntry(catalog, id, value)
+            result = { success = saveOk, id = saveOk and info or nil, message = not saveOk and info or nil }
+        end
+    elseif action == 'remove' or action == 'restore' then
+        local ok, message = (action == 'remove' and removeEntry or restoreEntry)(catalog, id)
+        result = { success = ok, message = message }
+    else
+        result = { success = false, message = 'usage: mri_inventory list|get|set|remove|restore <catalog> [id] [json]' }
+    end
+
+    print('[mri_inventory] ' .. json.encode(result))
+end, true)
+
 lib.callback.register('mri_Qbox:inventory:get', function(source, catalog)
     if not isAdmin(source) then return { success = false, message = 'no_permission' } end
     if not CATALOGS[catalog] then return { success = false, message = 'invalid_catalog' } end
@@ -277,53 +391,21 @@ end)
 
 lib.callback.register('mri_Qbox:inventory:save', function(source, catalog, id, value)
     if not isAdmin(source) then return { success = false, message = 'no_permission' } end
-    if not CATALOGS[catalog] then return { success = false, message = 'invalid_catalog' } end
-    id = cleanId(catalog, id)
-    if not id then return { success = false, message = 'invalid_id' } end
-    if value == nil then return { success = false, message = 'invalid_data' } end
-
-    local edits = saved[catalog] or {}
-    local base = baseEntries(catalog)[id]
-
-    -- a file entry keeps only what changed; a new one is saved whole
-    if base ~= nil then
-        edits[id] = diff(plain(base, {}), value)
-    else
-        edits[id] = value
-    end
-
-    saved[catalog] = next(edits) and edits or nil
-    publish(catalog)
-    return { success = true, id = id }
+    local ok, info = saveEntry(catalog, id, value)
+    if not ok then return { success = false, message = info } end
+    return { success = true, id = info }
 end)
 
 lib.callback.register('mri_Qbox:inventory:remove', function(source, catalog, id)
     if not isAdmin(source) then return { success = false, message = 'no_permission' } end
-    if not CATALOGS[catalog] or type(id) ~= 'string' then return { success = false, message = 'invalid_data' } end
-
-    local edits = saved[catalog] or {}
-    -- a file entry is marked false; an added one is just deleted (`x and false or nil` is always nil)
-    if baseEntries(catalog)[id] ~= nil then
-        edits[id] = false
-    else
-        edits[id] = nil
-    end
-    saved[catalog] = next(edits) and edits or nil
-    publish(catalog)
-    return { success = true }
+    local ok, message = removeEntry(catalog, id)
+    return { success = ok, message = message }
 end)
 
 lib.callback.register('mri_Qbox:inventory:restore', function(source, catalog, id)
     if not isAdmin(source) then return { success = false, message = 'no_permission' } end
-    if not CATALOGS[catalog] or type(id) ~= 'string' then return { success = false, message = 'invalid_data' } end
-
-    local edits = saved[catalog]
-    if edits then
-        edits[id] = nil
-        saved[catalog] = next(edits) and edits or nil
-        publish(catalog)
-    end
-    return { success = true }
+    local ok, message = restoreEntry(catalog, id)
+    return { success = ok, message = message }
 end)
 
 lib.callback.register('mri_Qbox:inventory:give', function(source, name)

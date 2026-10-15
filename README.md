@@ -1,6 +1,6 @@
 # mri_Qbox: Manual
 
-Coleção de módulos da suíte MRI: menus F9/F10, staff e VIP, comandos de admin e módulos de
+Coleção de módulos da suíte MRI: menus F9/F10, VIP, comandos de admin e módulos de
 combate, veículos, interação, inventário e mundo. Cada módulo liga, desliga e se configura
 pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, sem reiniciar.
 
@@ -31,11 +31,11 @@ pelo painel `/mriqbox` (ou pela aba no mri_Qadmin), e a mudança vale na hora, s
 | Recurso | Obrigatório | Observação |
 |---|---|---|
 | `ox_lib` | Sim | Menus, comandos, callbacks, keybinds, principals e o `/uiconfig` do tema |
-| `qbx_core` | Sim | `QBX.PlayerData`, jobs, gangs e metadata (staff, VIP); o fork MRI, com a API de veículos em runtime |
-| `oxmysql` | Sim | Lista de personagens dos painéis de staff e VIP e a tabela `vehicles_data` |
+| `qbx_core` | Sim | `QBX.PlayerData`, jobs, gangs e metadata (VIP); o fork MRI, com a API de veículos em runtime |
+| `oxmysql` | Sim | Lista de personagens do painel de VIP e a tabela `vehicles_data` |
 | `ox_inventory` | Sim | Peso, drop de itens, craft arrastando, carregar nos braços, pegar do chão |
 | `ox_target` | Sim | Lixeiras, entrar pela porta, bebedouros, pegar do chão |
-| `mri_Qbossmenu` | Para os painéis | Jogadores próximos nos painéis de staff e VIP, o `/menu <job>` e "Gerenciar Emprego" e "Gerenciar Gangue" no F9. Atende pelos nomes antigos `qbx_management` e `mri_Qjobsystem`, que também servem. Sem ele, as opções de gerenciar só não aparecem |
+| `mri_Qbossmenu` | Para os painéis | Jogadores próximos no painel de VIP, o `/menu <job>` e "Gerenciar Emprego" e "Gerenciar Gangue" no F9. Atende pelos nomes antigos `qbx_management` e `mri_Qjobsystem`, que também servem. Sem ele, as opções de gerenciar só não aparecem |
 | `mri_Qadmin` | Não | Abas "MRI Qbox" (painel) e "Veículos" |
 | `mri_Qvinewood` | Não | Entrada "Vinewood" no menu de gerenciamento |
 
@@ -55,7 +55,7 @@ Os menus F9/F10 disparam comandos de outros recursos (`doorlock`, `blip`, `bau`,
    ```
 3. Libere a ACE de admin (ver [Permissões](#permissões-ace)).
 4. Abra o `/mriqbox` e ligue os módulos que quiser. Os valores ficam em `data/config.json`.
-5. Não há SQL para importar: staff e VIP ficam na metadata do personagem
+5. Não há SQL para importar: o VIP fica na metadata do personagem
    (`players.metadata`), que o `qbx_core` já cria, e a tabela `vehicles_data` é criada
    sozinha.
 6. Vindo do mri_Qvehicles: tire ele do servidor (ver [Vindo do mri_Qvehicles](#vindo-do-mri_qvehicles)).
@@ -68,16 +68,15 @@ Os menus F9/F10 disparam comandos de outros recursos (`doorlock`, `blip`, `bau`,
 |---|---|
 | `mri_Qbox.admin` ou `command` | O painel `/mriqbox` e a aba no mri_Qadmin |
 | `mri_Qvehicles.admin`, `mri_Qbox.admin` ou `command` | A tela de veículos (aba "Veículos" no mri_Qadmin) |
-| `group.admin` | Comandos de admin (`/item`, `/staff`, `/vipadm`...) e os eventos dos painéis de staff e VIP |
+| `group.admin` | Comandos de admin (`/item`, `/vipadm`...) e os eventos do painel de VIP |
 
 ```
 add_ace group.admin command allow
 add_principal identifier.fivem:1 group.admin
 ```
 
-O recurso também **concede principals sozinho**: ao logar, quem tem `metadata.staff` recebe
-o principal do cargo (`group.admin`, `group.mod`, `group.support`) e quem tem `metadata.vip`
-recebe o principal com o nome do tier. Não é preciso mexer no `server.cfg` pra cada admin.
+O recurso também **concede principals sozinho**: ao logar, quem tem `metadata.vip` recebe o
+principal com o nome do tier. Não é preciso mexer no `server.cfg` pra cada admin.
 
 ---
 
@@ -116,7 +115,6 @@ Ligado ou desligado de fábrica entre parênteses.
 | Módulo | O que faz |
 |---|---|
 | Menus F9 e F10 (ligado) | Menu do jogador e de administração. Os exports pra outros recursos continuam valendo com ele desligado |
-| Staff (ligado) | Cargos de staff gravados no personagem e aplicados como ACE ao logar |
 | VIP (desligado) | Tiers com ACE, peso do inventário e salário periódico. Opções: intervalo do salário, conta, símbolo da moeda e os tiers (JSON) |
 | Comandos de admin (ligado) | `/item`, `/tuning`, `/menu_admin`, `/customs`, `/raycast`, `/menu` |
 | Atalhos de comando (ligado) | Outro nome pra um comando que já existe, editado no painel (atalho -> comando). Já vem com `/tpto` -> `/tp`, `/tpway` -> `/tpm` e `/god` -> `/revive`, pra quem vem do creative ou vRP. Vale a permissão do comando original; atalho com nome de comando que já existe ou que aponta pra outro atalho é ignorado, com aviso no console |
@@ -215,7 +213,6 @@ Ligado ou desligado de fábrica entre parênteses.
 | `/customs` | `group.admin` | Abre a customização do veículo atual |
 | `/menu_admin` | `group.admin` | Abre o menu F10 |
 | `/raycast` | `group.admin` | Pega coordenadas por raycast e copia |
-| `/staff <id> <add\|rem> [cargo]` | `group.admin` | Dá ou tira cargo de staff (`admin`, `mod`, `support`) |
 | `/vipadm <id> <add\| `/staticemitters` | `admin` | Lista os sons fixos do mapa (módulo Mapa) |
 |rem> [tier]` | `group.admin` | Dá ou tira um tier de VIP |
 
@@ -253,7 +250,7 @@ e "Gerenciar Gangue" aparecem pra chefe ou recrutador, segundo o `mri_Qbossmenu`
 Abrir Painel (`/adm`), Customizar Veículo (`/customs`), Relógio (hora, escala de tempo,
 congelar tempo), Clima (`/weather`) e Gerenciamento: Portas, Blips, Baús, NPC, Props,
 Elevador, Outdoors/Posters, Garagens, Crafting, Grupos, Spotlight e, com o `mri_Qvinewood`,
-Vinewood. Staff e VIP entram aqui quando os módulos estão ligados.
+Vinewood. O VIP entra aqui quando o módulo está ligado.
 
 Outros recursos acrescentam entradas pelos exports (ver
 [Entrypoints](#entrypoints-para-outros-recursos)). Alvos: `'player'` (F9), `'f10'` e
@@ -263,13 +260,11 @@ Outros recursos acrescentam entradas pelos exports (ver
 
 ## Staff
 
-O cargo fica em `metadata.staff` do personagem, no formato `group.<cargo>`.
+Os cargos de staff ficam no **Permissões do mri_Qadmin**: o grupo vinculado a `group.admin`,
+`group.mod` ou `group.support` dá o cargo a quem entra nele. O `/staff` agora é do mri_Qadmin.
 
-- `/staff <id> add <cargo>` grava a metadata e concede o principal na hora.
-- `/staff <id> rem` tira o principal e limpa a metadata.
-- Ao logar, o principal é reaplicado a partir da metadata.
-- O painel (F10 > Gerenciamento > Staff) lista a staff online e offline e altera cargos
-  offline. A alteração offline exige `group.admin` de quem faz.
+Quem tinha cargo pelo antigo `/staff` (em `metadata.staff`) continua com ele: o mri_Qbox reaplica
+o cargo ao logar até o mri_Qadmin mover o personagem para o grupo do cargo.
 
 ---
 
@@ -426,7 +421,7 @@ plugins do mesmo resource).
 ### mri_Qbossmenu (qbx_management e mri_Qjobsystem)
 
 O `mri_Qbossmenu` substitui os dois e responde pelos nomes deles. O F9 consulta `CheckPlayerIsbossByJobSystemData` e `CheckPlayerIrecruiterByJobSystemData`
-pra mostrar as opções de gerenciar. Os painéis de staff e VIP pegam os jogadores próximos por
+pra mostrar as opções de gerenciar. O painel de VIP pega os jogadores próximos por
 `qbx_management:server:getPlayers`, e o `/menu <job>` abre o painel por `OpenBossMenu`.
 
 ### ox_inventory
