@@ -29,6 +29,17 @@ local FIELDS = { 'name', 'brand', 'price', 'category', 'type' }
 ---@type table<string, Vehicle>
 local baseVehicles = require '@qbx_core.shared.vehicles'
 
+---Game vehicles qbx_core still lacks (new DLC): they count as base vehicles from here on.
+---@type table<string, Vehicle>
+local extraVehicles = {}
+
+for model, vehicle in pairs(require 'resources.modules.vehicles.extra') do
+    if not baseVehicles[model] then
+        baseVehicles[model] = vehicle
+        extraVehicles[model] = vehicle
+    end
+end
+
 ---@class VehicleRow
 ---@field fields table edited fields (only the ones that differ from shared/vehicles.lua)
 ---@field removed boolean
@@ -147,6 +158,10 @@ end
 
 local function applyAll()
     local ok, err = pcall(function()
+        -- extras first: an edited row only carries the changed fields
+        for model, vehicle in pairs(extraVehicles) do
+            exports.qbx_core:UpsertVehicleData(model, pickFields(vehicle))
+        end
         for model in pairs(rows) do
             applyRow(model)
         end
