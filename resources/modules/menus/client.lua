@@ -5,7 +5,7 @@
 -- Os exports ficam sempre registrados (outros resources chamam sem checar); o
 -- módulo desligado só faz as teclas e o /menu_admin não abrirem nada.
 
-local AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuPosters, MenuCrafting, MenuJobs, MenuSpotlight
+local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuPosters, MenuCrafting, MenuJobs, MenuSpotlight
 
 local imageUrl = 'https://cfx-nui-mri_Qbox/html/logo24.png'
 
@@ -160,8 +160,10 @@ local function AbrirMenuJogador()
     end
     table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
     table.insert(options, addMenuItem('Ver Habilidades', 'fa-solid fa-book-bookmark', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
-    if GetResourceState('mri_Qblips') == 'started' then
+    if HasGpsStudio() then
         table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Como a rota no asfalto e o destino aparecem para você.', TriggerEvent, 'mri_Qblips:client:openStudio'))
+    elseif GetResourceState('pickle_waypoints') == 'started' then
+        table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
     end
 
     for k, v in pairs(runTimePlayerMenu) do
@@ -177,6 +179,44 @@ local function AbrirMenuJogador()
 
     -- Exibe o menu do jogador
     lib.showContext('menu_jogador')
+end
+
+-- Only mri_Qblips 2.1+ has the route and destination panel; the archived v1 runs under the same name.
+function HasGpsStudio()
+    if GetResourceState('mri_Qblips') ~= 'started' then return false end
+    local major, minor = (GetResourceMetadata('mri_Qblips', 'version', 0) or ''):match('^(%d+)%.(%d+)')
+    major, minor = tonumber(major) or 0, tonumber(minor) or 0
+    return major > 2 or (major == 2 and minor >= 1)
+end
+
+function AbrirMenuWaypoints()
+    lib.registerContext({
+        id = 'menu_waypoints',
+        menu = 'menu_jogador',
+        title = 'Gerenciar Waypoints',
+        options = {
+            {
+                title = 'Limpar Marcadores',
+                description = 'Limpar todos os waypoints.',
+                icon = 'trash',
+                iconAnimation = 'fade',
+                onSelect = function()
+                    ExecuteCommand('clearwaypoints')
+                end
+            },
+            {
+                title = 'Configurações',
+                description = 'Configurações do sistema de waypoints (ponto de referência).',
+                icon = 'location-dot',
+                iconAnimation = 'fade',
+                arrow = true,
+                onSelect = function()
+                    ExecuteCommand('waypointsettings')
+                end
+            },
+        }
+    })
+    lib.showContext('menu_waypoints')
 end
 
 function AbrirMenuTime()
