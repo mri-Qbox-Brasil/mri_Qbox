@@ -5,7 +5,7 @@
 -- Os exports ficam sempre registrados (outros resources chamam sem checar); o
 -- módulo desligado só faz as teclas e o /menu_admin não abrirem nada.
 
-local AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuPosters, MenuCrafting, MenuJobs, MenuSpotlight
+local AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuPosters, MenuCrafting, MenuJobs, MenuSpotlight
 
 local imageUrl = 'https://cfx-nui-mri_Qbox/html/logo24.png'
 
@@ -160,7 +160,9 @@ local function AbrirMenuJogador()
     end
     table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
     table.insert(options, addMenuItem('Ver Habilidades', 'fa-solid fa-book-bookmark', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
-    table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
+    if GetResourceState('mri_Qblips') == 'started' then
+        table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Como a rota no asfalto e o destino aparecem para você.', TriggerEvent, 'mri_Qblips:client:openStudio'))
+    end
 
     for k, v in pairs(runTimePlayerMenu) do
         table.insert(options, v)
@@ -175,36 +177,6 @@ local function AbrirMenuJogador()
 
     -- Exibe o menu do jogador
     lib.showContext('menu_jogador')
-end
-
-function AbrirMenuWaypoints()
-    lib.registerContext({
-        id = 'menu_waypoints',
-        menu = 'menu_jogador',
-        title = 'Gerenciar Waypoints',
-        options = {
-            {
-                title = 'Limpar Marcadores',
-                description = 'Limpar todos os waypoints.',
-                icon = 'trash',
-                iconAnimation = 'fade',
-                onSelect = function()
-                    ExecuteCommand('clearwaypoints')
-                end
-            },
-            {
-                title = 'Configurações',
-                description = 'Configurações do sistema de waypoints (ponto de referência).',
-                icon = 'location-dot',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('waypointsettings')
-                end
-            },
-        }
-    })
-    lib.showContext('menu_waypoints')
 end
 
 function AbrirMenuTime()
