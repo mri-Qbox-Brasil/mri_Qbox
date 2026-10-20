@@ -138,6 +138,33 @@ local function clean(field, value)
             if #out >= 200 then break end
         end
         return out
+    elseif t == 'gates' then
+        -- gates module: model (name or hash) and position of each map gate
+        if type(value) ~= 'table' then return nil end
+        local out = {}
+        for _, g in ipairs(value) do
+            if type(g) == 'table' and tonumber(g.x) and tonumber(g.y) and tonumber(g.z) then
+                local model = g.model
+                if type(model) == 'number' then
+                    model = math.tointeger(model)
+                elseif type(model) ~= 'string' or model == '' then
+                    model = nil
+                else
+                    model = model:sub(1, 64)
+                end
+                if model then
+                    out[#out + 1] = {
+                        model = model,
+                        x = tonumber(g.x) + 0.0,
+                        y = tonumber(g.y) + 0.0,
+                        z = tonumber(g.z) + 0.0,
+                        reverse = g.reverse == true or nil,
+                    }
+                end
+            end
+            if #out >= 500 then break end
+        end
+        return out
     end
     return nil
 end

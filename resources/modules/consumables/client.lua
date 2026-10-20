@@ -120,7 +120,8 @@ local function smokeWeed()
     CreateThread(function()
         while smokingWeed do
             Wait(10000)
-            TriggerServerEvent('hud:server:RelieveStress', math.random(15, 18))
+            local needs = GlobalState['mri:needs']
+            if not needs or needs.stress ~= false then TriggerServerEvent('hud:server:RelieveStress', math.random(15, 18)) end
             relieveCount += 1
             if relieveCount == 6 then
                 if GetResourceState('rpemotes-reborn') == 'started' then exports['rpemotes-reborn']:EmoteCancel() end

@@ -31,9 +31,9 @@ RegisterNUICallback('panelSave', function(data, cb)
     cb({ success = ok == true, modules = ok and result or nil, message = not ok and result or nil })
 end)
 
-RegisterNUICallback('panelClose', function(data, cb)
-    cb({ success = true })
-    if type(data) == 'table' and data.embedded then
+---@param embedded? boolean the panel is the mri_Qadmin tab
+function Mri.closePanel(embedded)
+    if embedded then
         if GetResourceState('mri_Qadmin') == 'started' then
             pcall(function() exports['mri_Qadmin']:ClosePlugin(QADMIN_PLUGIN_ID) end)
         end
@@ -42,6 +42,32 @@ RegisterNUICallback('panelClose', function(data, cb)
     panelOpen = false
     Mri.focus('panel', false)
     SendNUIMessage({ action = 'closePanel' })
+end
+
+-- Hides the panel while a world tool runs and brings it back with the draft; returns what the tool returns.
+---@param embedded? boolean
+---@param tool fun(): any
+function Mri.panelInWorld(embedded, tool)
+    local fromAdmin = embedded == true and GetResourceState('mri_Qadmin') == 'started'
+    if fromAdmin then
+        pcall(function() exports['mri_Qadmin']:ClosePlugin(QADMIN_PLUGIN_ID) end)
+    else
+        Mri.focus('panel', false)
+        SendNUIMessage({ action = 'placing', data = true })
+    end
+    local ok, result = pcall(tool)
+    if fromAdmin then
+        pcall(function() exports['mri_Qadmin']:OpenPlugin(QADMIN_PLUGIN_ID) end)
+    else
+        SendNUIMessage({ action = 'placing', data = false })
+        if panelOpen then Mri.focus('panel', true) end
+    end
+    return ok and result or nil
+end
+
+RegisterNUICallback('panelClose', function(data, cb)
+    cb({ success = true })
+    Mri.closePanel(type(data) == 'table' and data.embedded == true)
 end)
 
 -- Tema da suíte (THEMING.md do @mriqbox/ui-kit): convars e /uiconfig do ox_lib.

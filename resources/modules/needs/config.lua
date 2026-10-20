@@ -11,7 +11,7 @@ Mri.module({
         hungerRate = 4.2,
         thirst = true,
         thirstRate = 3.8,
-        stress = true,
+        stress = false,
     },
     fields = {
         { key = 'hunger', type = 'boolean', label = 'Fome', help = 'Desligada, a fome fica sempre cheia e nunca tira vida.' },

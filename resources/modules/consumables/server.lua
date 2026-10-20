@@ -33,6 +33,9 @@ local function setThirst(source, amount) setNeed(source, 'thirst', amount) end
 local function addThirst(source, amount) setNeed(source, 'thirst', (Player(source).state.thirst or 0) + amount) end
 
 local function relieveStress(source, relief)
+    -- stress off in the Necessidades module: no change and no notify
+    local needs = GlobalState['mri:needs']
+    if needs and needs.stress == false then return end
     local default = Mri.cfg('consumables').defaultStressRelief or { min = 0, max = 4 }
     local min = type(relief) == 'table' and type(relief.min) == 'number' and relief.min or default.min
     local max = type(relief) == 'table' and relief.max or default.max
