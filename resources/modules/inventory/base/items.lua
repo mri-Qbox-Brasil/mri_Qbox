@@ -1120,22 +1120,14 @@ return {
 	["bandage"] = {
 		label = "Bandagem",
 		weight = 100,
-		consume = 1,
 		stack = true,
 		description = "Uma simples bandagem usada para cobrir e proteger ferimentos.",
-		client = {
-			export = "mri_Qmedical.bandage",
-		},
 	},
 	["analgesic"] = {
 		label = "Analgésico",
 		weight = 10,
 		stack = true,
-		consume = 0,
 		description = "Analgésico que mascara a dor temporariamente, não trata o ferimento.",
-		client = {
-			export = "mri_Qmedical.analgesic",
-		},
 	},
 	["defibrillator"] = {
 		label = "Desfibrilador",
@@ -1177,29 +1169,18 @@ return {
 		label = "Tablet de EMS",
 		weight = 200,
 		stack = true,
-		client = {
-			export = "mri_Qmedical.openDistressCalls",
-		},
 	},
 	["tourniquet"] = {
 		label = "Torniquete",
 		weight = 120,
 		stack = true,
-		consume = 0,
 		description = "Garrote para estancar rapidamente sangramentos arteriais graves.",
-		client = {
-			export = "mri_Qmedical.tourniquet",
-		},
 	},
 	["splint"] = {
 		label = "Tala",
 		weight = 150,
 		stack = true,
-		consume = 0,
 		description = "Imobiliza um membro fraturado, reduzindo a dor e a limitação de movimento.",
-		client = {
-			export = "mri_Qmedical.splint",
-		},
 	},
 	["plastercast"] = {
 		label = "Gesso",
@@ -1212,31 +1193,19 @@ return {
 		label = "Estetoscópio",
 		weight = 90,
 		stack = false,
-		consume = 0,
 		description = "Instrumento para aferir os sinais vitais de um paciente.",
-		client = {
-			export = "mri_Qmedical.stethoscope",
-		},
 	},
 	["salinebag"] = {
 		label = "Soro Fisiológico",
 		weight = 200,
 		stack = true,
-		consume = 0,
 		description = "Bolsa de soro para hidratação e reposição volêmica; recupera vitalidade ao longo do tempo.",
-		client = {
-			export = "mri_Qmedical.saline",
-		},
 	},
 	["bloodbag"] = {
 		label = "Bolsa de Sangue",
 		weight = 250,
 		stack = true,
-		consume = 0,
 		description = "Bolsa de sangue para transfusão. Atenção à compatibilidade sanguínea do paciente.",
-		client = {
-			export = "mri_Qmedical.bloodbag",
-		},
 	},
 -- caçador
 	-- ars_hunting

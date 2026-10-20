@@ -160,9 +160,8 @@ local function AbrirMenuJogador()
     end
     table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
     table.insert(options, addMenuItem('Ver Habilidades', 'fa-solid fa-book-bookmark', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
-    if HasGpsStudio() then
-        table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Como a rota no asfalto e o destino aparecem para você.', TriggerEvent, 'mri_Qblips:client:openStudio'))
-    elseif GetResourceState('pickle_waypoints') == 'started' then
+    -- mri_Qblips 2.1+ adds its own item through AddPlayerMenu, only for who may open it.
+    if not HasGpsStudio() and GetResourceState('pickle_waypoints') == 'started' then
         table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
     end
 
