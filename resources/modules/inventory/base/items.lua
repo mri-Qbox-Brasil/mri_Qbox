@@ -742,6 +742,16 @@ return {
 			image = "laptop.png",
 		},
 	},
+	["printed_document"] = {
+		label = "Folha impressa",
+		weight = 5,
+		stack = true,
+		close = true,
+		consume = 0,
+		description = "Uma folha que saiu da impressora.",
+		client = { image = "printed_document.png" },
+		server = { export = "sd-computers.usePrinted_document" },
+	},
 	["speaker"] = {
 		label = "Caixa de Som",
 		weight = 475,
