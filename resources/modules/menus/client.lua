@@ -375,23 +375,15 @@ function OpenManageMenu()
             end
         },
         {
-            title = 'NPC',
-            description = 'Crie ou gerencie os NPCs do servidor, você pode colocar animações nos NPCs.',
-            icon = 'users-gear',
-            iconAnimation = 'fade',
-            arrow = true,
-            onSelect = function()
-                ExecuteCommand('npc')
-            end
-        },
-        {
             title = 'Props',
             description = 'Crie ou gerencie os props criados do servidor, você pode editar e criar cenários.',
             icon = 'tree',
             iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
-                ExecuteCommand('objectspawner')
+                -- mri_Qobjects 1.0+ (supporter) renamed the command; the public 0.x keeps the old one
+                local version = GetResourceMetadata('mri_Qobjects', 'version', 0) or ''
+                ExecuteCommand(version:match('^0%.') and 'objectspawner' or 'adminobjects')
             end
         },
         {
@@ -421,7 +413,8 @@ function OpenManageMenu()
             iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
-                ExecuteCommand('garagelist')
+                -- mri_Qgarage (supporter) replaces rhd_garage from the common base
+                ExecuteCommand(GetResourceState('mri_Qgarage') == 'started' and 'admingarage' or 'garagelist')
             end
         },
         {
@@ -455,6 +448,20 @@ function OpenManageMenu()
             end
         }
     }
+
+    -- mri_Qnpc is supporter-only, so the common base doesn't have it
+    if GetResourceState('mri_Qnpc') == 'started' then
+        table.insert(options, 4, {
+            title = 'NPC',
+            description = 'Crie ou gerencie os NPCs do servidor, você pode colocar animações nos NPCs.',
+            icon = 'users-gear',
+            iconAnimation = 'fade',
+            arrow = true,
+            onSelect = function()
+                ExecuteCommand('npc')
+            end
+        })
+    end
 
     -- Verificar se o resource 'mri_Qvinewood' foi iniciado
     if GetResourceState('mri_Qvinewood') == 'started' then
