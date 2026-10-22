@@ -47,3 +47,20 @@ RegisterNUICallback('inventoryTeleport', function(data, cb)
     while not HasCollisionLoadedAroundEntity(ped) and GetGameTimer() < timeout do Wait(0) end
     FreezeEntityPosition(ped, false)
 end)
+
+-- Stashes of the mri_Qstashes panel, shown on the Baús tab (nil when that resource is off).
+RegisterNUICallback('inventoryQstashes', function(_, cb)
+    cb(lib.callback.await('mri_Qbox:inventory:qstashes', false) or { success = false })
+end)
+
+-- Inside mri_Qadmin it switches tabs; from the /mriqbox panel it closes that one and opens the stash panel.
+RegisterNUICallback('inventoryOpenQstashes', function(data, cb)
+    cb(true)
+    if GetResourceState('mri_Qstashes') ~= 'started' then return end
+    if type(data) == 'table' and data.embedded == true and GetResourceState('mri_Qadmin') == 'started' then
+        pcall(function() exports.mri_Qadmin:OpenPlugin('stashes') end)
+        return
+    end
+    Mri.closePanel(false)
+    TriggerEvent('mri_Qstashes:client:open')
+end)

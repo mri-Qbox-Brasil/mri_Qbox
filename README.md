@@ -250,7 +250,7 @@ e "Gerenciar Gangue" aparecem pra chefe ou recrutador, segundo o `mri_Qbossmenu`
 
 Abrir Painel (`/adm`), Customizar Veículo (`/customs`), Relógio (hora, escala de tempo,
 congelar tempo), Clima (`/weather`) e Gerenciamento: Portas, Blips, Baús, NPC, Props,
-Elevador, Outdoors/Posters, Garagens, Crafting, Grupos, Spotlight e, com o `mri_Qvinewood`,
+Elevador, Garagens, Crafting, Grupos, Spotlight e, com o `mri_Qvinewood`,
 Vinewood. O VIP entra aqui quando o módulo está ligado.
 
 Outros recursos acrescentam entradas pelos exports (ver
@@ -398,6 +398,10 @@ arquivos `data/*.lua` dele quando carrega.
   a direção pra onde você olha) e **Ir até** leva você até lá. Zona do ox_target e ajuste fino
   ficam no Avançado (JSON).
 - **Avançado (JSON):** todos os campos da entrada, inclusive os que o formulário não mostra.
+- **Baús e o mri_Qstashes:** com o mri_Qstashes ligado, a aba Baús também lista os baús do painel
+  de Baús dele (embaixo, em "Do painel de Baús"), com o botão que abre esse painel. Os baús daqui
+  aparecem lá também, em "De outros scripts". Baú com zona, senha, item exigido, log ou acesso por
+  personagem se cria no painel de Baús.
 
 | Aba | Vale na hora | Vale no próximo restart do servidor |
 |---|---|---|

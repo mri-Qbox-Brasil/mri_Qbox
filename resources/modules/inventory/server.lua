@@ -112,10 +112,13 @@ do
     end
 end
 
+local publishQstashes
+
 local function publish(catalog)
     SaveResourceFile(GetCurrentResourceName(), FILE, json.encode(saved, { indent = true }), -1)
     local edits = saved[catalog]
     GlobalState[KEY:format(catalog)] = edits and next(edits) and toVectors(edits) or nil
+    if catalog == 'stashes' then publishQstashes() end
 end
 
 ---@type table<integer, string>?
@@ -297,6 +300,46 @@ local function listEntries(catalog)
     table.sort(list, function(a, b) return a.id < b.id end)
     return list
 end
+
+-- The mri_Qstashes panel lists the ox_inventory stashes beside its own; they keep being edited here.
+publishQstashes = function()
+    if GetResourceState('mri_Qstashes') ~= 'started' then return end
+    local list = {}
+    for _, row in ipairs(listEntries('stashes') or {}) do
+        local stash = row.status ~= 'removed' and getEntry('stashes', row.id)
+        local target = type(stash) == 'table' and type(stash.target) == 'table' and stash.target.loc
+        local coords = type(stash) == 'table' and (target or stash.coords)
+        if coords then
+            local groups = {}
+            for name in pairs(type(stash.groups) == 'table' and stash.groups or {}) do groups[#groups + 1] = tostring(name) end
+            list[#list + 1] = { id = row.id, label = stash.label or row.id, coords = coords, groups = groups, personal = stash.owner == true }
+        end
+    end
+    pcall(function()
+        exports.mri_Qstashes:SetExternalStashes(list, { label = 'Editor do inventário', plugin = 'inventory' })
+    end)
+end
+
+AddEventHandler('onServerResourceStart', function(resourceName)
+    if resourceName == 'mri_Qstashes' then publishQstashes() end
+end)
+
+CreateThread(function()
+    Wait(0)
+    publishQstashes()
+end)
+
+lib.callback.register('mri_Qbox:inventory:qstashes', function(source)
+    if not isAdmin(source) then return { success = false, message = 'no_permission' } end
+    if GetResourceState('mri_Qstashes') ~= 'started' then return { success = false, message = 'missing' } end
+    local ok, stashes = pcall(function() return exports.mri_Qstashes:GetStashes() end)
+    if not ok or type(stashes) ~= 'table' then return { success = false, message = 'missing' } end
+    local list = {}
+    for _, stash in ipairs(stashes) do
+        list[#list + 1] = { id = stash.id, label = stash.label, slots = stash.slots, weight = stash.weight, personal = stash.personal == true }
+    end
+    return { success = true, stashes = list }
+end)
 
 exports('GetInventoryEntry', getEntry)
 exports('ListInventoryEntries', listEntries)

@@ -5,7 +5,7 @@
 -- Os exports ficam sempre registrados (outros resources chamam sem checar); o
 -- módulo desligado só faz as teclas e o /menu_admin não abrirem nada.
 
-local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuPosters, MenuCrafting, MenuJobs, MenuSpotlight
+local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuCrafting, MenuJobs, MenuSpotlight
 
 local imageUrl = 'https://cfx-nui-mri_Qbox/html/logo24.png'
 
@@ -19,6 +19,20 @@ local function getSpaces(qtd)
         result = result ..' '
     end
     return result
+end
+
+-- Items with a plugin in the Qadmin panel leave the F10; without the Qadmin (or that plugin) they stay
+local function withoutAdminPlugins(options)
+    local plugins = GetResourceState('mri_Qadmin') == 'started'
+        and lib.callback.await('mri_Qadmin:server:getPlugins', false) or {}
+    local list = {}
+    for _, option in ipairs(options) do
+        if not (option.plugin and plugins[option.plugin]) then
+            option.plugin = nil
+            list[#list + 1] = option
+        end
+    end
+    return list
 end
 
 local function getPlayerInformation(data)
@@ -297,6 +311,7 @@ function OpenAdminMenu()
         },
         {
             title = 'Relógio',
+            plugin = 'weather',
             description = 'Altere o horário do servidor',
             icon = 'clock',
             iconAnimation = 'fade',
@@ -307,6 +322,7 @@ function OpenAdminMenu()
         },
         {
             title = 'Clima',
+            plugin = 'weather',
             description = 'Gerenciar o clima do Servidor',
             icon = 'cloud',
             iconAnimation = 'fade',
@@ -331,6 +347,8 @@ function OpenAdminMenu()
         options[#options+1] = v
     end
 
+    options = withoutAdminPlugins(options)
+
     lib.registerContext({
         id = 'menu_admin',
         title = '![logo]('..imageUrl..') Administração',
@@ -346,6 +364,7 @@ function OpenManageMenu()
     local options = {
         {
             title = 'Portas',
+            plugin = 'doorlock',
             description = 'Crie ou gerencie as trancas de portas e portões do servidor.',
             icon = 'door-closed',
             iconAnimation = 'fade',
@@ -356,6 +375,7 @@ function OpenManageMenu()
         },
         {
             title = 'Blips',
+            plugin = 'blips',
             description = 'Crie ou gerencie todos os blips, você pode copiar as configurações de um já criado.  ',
             icon = 'location-dot',
             iconAnimation = 'fade',
@@ -366,6 +386,7 @@ function OpenManageMenu()
         },
         {
             title = 'Baús',
+            plugin = 'stashes',
             description = 'Crie ou gerencie os baús do servidor, você pode restringir por permissões ou senha.',
             icon = 'box',
             iconAnimation = 'fade',
@@ -376,18 +397,21 @@ function OpenManageMenu()
         },
         {
             title = 'Props',
+            plugin = 'mapeditor',
             description = 'Crie ou gerencie os props criados do servidor, você pode editar e criar cenários.',
             icon = 'tree',
             iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
-                -- mri_Qobjects 1.0+ (supporter) renamed the command; the public 0.x keeps the old one
+                if GetResourceState('mri_Qmapeditor') == 'started' then return ExecuteCommand('mapeditor') end
+                -- mri_Qobjects 1.0+ renamed the command; the public 0.x keeps the old one
                 local version = GetResourceMetadata('mri_Qobjects', 'version', 0) or ''
                 ExecuteCommand(version:match('^0%.') and 'objectspawner' or 'adminobjects')
             end
         },
         {
             title = 'Elevador',
+            plugin = 'elevators',
             description = 'Crie ou gerencie os elevadores criados, você pode criar quantos andares forem necessários.',
             icon = 'elevator',
             iconAnimation = 'fade',
@@ -397,17 +421,8 @@ function OpenManageMenu()
             end
         },
         {
-            title = 'Outdoors/Posters',
-            description = 'Crie ou gerencie os outdoors ou imagens criados do servidor, você pode adicionar ou remover.',
-            icon = 'panorama',
-            iconAnimation = 'fade',
-            arrow = true,
-            onSelect = function()
-                MenuPosters()
-            end
-        },
-        {
             title = 'Garagens',
+            plugin = 'garage',
             description = 'Crie ou gerencie as garagens criadas do servidor, você pode definir todas as opções in game.',
             icon = 'warehouse',
             iconAnimation = 'fade',
@@ -419,6 +434,7 @@ function OpenManageMenu()
         },
         {
             title = 'Crafting',
+            plugin = 'crafting',
             description = 'Crie ou gerencie mesas de fabricação do servidor, você pode usar props para a mesa.',
             icon = 'tools',
             iconAnimation = 'fade',
@@ -429,6 +445,7 @@ function OpenManageMenu()
         },
         {
             title = 'Grupos',
+            plugin = 'bossmenu',
             description = 'Crie ou gerencie grupos, trabalhos e facções (Jobs e Gangs) in game.',
             icon = 'briefcase',
             iconAnimation = 'fade',
@@ -453,6 +470,7 @@ function OpenManageMenu()
     if GetResourceState('mri_Qnpc') == 'started' then
         table.insert(options, 4, {
             title = 'NPC',
+            plugin = 'npcs',
             description = 'Crie ou gerencie os NPCs do servidor, você pode colocar animações nos NPCs.',
             icon = 'users-gear',
             iconAnimation = 'fade',
@@ -480,6 +498,8 @@ function OpenManageMenu()
         options[#options + 1] = v
     end
 
+    options = withoutAdminPlugins(options)
+
     lib.registerContext({
         id = 'menu_gerencial',
         menu = 'menu_admin',
@@ -488,37 +508,6 @@ function OpenManageMenu()
     })
 
     lib.showContext('menu_gerencial')
-end
-
-function MenuPosters()
-    lib.registerContext({
-        id = 'menu_posters',
-        menu = 'menu_gerencial',
-        title = 'Gerenciar Posters',
-        options = {
-            {
-                title = 'Criar poster',
-                description = 'Criar um novo Poster.',
-                icon = 'square-plus',
-                iconAnimation = 'fade',
-                arrow = false,
-                onSelect = function()
-                    ExecuteCommand('rw_draw++/draw')
-                end
-            },
-            {
-                title = 'Modo DEV',
-                description = 'para deletar use o comando rw_draw++/rem id_do_poster',
-                icon = 'list-check',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('rw_draw++/dev')
-                end
-            },
-        }
-    })
-    lib.showContext('menu_posters')
 end
 
 function MenuCrafting()
