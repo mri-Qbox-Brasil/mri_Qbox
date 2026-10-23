@@ -243,7 +243,7 @@ local function registerPlugin()
     local ok, err = pcall(function()
         exports['mri_Qadmin']:RegisterPlugin({
             id = 'mriqbox',
-            label = 'MRI Qbox',
+            label = 'Módulos MRI',
             icon = 'blocks',
             resource = 'mri_Qbox',
             htmlPath = 'html/index.html',

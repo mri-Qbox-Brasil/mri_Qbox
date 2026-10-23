@@ -5,7 +5,7 @@
 -- Os exports ficam sempre registrados (outros resources chamam sem checar); o
 -- módulo desligado só faz as teclas e o /menu_admin não abrirem nada.
 
-local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuCrafting, MenuJobs, MenuSpotlight
+local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuCrafting, MenuJobs
 
 local imageUrl = 'https://cfx-nui-mri_Qbox/html/logo24.png'
 
@@ -453,16 +453,6 @@ function OpenManageMenu()
             onSelect = function()
                 MenuJobs()
             end
-        },
-        {
-            title = 'Spotlight',
-            description = 'Crie ou gerencie luzes in game',
-            icon = 'lightbulb',
-            iconAnimation = 'fade',
-            arrow = true,
-            onSelect = function()
-                MenuSpotlight()
-            end
         }
     }
 
@@ -570,37 +560,6 @@ function MenuJobs()
         }
     })
     lib.showContext('menu_jobs')
-end
-
-function MenuSpotlight()
-    lib.registerContext({
-        id = 'menu_spotlight',
-        menu = 'menu_gerencial',
-        title = 'Gerenciar Spotlights',
-        options = {
-            {
-                title = 'Criar novo spotlight',
-                description = 'Crie um spotlight.',
-                icon = 'square-plus',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('spotlight')
-                end
-            },
-            {
-                title = 'Deletar',
-                description = 'Delete algum spotlight',
-                icon = 'x',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('spotlight 1')
-                end
-            },
-        }
-    })
-    lib.showContext('menu_spotlight')
 end
 
 -- Tecla e callback ficam registrados (o FiveM não remove tecla); desligado, não abrem.
