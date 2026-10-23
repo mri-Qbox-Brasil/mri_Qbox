@@ -1,0 +1,18 @@
+{
+    "hookers": {
+        "invite": "Chamar a prostituta",
+        "find_secluded": "Vá para um lugar mais isolado",
+        "secluded_failed": "Você não achou um lugar isolado a tempo.",
+        "vehicle_unsuitable": "Você não pode pegar prostitutas neste veículo.",
+        "seat_occupied": "O banco do passageiro precisa estar vazio para chamar uma prostituta.",
+        "no_money": "Você não tem dinheiro suficiente!",
+        "menu_title": "Serviços disponíveis",
+        "service_oral": "Serviço rápido",
+        "service_sex": "Serviço completo",
+        "decline": "Dispensar",
+        "price": "$%s",
+        "test_spawned": "Prostituta de teste do lado do passageiro. Pare o carro perto dela e buzine.",
+        "test_busy": "Termine o encontro atual antes de chamar outra.",
+        "test_no_model": "Nenhum modelo de prostituta válido no painel."
+    }
+}

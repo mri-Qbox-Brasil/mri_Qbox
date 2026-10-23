@@ -10,7 +10,7 @@ Mri = Mri or {}
 
 ---@class MriField
 ---@field key string campo em Mri.cfg(id)
----@field type 'boolean'|'number'|'text'|'select'|'list'|'map'|'json'
+---@field type 'boolean'|'number'|'text'|'select'|'list'|'map'|'json'|'action'
 ---@field label string
 ---@field help? string
 ---@field min? number
@@ -19,6 +19,8 @@ Mri = Mri or {}
 ---@field unit? string
 ---@field options? { value: string, label: string }[]
 ---@field itemType? 'text'|'number' tipo dos itens de list e dos valores de map
+---@field button? string action: texto do botão
+---@field callback? string action: callback da NUI que o botão chama (não grava nada)
 
 ---@class MriModuleDef
 ---@field id string nome da pasta em resources/modules/

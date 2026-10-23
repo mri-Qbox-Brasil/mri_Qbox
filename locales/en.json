@@ -1,0 +1,18 @@
+{
+    "hookers": {
+        "invite": "Invite the hooker",
+        "find_secluded": "Go somewhere more secluded",
+        "secluded_failed": "You didn't find a secluded place in time.",
+        "vehicle_unsuitable": "You can't pick up hookers in this vehicle.",
+        "seat_occupied": "The passenger seat must be empty to invite a hooker.",
+        "no_money": "You don't have enough money!",
+        "menu_title": "Available services",
+        "service_oral": "Quick service",
+        "service_sex": "Full service",
+        "decline": "Decline",
+        "price": "$%s",
+        "test_spawned": "Test hooker on the passenger side. Stop the car next to her and honk.",
+        "test_busy": "Finish the current encounter before calling another one.",
+        "test_no_model": "No valid hooker model in the panel."
+    }
+}
