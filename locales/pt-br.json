@@ -1,4 +1,12 @@
 {
+    "reports": {
+        "title": "Reports",
+        "staff_new": "Report #%s de %s: %s",
+        "staff_reply": "Report #%s: nova resposta de %s",
+        "player_reply": "A staff respondeu seu report #%s. Abra pelo F9.",
+        "player_claimed": "Um staff está atendendo seu report #%s.",
+        "player_closed": "Seu report #%s foi fechado."
+    },
     "hookers": {
         "invite": "Chamar a prostituta",
         "find_secluded": "Vá para um lugar mais isolado",

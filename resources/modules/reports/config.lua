@@ -1,0 +1,48 @@
+Mri.module({
+    id = 'reports',
+    label = 'Reports',
+    category = 'admin',
+    description = 'O jogador abre um report pelo F9 (dúvida, bug ou denúncia) e conversa com a staff. Vão junto o print da tela, o local e quem estava perto. A staff atende pela aba Reports do painel admin: assume, responde, tira print de quem estava lá, deixa nota interna e fecha.',
+    defaults = {
+        enabled = true,
+        categories = { 'Dúvida', 'Bug', 'Denúncia de jogador', 'Outro' },
+        cooldown = '60',
+        maxOpen = 3,
+        notifyStaff = true,
+        screenshot = true,
+        nearbyRadius = '50',
+        webhook = '',
+    },
+    fields = {
+        { key = 'categories', type = 'list', itemType = 'text', label = 'Assuntos', help = 'O jogador escolhe um ao abrir o report.' },
+        {
+            key = 'cooldown',
+            type = 'select',
+            label = 'Intervalo entre reports',
+            help = 'Tempo que o jogador espera pra abrir outro.',
+            options = {
+                { value = '0', label = 'Sem intervalo' },
+                { value = '30', label = '30 segundos' },
+                { value = '60', label = '1 minuto' },
+                { value = '120', label = '2 minutos' },
+                { value = '300', label = '5 minutos' },
+            },
+        },
+        { key = 'maxOpen', type = 'number', label = 'Reports abertos por jogador', min = 1, max = 10, step = 1 },
+        { key = 'screenshot', type = 'boolean', label = 'Print da tela junto', help = 'Tira um print da tela do jogador quando ele abre o report; ele vê antes e pode tirar.' },
+        {
+            key = 'nearbyRadius',
+            type = 'select',
+            label = 'Quem conta como perto',
+            help = 'Distância usada pra lista de quem estava em volta e pra escolher o jogador denunciado.',
+            options = {
+                { value = '25', label = '25 metros' },
+                { value = '50', label = '50 metros' },
+                { value = '100', label = '100 metros' },
+                { value = '200', label = '200 metros' },
+            },
+        },
+        { key = 'notifyStaff', type = 'boolean', label = 'Avisar a staff online', help = 'Notificação pra quem atende reports quando chega um novo.' },
+        { key = 'webhook', type = 'text', label = 'Webhook do Discord', help = 'Opcional: avisa no canal quando um report é aberto ou fechado.' },
+    },
+})

@@ -5,7 +5,7 @@
 -- Os exports ficam sempre registrados (outros resources chamam sem checar); o
 -- módulo desligado só faz as teclas e o /menu_admin não abrirem nada.
 
-local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuCrafting, MenuJobs
+local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuJobs
 
 local imageUrl = 'https://cfx-nui-mri_Qbox/html/logo24.png'
 
@@ -433,17 +433,6 @@ function OpenManageMenu()
             end
         },
         {
-            title = 'Crafting',
-            plugin = 'crafting',
-            description = 'Crie ou gerencie mesas de fabricação do servidor, você pode usar props para a mesa.',
-            icon = 'tools',
-            iconAnimation = 'fade',
-            arrow = true,
-            onSelect = function()
-                MenuCrafting()
-            end
-        },
-        {
             title = 'Grupos',
             plugin = 'bossmenu',
             description = 'Crie ou gerencie grupos, trabalhos e facções (Jobs e Gangs) in game.',
@@ -498,37 +487,6 @@ function OpenManageMenu()
     })
 
     lib.showContext('menu_gerencial')
-end
-
-function MenuCrafting()
-    lib.registerContext({
-        id = 'menu_crafting',
-        menu = 'menu_gerencial',
-        title = 'Gerenciar Craftings',
-        options = {
-            {
-                title = 'Criar nova mesa',
-                description = 'Crie uma mesa de fabricação nova.',
-                icon = 'square-plus',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('craft:create')
-                end
-            },
-            {
-                title = 'Ver lista',
-                description = 'Veja todas as mesas de fabricação criadas.',
-                icon = 'list',
-                iconAnimation = 'fade',
-                arrow = true,
-                onSelect = function()
-                    ExecuteCommand('craft:edit')
-                end
-            },
-        }
-    })
-    lib.showContext('menu_crafting')
 end
 
 function MenuJobs()

@@ -112,13 +112,14 @@ do
     end
 end
 
-local publishQstashes
+local publishQstashes, publishQcrafting
 
 local function publish(catalog)
     SaveResourceFile(GetCurrentResourceName(), FILE, json.encode(saved, { indent = true }), -1)
     local edits = saved[catalog]
     GlobalState[KEY:format(catalog)] = edits and next(edits) and toVectors(edits) or nil
     if catalog == 'stashes' then publishQstashes() end
+    if catalog == 'crafting' then publishQcrafting() end
 end
 
 ---@type table<integer, string>?
@@ -320,13 +321,48 @@ publishQstashes = function()
     end)
 end
 
+-- The mri_Qcrafting panel lists the ox_inventory benches beside its own, one per spot (zones or points).
+publishQcrafting = function()
+    if GetResourceState('mri_Qcrafting') ~= 'started' then return end
+    local list = {}
+    for _, row in ipairs(listEntries('crafting') or {}) do
+        local bench = row.status ~= 'removed' and getEntry('crafting', row.id)
+        if type(bench) == 'table' then
+            local groups = {}
+            for name in pairs(type(bench.groups) == 'table' and bench.groups or {}) do groups[#groups + 1] = tostring(name) end
+            local spots = {}
+            for _, zone in ipairs(type(bench.zones) == 'table' and bench.zones or {}) do
+                if type(zone) == 'table' and zone.coords then spots[#spots + 1] = zone.coords end
+            end
+            if #spots == 0 then
+                for _, point in ipairs(type(bench.points) == 'table' and bench.points or {}) do spots[#spots + 1] = point end
+            end
+            local label = tostring(bench.label or bench.name or row.id)
+            for index, coords in ipairs(spots) do
+                list[#list + 1] = {
+                    id = ('%s:%d'):format(row.id, index),
+                    label = #spots > 1 and ('%s %d'):format(label, index) or label,
+                    coords = coords,
+                    groups = groups,
+                    recipes = #(type(bench.items) == 'table' and bench.items or {}),
+                }
+            end
+        end
+    end
+    pcall(function()
+        exports.mri_Qcrafting:SetExternalBenches(list, { label = 'Editor do inventário', plugin = 'inventory' })
+    end)
+end
+
 AddEventHandler('onServerResourceStart', function(resourceName)
     if resourceName == 'mri_Qstashes' then publishQstashes() end
+    if resourceName == 'mri_Qcrafting' then publishQcrafting() end
 end)
 
 CreateThread(function()
     Wait(0)
     publishQstashes()
+    publishQcrafting()
 end)
 
 lib.callback.register('mri_Qbox:inventory:qstashes', function(source)

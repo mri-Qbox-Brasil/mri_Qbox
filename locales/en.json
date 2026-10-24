@@ -1,4 +1,12 @@
 {
+    "reports": {
+        "title": "Reports",
+        "staff_new": "Report #%s from %s: %s",
+        "staff_reply": "Report #%s: new reply from %s",
+        "player_reply": "The staff replied to your report #%s. Open it from F9.",
+        "player_claimed": "A staff member is handling your report #%s.",
+        "player_closed": "Your report #%s was closed."
+    },
     "hookers": {
         "invite": "Invite the hooker",
         "find_secluded": "Go somewhere more secluded",
