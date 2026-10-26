@@ -18,7 +18,7 @@ end
 local RESPECT_GROUPS = {
     `AMBIENT_GANG_HILLBILLY`, `AMBIENT_GANG_BALLAS`, `AMBIENT_GANG_MEXICAN`, `AMBIENT_GANG_FAMILY`,
     `AMBIENT_GANG_MARABUNTE`, `AMBIENT_GANG_SALVA`, `AMBIENT_GANG_LOST`, `GANG_1`, `GANG_2`, `GANG_9`,
-    `GANG_10`, `FIREMAN`, `MEDIC`, `COP`, `PRISONER`,
+    `GANG_10`, `FIREMAN`, `MEDIC`, `PRISONER`,
 }
 
 -- Boxes around the car generators the qbx_density ymaps replaced (min x, y, z, max x, y, z)

@@ -5,7 +5,7 @@
 -- Os exports ficam sempre registrados (outros resources chamam sem checar); o
 -- módulo desligado só faz as teclas e o /menu_admin não abrirem nada.
 
-local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, OpenManageMenu, MenuJobs
+local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, ManageOptions, MenuJobs
 
 local imageUrl = 'https://cfx-nui-mri_Qbox/html/logo24.png'
 
@@ -21,15 +21,21 @@ local function getSpaces(qtd)
     return result
 end
 
--- Items with a plugin in the Qadmin panel leave the F10; without the Qadmin (or that plugin) they stay
+-- Items with a plugin in the Qadmin panel leave the F10, also the ones another resource added when it owns a plugin
 local function withoutAdminPlugins(options)
     local plugins = GetResourceState('mri_Qadmin') == 'started'
         and lib.callback.await('mri_Qadmin:server:getPlugins', false) or {}
+    local owners = {}
+    for _, plugin in pairs(plugins) do owners[plugin.resource] = true end
     local list = {}
     for _, option in ipairs(options) do
-        if not (option.plugin and plugins[option.plugin]) then
-            option.plugin = nil
-            list[#list + 1] = option
+        local covered = (option.plugin and plugins[option.plugin])
+            or (option.resource and option.resource ~= cache.resource and owners[option.resource])
+        if not covered then
+            local shown = {}
+            for k, v in pairs(option) do shown[k] = v end
+            shown.plugin, shown.resource = nil, nil
+            list[#list + 1] = shown
         end
     end
     return list
@@ -95,6 +101,8 @@ local function addItemToMenu(menu, item)
         index = #menuToAdd + 1
     end
     menuToAdd[index] = addMenuItem(item.title, item.icon, item.iconAnimation, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
+    -- management items: the F10 hides them when the resource that added one has its own Qadmin plugin
+    if menu == 'management' then menuToAdd[index].resource = GetInvokingResource() or cache.resource end
 end
 
 exports('AddItemToMenu', addItemToMenu)
@@ -331,17 +339,12 @@ function OpenAdminMenu()
                 ExecuteCommand('weather')
             end
         },
-        {
-            title = 'Gerenciamento',
-            description = 'Acesso a opções de gerenciamento do servidor',
-            icon = 'fa-solid fa-cogs',
-            iconAnimation = 'fade',
-            arrow = true,
-            onSelect = function()
-                OpenManageMenu()
-            end
-        }
     }
+
+    -- the old Gerenciamento list lives in the F10 itself; what has a Qadmin plugin drops out below
+    for _, v in ipairs(ManageOptions()) do
+        options[#options + 1] = v
+    end
 
     for _, v in pairs(f10Menu) do
         options[#options+1] = v
@@ -359,8 +362,7 @@ function OpenAdminMenu()
     lib.showContext('menu_admin')
 end
 
-function OpenManageMenu()
-    -- Menu gerenciamento
+function ManageOptions()
     local options = {
         {
             title = 'Portas',
@@ -477,22 +479,13 @@ function OpenManageMenu()
         options[#options + 1] = v
     end
 
-    options = withoutAdminPlugins(options)
-
-    lib.registerContext({
-        id = 'menu_gerencial',
-        menu = 'menu_admin',
-        title = 'Gerenciamento',
-        options = options
-    })
-
-    lib.showContext('menu_gerencial')
+    return options
 end
 
 function MenuJobs()
     lib.registerContext({
         id = 'menu_jobs',
-        menu = 'menu_gerencial',
+        menu = 'menu_admin',
         title = 'Gerenciar Grupos',
         options = {
             {

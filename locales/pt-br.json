@@ -22,5 +22,10 @@
         "test_spawned": "Prostituta de teste do lado do passageiro. Pare o carro perto dela e buzine.",
         "test_busy": "Termine o encontro atual antes de chamar outra.",
         "test_no_model": "Nenhum modelo de prostituta válido no painel."
+    },
+    "weaponthrow": {
+        "keybind": "Arremessar a arma",
+        "pickup": "Pegar a arma",
+        "no_space": "Sem espaço no inventário para a arma."
     }
 }

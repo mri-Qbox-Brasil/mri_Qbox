@@ -175,6 +175,7 @@ Ligado ou desligado de fábrica entre parênteses.
 | Carregar nos braços (ligado) | Itens como caixas ficam nos braços com animação (lista em `resources/modules/itemcarry/items.lua`) |
 | Craft arrastando (ligado) | Arrastar um item sobre o outro faz a receita (em `resources/modules/dragcraft/recipes.lua`) |
 | Item no chão vira prop (desligado) | Item largado aparece como o prop dele (tabela item e prop no painel) |
+| Arremessar armas (ligado) | Com a arma na mão, o botão do meio do mouse (tecla "Arremessar a arma" nas configurações do FiveM) joga ela na direção da câmera. A arma vira objeto do servidor e qualquer um pega pelo olhinho, com munição e acessórios; com o mri_Qbox parado, as que estão no chão viram drop do ox_inventory. Opções: largar a arma ao morrer e um liga/desliga por tipo de arma (brancas, pistolas e taser, submetralhadoras, escopetas, fuzis, metralhadoras, fuzis de precisão, pesadas). Substitui o pickle_weaponthrowing |
 | Consumíveis (ligado) | Igual ao qbx_consumables: comida, bebida e álcool no painel (fome ou sede sorteada entre o mínimo e o máximo, alívio de estresse com aviso, animação e objeto na mão), contador de álcool com os eventos de evidência, drogas (baseado, cocaína, crack, ecstasy, oxy e metanfetamina), lockpick e lockpick avançado (evento `lockpicks:UseLockpick`) e a garrafa vazia depois da água. Mantém os eventos `consumables:*` e os exports pelo nome antigo (`exports.qbx_smallresources:AddHunger` e os outros). O baseado usa a animação do rpemotes-reborn. Substitui o qbx_consumables |
 
 ### Som

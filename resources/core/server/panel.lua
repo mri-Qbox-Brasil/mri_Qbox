@@ -237,6 +237,33 @@ AddConvarChangeListener('mri:backgroundColor', function(name)
     TriggerClientEvent('mri_Qbox:backgroundColorChanged', -1, color)
 end)
 
+-- Sidebar section names of the panel (web/src/components/Panel.tsx), shown in the Qadmin search.
+local CATEGORY_LABELS = {
+    menus = 'Menus', admin = 'Admin', combat = 'Combate', vehicles = 'Veículos',
+    interaction = 'Interação', inventory = 'Inventário', world = 'Mundo', sound = 'Som',
+}
+
+-- Every module is found by the Qadmin Plugins search, its option names as keywords.
+local function searchItems()
+    local items = {}
+    for _, id in ipairs(Mri.order) do
+        local def = Mri.modules[id]
+        local words = {}
+        for _, field in ipairs(def.fields) do
+            if type(field.label) == 'string' then words[#words + 1] = field.label end
+        end
+        items[#items + 1] = {
+            id = id,
+            label = def.label,
+            description = def.description,
+            group = CATEGORY_LABELS[def.category],
+            keywords = table.concat(words, ' '),
+            focus = id,
+        }
+    end
+    return items
+end
+
 -- Aba no mri_Qadmin (opcional: sem ele o /mriqbox continua funcionando).
 local function registerPlugin()
     if GetResourceState('mri_Qadmin') ~= 'started' then return end
@@ -249,6 +276,7 @@ local function registerPlugin()
             htmlPath = 'html/index.html',
             requiredPerms = { 'mri_Qbox.admin', 'command' },
             description = 'Módulos do mri_Qbox: ligar, desligar e configurar',
+            searchItems = searchItems(),
         })
     end)
     if not ok then

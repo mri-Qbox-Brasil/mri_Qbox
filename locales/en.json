@@ -22,5 +22,10 @@
         "test_spawned": "Test hooker on the passenger side. Stop the car next to her and honk.",
         "test_busy": "Finish the current encounter before calling another one.",
         "test_no_model": "No valid hooker model in the panel."
+    },
+    "weaponthrow": {
+        "keybind": "Throw the weapon",
+        "pickup": "Pick up the weapon",
+        "no_space": "No room in your inventory for the weapon."
     }
 }

@@ -2,7 +2,6 @@
 
 -- https://docs.fivem.net/natives/?_0x6806C51AD12B83B8
 local COMPONENTS = {
-    hideWanted = { 1 },
     hideCash = { 3, 4, 13 },
     hideLocation = { 7, 9 },
     hideVehicleInfo = { 6, 8 },

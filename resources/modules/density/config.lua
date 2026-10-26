@@ -25,7 +25,7 @@ Mri.module({
         density('randomVehicles', 'Carros aleatórios', '0 tira todos, 1 é o padrão do GTA Online.'),
         density('peds', 'Pedestres', '0 tira todos, 1 é o padrão do GTA Online.'),
         density('scenario', 'NPCs de cenário', 'Motoqueiros, gangues e quem fica parado fazendo alguma coisa. 0 tira todos.'),
-        { key = 'npcRespect', type = 'boolean', label = 'NPCs não atacam o jogador', help = 'Gangues, polícia, bombeiros, médicos e presos do GTA deixam o jogador em paz.' },
+        { key = 'npcRespect', type = 'boolean', label = 'NPCs não atacam o jogador', help = 'Gangues, bombeiros, médicos e presos do GTA deixam o jogador em paz. A polícia fica no módulo Polícia do GTA.' },
         { key = 'blockGenerators', type = 'boolean', label = 'Sem veículos parados em aeroporto e base militar', help = 'O GTA não deixa aviões, veículos do aeroporto e da base militar parados pra qualquer um pegar.' },
     },
 })

@@ -10,8 +10,7 @@ Mri.module({
             'FIRETRUK', 'MULE', 'MAVERICK', 'BLIMP', 'AIRTUG', 'CAMPER', 'HYDRA', 'OPPRESSOR', 'technical3', 'insurgent3',
             'apc', 'tampa3', 'trailersmall2', 'halftrack', 'hunter', 'vigilante', 'akula', 'barrage', 'khanjali', 'caracara',
             'blimp3', 'menacer', 'oppressor2', 'scramjet', 'strikeforce', 'cerberus', 'cerberus2', 'cerberus3', 'scarab',
-            'scarab2', 'scarab3', 'rrocket', 'ruiner2', 'deluxo', 's_m_y_ranger_01', 's_m_y_sheriff_01', 's_m_y_cop_01',
-            's_f_y_sheriff_01', 's_f_y_cop_01', 's_m_y_hwaycop_01',
+            'scarab2', 'scarab3', 'rrocket', 'ruiner2', 'deluxo',
         },
     },
     fields = {

@@ -2,10 +2,9 @@ Mri.module({
     id = 'hudcomponents',
     label = 'Esconder HUD nativa',
     category = 'combat',
-    description = 'Esconde partes da HUD do GTA: estrelas de procurado, dinheiro, área e rua, nome e classe do veículo, roda e ícone da arma e, opcional, a mira.',
+    description = 'Esconde partes da HUD do GTA: dinheiro, área e rua, nome e classe do veículo, roda e ícone da arma e, opcional, a mira.',
     defaults = {
         enabled = true,
-        hideWanted = true,
         hideCash = true,
         hideLocation = true,
         hideVehicleInfo = true,
@@ -13,7 +12,6 @@ Mri.module({
         hideCrosshair = false,
     },
     fields = {
-        { key = 'hideWanted', type = 'boolean', label = 'Esconder estrelas de procurado' },
         { key = 'hideCash', type = 'boolean', label = 'Esconder dinheiro', help = 'O dinheiro do GTA e o aviso de quanto entrou ou saiu.' },
         { key = 'hideLocation', type = 'boolean', label = 'Esconder área e rua' },
         { key = 'hideVehicleInfo', type = 'boolean', label = 'Esconder nome e classe do veículo' },

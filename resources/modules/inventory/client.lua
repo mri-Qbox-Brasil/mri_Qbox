@@ -20,6 +20,14 @@ RegisterNUICallback('inventoryRestore', function(data, cb)
     cb(lib.callback.await('mri_Qbox:inventory:restore', false, data.catalog, data.id) or { success = false })
 end)
 
+RegisterNUICallback('inventorySettings', function(_, cb)
+    cb(lib.callback.await('mri_Qbox:inventory:settings', false) or { success = false })
+end)
+
+RegisterNUICallback('inventorySaveSettings', function(data, cb)
+    cb(lib.callback.await('mri_Qbox:inventory:saveSettings', false, type(data) == 'table' and data.values) or { success = false })
+end)
+
 RegisterNUICallback('inventoryGive', function(data, cb)
     cb(lib.callback.await('mri_Qbox:inventory:give', false, data.name) or { success = false })
 end)

@@ -28,6 +28,54 @@ for _, move in ipairs(MOVED) do
     end
 end
 
+-- GTA police lived in four modules: gtapolice starts with what they did (a module off meant GTA's own behavior).
+local COP_PEDS = { s_m_y_ranger_01 = true, s_m_y_sheriff_01 = true, s_m_y_cop_01 = true, s_f_y_sheriff_01 = true, s_f_y_cop_01 = true, s_m_y_hwaycop_01 = true }
+
+local function migrateGtaPolice()
+    if saved.gtapolice then return end
+    local police = {}
+    local services, hud, map, density = saved.gtaservices, saved.hudcomponents, saved.worldmap, saved.density
+    if type(services) == 'table' then
+        if services.enabled == false then
+            police.police, police.roadblock, police.maxWantedLevel = true, true, 5
+        else
+            police.police, police.roadblock, police.maxWantedLevel = services.police, services.roadblock, services.maxWantedLevel
+        end
+    end
+    if type(hud) == 'table' then
+        if hud.enabled == false then police.hideWanted = false else police.hideWanted = hud.hideWanted end
+    end
+    if type(density) == 'table' then
+        if density.enabled == false then police.respectPlayer = false else police.respectPlayer = density.npcRespect end
+    end
+    if type(map) == 'table' then
+        if map.enabled == false then
+            police.parkedCars = true
+        elseif type(map.scenarioTypes) == 'table' then
+            local kept, removed = {}, false
+            for _, name in ipairs(map.scenarioTypes) do
+                if type(name) == 'string' and name:find('^WORLD_VEHICLE_POLICE') then removed = true else kept[#kept + 1] = name end
+            end
+            map.scenarioTypes = kept
+            police.parkedCars = not removed
+        end
+    end
+    -- the cops left the anticheat list for the police module, which blocks them only while the GTA police is off
+    local anticheat = saved.anticheat
+    if type(anticheat) == 'table' and type(anticheat.blockedModels) == 'table' then
+        local kept = {}
+        for _, name in ipairs(anticheat.blockedModels) do
+            if not COP_PEDS[type(name) == 'string' and name:lower() or ''] then kept[#kept + 1] = name end
+        end
+        anticheat.blockedModels = kept
+    end
+    if next(police) then
+        police.enabled = true
+        saved.gtapolice = police
+    end
+end
+migrateGtaPolice()
+
 Mri.current = {}
 for _, id in ipairs(Mri.order) do
     Mri.current[id] = Mri.merge(id, saved[id])

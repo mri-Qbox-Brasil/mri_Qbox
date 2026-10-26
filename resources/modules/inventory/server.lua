@@ -500,6 +500,163 @@ lib.callback.register('mri_Qbox:inventory:canTeleport', function(source)
     return source ~= 0 and isAdmin(source)
 end)
 
+-- ===== Ajustes: the inventory:* convars, applied by ox_inventory mri/settings.lua ===========
+
+local SETTINGS_KEY = 'mri:inventory:settings'
+
+local function intSetting(min, max)
+    return function(v)
+        v = tonumber(v)
+        if not v or v % 1 ~= 0 or v < min or v > max then return end
+        return math.tointeger(v)
+    end
+end
+
+local function boolSetting(v)
+    if type(v) == 'boolean' then return v end
+end
+
+local function choiceSetting(...)
+    local allowed = {}
+    for _, value in ipairs({ ... }) do allowed[value] = true end
+    return function(v)
+        if allowed[v] then return v end
+    end
+end
+
+local function namesSetting(pattern, max)
+    return function(v)
+        if type(v) ~= 'table' then return end
+        local out, seen = {}, {}
+        for _, name in ipairs(v) do
+            if type(name) ~= 'string' or not name:match(pattern) then return end
+            if not seen[name] then
+                out[#out + 1] = name
+                seen[name] = true
+            end
+            if #out > max then return end
+        end
+        return out
+    end
+end
+
+local function markerSetting(v)
+    if type(v) ~= 'table' or type(v.colour) ~= 'table' or type(v.scale) ~= 'table' then return end
+    local kind = intSetting(0, 43)(v.type)
+    local colour, scale = {}, {}
+    for i = 1, 3 do
+        colour[i] = intSetting(0, 255)(v.colour[i])
+        scale[i] = tonumber(v.scale[i])
+        if not colour[i] or not scale[i] or scale[i] < 0.05 or scale[i] > 5 then return end
+    end
+    if not kind then return end
+    return { type = kind, colour = colour, scale = scale }
+end
+
+-- [item, min, max, chance?] as ox_inventory reads vehicleloot and dumpsterloot
+local function lootSetting(v)
+    if type(v) ~= 'table' or #v > 50 then return end
+    local out = {}
+    for i, row in ipairs(v) do
+        if type(row) ~= 'table' or type(row[1]) ~= 'string' or not row[1]:match('^[%w_%-]+$') then return end
+        local min, max = intSetting(1, 100000)(row[2]), intSetting(1, 100000)(row[3])
+        if not min or not max or max < min then return end
+        local chance = row[4] ~= nil and intSetting(1, 100)(row[4]) or nil
+        if row[4] ~= nil and not chance then return end
+        out[i] = { row[1], min, max, chance }
+    end
+    return out
+end
+
+local SETTINGS = {
+    slots = intSetting(1, 500),
+    weight = intSetting(1000, 1000000),
+    dropslots = intSetting(1, 500),
+    dropweight = intSetting(1000, 1000000),
+    target = boolSetting,
+    police = namesSetting('^[%w_%-]+$', 30),
+    networkdumpsters = boolSetting,
+    autoreload = boolSetting,
+    screenblur = boolSetting,
+    aimedfiring = boolSetting,
+    giveplayerlist = boolSetting,
+    weaponanims = boolSetting,
+    itemnotify = boolSetting,
+    weaponnotify = boolSetting,
+    imagepath = function(v)
+        if type(v) ~= 'string' or #v > 300 or v:find('%s') then return end
+        v = v:gsub('/+$', '')
+        if v:match('^nui://[%w_%-]+/.+') or v:match('^https://[%w%.%-]+%.%a+') then return v end
+    end,
+    dropprops = boolSetting,
+    dropmodel = function(v)
+        if type(v) == 'string' and v:match('^[%w_]+$') and #v <= 64 then return v end
+    end,
+    weaponmismatch = boolSetting,
+    ignoreweapons = namesSetting('^WEAPON_[%w_]+$', 100),
+    suppresspickups = boolSetting,
+    disableweapons = boolSetting,
+    enablestealcommand = boolSetting,
+    disablesetupnotification = boolSetting,
+    dropmarker = markerSetting,
+    shopmarker = markerSetting,
+    evidencemarker = markerSetting,
+    craftingmarker = markerSetting,
+    randomprices = boolSetting,
+    randomloot = boolSetting,
+    evidencegrade = intSetting(0, 20),
+    loglevel = intSetting(0, 2),
+    vehicleloot = lootSetting,
+    dumpsterloot = lootSetting,
+    clearstashes = choiceSetting('1 MONTH', '3 MONTH', '6 MONTH', '1 YEAR'),
+    cleartime = intSetting(1, 120),
+    bulkstashsave = boolSetting,
+    loghookrejection = boolSetting,
+}
+
+lib.callback.register('mri_Qbox:inventory:settings', function(source)
+    if not isAdmin(source) then return { success = false, message = 'no_permission' } end
+
+    local ok, original = pcall(function() return exports.ox_inventory:MriSettingsOriginal() end)
+    if not ok or type(original) ~= 'table' then return { success = false, message = 'inventory_outdated' } end
+
+    local current = {}
+    for name in pairs(SETTINGS) do current[name] = GetConvar('inventory:' .. name, original[name] or '') end
+
+    local jobs = {}
+    for name, job in pairs(exports.qbx_core:GetJobs() or {}) do
+        jobs[#jobs + 1] = { value = name, label = ('%s (%s)'):format(job.label or name, name) }
+    end
+    table.sort(jobs, function(a, b) return a.label < b.label end)
+
+    local weapons = {}
+    for id, entry in pairs(baseEntries('weapons')) do
+        local name = id:match('^Weapons:(.+)$')
+        if name then weapons[#weapons + 1] = { value = name, label = ('%s (%s)'):format(entry.label or name, name) } end
+    end
+    table.sort(weapons, function(a, b) return a.label < b.label end)
+
+    return { success = true, values = saved.settings or {}, original = original, current = current, jobs = jobs, weapons = weapons }
+end)
+
+lib.callback.register('mri_Qbox:inventory:saveSettings', function(source, values)
+    if not isAdmin(source) then return { success = false, message = 'no_permission' } end
+    if type(values) ~= 'table' then return { success = false, message = 'invalid_data' } end
+
+    local clean = {}
+    for name, value in pairs(values) do
+        local check = SETTINGS[name]
+        local result = check and check(value)
+        if result == nil then return { success = false, message = 'invalid_data', key = name } end
+        clean[name] = result
+    end
+
+    saved.settings = next(clean) and clean or nil
+    SaveResourceFile(GetCurrentResourceName(), FILE, json.encode(saved, { indent = true }), -1)
+    GlobalState[SETTINGS_KEY] = saved.settings
+    return { success = true }
+end)
+
 -- Own tab in mri_Qadmin, like Veículos
 local function registerPlugin()
     if GetResourceState('mri_Qadmin') ~= 'started' then return end
