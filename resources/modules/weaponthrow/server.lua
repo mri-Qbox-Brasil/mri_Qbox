@@ -1,17 +1,40 @@
 -- A thrown weapon becomes a server object; its item (ammo and attachments included) waits there until someone picks it up.
 local ox_inventory = exports.ox_inventory
 
-local MAX_SPEED = 26.0
 local MAX_HAND_DISTANCE = 3.0
 local MAX_PICKUP_DISTANCE = 3.0
+local STRENGTH = { weak = 0.8, normal = 1.0, strong = 1.2 }
 
 ---@type table<number, { name: string, label: string, metadata: table, model: number }>
 local ThrownWeapons = {}
 
-RegisterNetEvent('mri_Qbox:weaponthrow:release', function(model, coords, velocity)
+local function clamp(value, min, max)
+    return math.min(math.max(value, min), max)
+end
+
+-- Launch from the item weight (grams, ammo and attachments included): lighter flies faster and flatter, heavier lobs.
+---@return vector3 velocity, vector3 angular
+local function trajectory(weight, aim, strength)
+    local kg = math.max((weight or 1000) / 1000, 0.1)
+    -- ~24 m/s for a knife, ~20 a pistol, ~14 a rifle, ~6 a minigun
+    local speed = clamp(26.0 * (0.5 / kg) ^ 0.35, 6.0, 24.0) * strength
+    local loft = math.rad(8.0 + 14.0 * clamp((kg - 0.3) / 10.0, 0.0, 1.0))
+
+    local flat = math.sqrt(aim.x * aim.x + aim.y * aim.y)
+    if flat < 0.01 then return aim * speed, vec3(0.0, 0.0, 0.0) end
+    local pitch = math.min(math.atan(aim.z, flat) + loft, math.rad(75.0))
+    local ux, uy = aim.x / flat, aim.y / flat
+    local dir = vec3(ux * math.cos(pitch), uy * math.cos(pitch), math.sin(pitch))
+
+    -- end over end, top forward; light blades whirl, heavy guns barely turn
+    local spin = clamp(16.0 / math.sqrt(kg), 3.0, 20.0) * (0.85 + math.random() * 0.3)
+    return dir * speed, vec3(-uy, ux, 0.0) * spin
+end
+
+RegisterNetEvent('mri_Qbox:weaponthrow:release', function(model, coords, aim)
     local src = source
-    if not Mri.enabled('weaponthrow') or math.type(model) ~= 'integer' then return end
-    if type(coords) ~= 'vector3' or type(velocity) ~= 'vector3' or #velocity > MAX_SPEED then return end
+    if not Mri.enabled('weaponthrow') or math.type(model) ~= 'integer' or type(coords) ~= 'vector3' then return end
+    if aim and (type(aim) ~= 'vector3' or #aim < 0.5) then return end
 
     local ped = GetPlayerPed(src)
     if ped == 0 or GetVehiclePedIsIn(ped, false) ~= 0 then return end
@@ -29,10 +52,22 @@ RegisterNetEvent('mri_Qbox:weaponthrow:release', function(model, coords, velocit
 
     -- the default orphan mode deletes it once nobody is around, and the weapon with it
     SetEntityOrphanMode(object, 2)
-    SetEntityHeading(object, GetEntityHeading(ped) + 90.0)
-    SetEntityVelocity(object, velocity.x, velocity.y, velocity.z)
     ThrownWeapons[object] = { name = weapon.name, label = weapon.label, metadata = weapon.metadata, model = model }
     Entity(object).state:set('mriThrownWeapon', true, true)
+
+    if not aim then
+        SetEntityHeading(object, GetEntityHeading(ped) + 90.0)
+        return
+    end
+
+    local strength = STRENGTH[Mri.cfg('weaponthrow').strength] or STRENGTH.normal
+    local velocity, angular = trajectory(weapon.weight, aim / #aim, strength)
+    -- weapon models point along +X: turn the barrel or blade toward the flight
+    SetEntityHeading(object, math.deg(math.atan(-velocity.x, velocity.y)) + 90.0)
+    -- running throws carry the body's momentum
+    velocity = velocity + GetEntityVelocity(ped)
+    SetEntityVelocity(object, velocity.x, velocity.y, velocity.z)
+    TriggerClientEvent('mri_Qbox:weaponthrow:spin', src, NetworkGetNetworkIdFromEntity(object), angular)
 end)
 
 RegisterNetEvent('mri_Qbox:weaponthrow:pickup', function(netId)
