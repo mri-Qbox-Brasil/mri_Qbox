@@ -445,7 +445,6 @@ nos braços (registrados só com o módulo ligado) e o export `itemPlace` nos it
 exports.mri_Qbox:AddPlayerMenu({          -- F9
     title = 'Minha opção',
     icon = 'star',
-    iconAnimation = 'fade',
     description = 'Descrição da opção',
     arrow = true,
     onSelectFunction = function() ExecuteCommand('meucomando') end,

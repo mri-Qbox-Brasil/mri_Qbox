@@ -172,7 +172,6 @@ local function manageVip(vipData)
             title = "Mudar Vip",
             description = "Promover ou rebaixar o Vip.",
             icon = "retweet",
-            iconAnimation = "fade",
             onSelect = changeRole,
             args = {
                 vipData = vipData,
@@ -182,7 +181,6 @@ local function manageVip(vipData)
             title = "Remover do Vip",
             description = "Remove do Vip e todas as permissões",
             icon = "trash",
-            iconAnimation = "fade",
             iconColor = ColorScheme.danger,
             onSelect = removeVip,
             args = {
@@ -228,7 +226,6 @@ local function openVipMenu()
             title = 'Adicionar Vip por ID',
             description = 'Adiciona uma pessoa pelo ID',
             icon = 'square-plus',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = addNewVip,
             args = {
@@ -238,7 +235,6 @@ local function openVipMenu()
             title = 'Adicionar pessoas por proximidade',
             description = 'Adicionar pessoas que estão por perto',
             icon = 'bullseye',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = addNearbyVip,
             args = {
@@ -248,7 +244,6 @@ local function openVipMenu()
             title = 'Ver membros',
             description = 'Lista os membros do Vip',
             icon = 'list-ul',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = ListVip
         }
@@ -263,7 +258,6 @@ Mri.lifecycle('vip', function()
         title = 'Vip',
         description = 'Gerencie o Vip do servidor.',
         icon = 'star',
-        iconAnimation = 'fade',
         arrow = true,
         onSelectFunction = openVipMenu,
     })

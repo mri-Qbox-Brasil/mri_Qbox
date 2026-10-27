@@ -1,10 +1,12 @@
--- Came from the anticheat list: while the GTA police is off nobody can create its cops, a cheat menu included.
+-- While the GTA police is off, only the cops the game spawns by itself are cancelled; script cops
+-- (mission population, e.g. mri_Qlivingcity) pass. Cheat menus are the entity lockdown's job.
 local COP_PEDS = { 's_m_y_ranger_01', 's_m_y_sheriff_01', 's_m_y_cop_01', 's_f_y_sheriff_01', 's_f_y_cop_01', 's_m_y_hwaycop_01' }
+local POPULATION_MISSION <const> = 7
 
 local blocked = {}
 
 AddEventHandler('entityCreating', function(entity)
-    if blocked[GetEntityModel(entity)] then CancelEvent() end
+    if blocked[GetEntityModel(entity)] and GetEntityPopulationType(entity) ~= POPULATION_MISSION then CancelEvent() end
 end)
 
 -- Own tab in mri_Qadmin, like Veículos; it stays while the module is off so it can be turned back on there

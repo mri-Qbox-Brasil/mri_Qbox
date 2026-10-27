@@ -7,8 +7,6 @@
 
 local HasGpsStudio, AbrirMenuWaypoints, AbrirMenuTime, OpenAdminMenu, ManageOptions, MenuJobs
 
-local imageUrl = 'https://cfx-nui-mri_Qbox/html/logo24.png'
-
 local runTimePlayerMenu = {}
 local managementMenu = {}
 local f10Menu = {}
@@ -53,11 +51,10 @@ local function getPlayerInformation(data)
     )
 end
 
-local function addMenuItem(title, icon, iconAnimation, description, onSelectFunction, onSelectArg, arrow)
+local function addMenuItem(title, icon, description, onSelectFunction, onSelectArg, arrow)
     return {
         title = title,
         icon = icon,
-        iconAnimation = iconAnimation,
         description = description,
         arrow = arrow or false,
         onSelect = function()
@@ -100,7 +97,7 @@ local function addItemToMenu(menu, item)
     if index == 0 then
         index = #menuToAdd + 1
     end
-    menuToAdd[index] = addMenuItem(item.title, item.icon, item.iconAnimation, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
+    menuToAdd[index] = addMenuItem(item.title, item.icon, item.description, item.onSelectFunction, item.onSelectArg, item.arrow)
     -- management items: the F10 hides them when the resource that added one has its own Qadmin plugin
     if menu == 'management' then menuToAdd[index].resource = GetInvokingResource() or cache.resource end
 end
@@ -171,20 +168,20 @@ local function AbrirMenuJogador()
     }
 
     local options = {}
-    table.insert(options, addMenuItem('Identificação', 'fas fa-address-card', 'fade', getPlayerInformation(PlayerData), ExecuteCommand, 'id'))
-    table.insert(options, addMenuItem('Emprego', 'fas fa-briefcase', 'fade', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
+    table.insert(options, addMenuItem('Identificação', 'fas fa-address-card', getPlayerInformation(PlayerData), ExecuteCommand, 'id'))
+    table.insert(options, addMenuItem('Emprego', 'fas fa-briefcase', jobData.label..' | '..jobData.grade, ExecuteCommand, 'job'))
     if canManage("job", PlayerData) then
-        table.insert(options, addMenuItem('Gerenciar Emprego', 'users', 'fade', 'Configurações do Emprego.', ExecuteCommand, '+tablet:job'))
+        table.insert(options, addMenuItem('Gerenciar Emprego', 'users', 'Configurações do Emprego.', ExecuteCommand, '+tablet:job'))
     end
-    table.insert(options, addMenuItem('Gangue', 'gun', 'fade', gangData.label..' | '..gangData.grade, ExecuteCommand, 'gang'))
+    table.insert(options, addMenuItem('Gangue', 'gun', gangData.label..' | '..gangData.grade, ExecuteCommand, 'gang'))
     if canManage("gang", PlayerData) then
-        table.insert(options, addMenuItem('Gerenciar Gangue', 'users', 'fade', 'Configurações da gangue.', ExecuteCommand, '+tablet:gang'))
+        table.insert(options, addMenuItem('Gerenciar Gangue', 'users', 'Configurações da gangue.', ExecuteCommand, '+tablet:gang'))
     end
-    table.insert(options, addMenuItem('Ver Reputação', 'book', 'fade', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
-    table.insert(options, addMenuItem('Ver Habilidades', 'fa-solid fa-book-bookmark', 'fade', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
+    table.insert(options, addMenuItem('Ver Reputação', 'book', 'Exibir o nível de reputação do seu personagem.', ExecuteCommand, 'rep'))
+    table.insert(options, addMenuItem('Ver Habilidades', 'fa-solid fa-book-bookmark', 'Exibir o nível de habilidades do seu personagem.', ExecuteCommand, 'skill'))
     -- mri_Qblips 2.1+ adds its own item through AddPlayerMenu, only for who may open it.
     if not HasGpsStudio() and GetResourceState('pickle_waypoints') == 'started' then
-        table.insert(options, addMenuItem('Waypoints', 'location-dot', 'fade', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
+        table.insert(options, addMenuItem('Waypoints', 'location-dot', 'Configurações do sistema de waypoints (ponto de referência).', AbrirMenuWaypoints, nil, true))
     end
 
     for k, v in pairs(runTimePlayerMenu) do
@@ -193,8 +190,8 @@ local function AbrirMenuJogador()
 
     lib.registerContext({
         id = 'menu_jogador',
-        title = '![logo]('..imageUrl..') Olá '..PlayerData.charinfo.firstname,
-        description = 'BEM VINDO À MRI QBOX',
+        title = 'Olá '..PlayerData.charinfo.firstname,
+        description = 'Bem-vindo à cidade',
         options = options
     })
 
@@ -220,7 +217,6 @@ function AbrirMenuWaypoints()
                 title = 'Limpar Marcadores',
                 description = 'Limpar todos os waypoints.',
                 icon = 'trash',
-                iconAnimation = 'fade',
                 onSelect = function()
                     ExecuteCommand('clearwaypoints')
                 end
@@ -229,7 +225,6 @@ function AbrirMenuWaypoints()
                 title = 'Configurações',
                 description = 'Configurações do sistema de waypoints (ponto de referência).',
                 icon = 'location-dot',
-                iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
                     ExecuteCommand('waypointsettings')
@@ -253,7 +248,6 @@ function AbrirMenuTime()
                 description = 'Modificar a hora atual do servidor.                                         '
                 ..'*/time [hh] [mm]*',
                 icon = 'clock',
-                iconAnimation = 'fade',
                 onSelect = function()
                     local input = lib.inputDialog('Alterar horário',{
                         { type = "number", label = 'Hora', default = 12, min = 0, max = 24},
@@ -269,7 +263,6 @@ function AbrirMenuTime()
                 ..'**Valor atual: '..GlobalState.timeScale..'**                                                                 '
                 ..'*/timescale [ms]*',
                 icon = 'stopwatch',
-                iconAnimation = 'fade',
                 onSelect = function()
                     local input = lib.inputDialog('Escala do tempo',{
                         { type = "number", label = 'Modificar', description = 'Quanto será 1 minuto no jogo (Ex.: 3000, a cada 3 segundos irá passar 1 minuto no relógio do jogo)', default = 3000, min = 3000},
@@ -284,7 +277,6 @@ function AbrirMenuTime()
                 ..'**Valor atual: '..(frozen and 'congelado' or 'correndo')..'**                                                                   '
                 ..'*/freezetime [1 ou 0]*',
                 icon = 'snowflake',
-                iconAnimation = 'fade',
                 onSelect = function()
                     ExecuteCommand('freezetime '..(frozen and '0' or '1'))
                 end
@@ -303,7 +295,6 @@ function OpenAdminMenu()
             title = 'Abrir Painel',
             description = 'Painel da Administração do Servidor',
             icon = 'fa-solid fa-user-tie',
-            iconAnimation = 'fade',
             onSelect = function()
                 ExecuteCommand('adm')
             end
@@ -312,7 +303,6 @@ function OpenAdminMenu()
             title = 'Customizar Veículo',
             description = 'Tune seu veículo atual',
             icon = 'palette',
-            iconAnimation = 'fade',
             onSelect = function()
                 ExecuteCommand('customs')
             end
@@ -322,7 +312,6 @@ function OpenAdminMenu()
             plugin = 'weather',
             description = 'Altere o horário do servidor',
             icon = 'clock',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 AbrirMenuTime()
@@ -333,7 +322,6 @@ function OpenAdminMenu()
             plugin = 'weather',
             description = 'Gerenciar o clima do Servidor',
             icon = 'cloud',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 ExecuteCommand('weather')
@@ -354,7 +342,7 @@ function OpenAdminMenu()
 
     lib.registerContext({
         id = 'menu_admin',
-        title = '![logo]('..imageUrl..') Administração',
+        title = 'Administração',
         description = 'Gerenciamento do servidor',
         options = options
     })
@@ -369,7 +357,6 @@ function ManageOptions()
             plugin = 'doorlock',
             description = 'Crie ou gerencie as trancas de portas e portões do servidor.',
             icon = 'door-closed',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 ExecuteCommand('doorlock')
@@ -380,7 +367,6 @@ function ManageOptions()
             plugin = 'blips',
             description = 'Crie ou gerencie todos os blips, você pode copiar as configurações de um já criado.  ',
             icon = 'location-dot',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 ExecuteCommand('blip')
@@ -391,7 +377,6 @@ function ManageOptions()
             plugin = 'stashes',
             description = 'Crie ou gerencie os baús do servidor, você pode restringir por permissões ou senha.',
             icon = 'box',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 ExecuteCommand('bau')
@@ -402,7 +387,6 @@ function ManageOptions()
             plugin = 'mapeditor',
             description = 'Crie ou gerencie os props criados do servidor, você pode editar e criar cenários.',
             icon = 'tree',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 if GetResourceState('mri_Qmapeditor') == 'started' then return ExecuteCommand('mapeditor') end
@@ -416,7 +400,6 @@ function ManageOptions()
             plugin = 'elevators',
             description = 'Crie ou gerencie os elevadores criados, você pode criar quantos andares forem necessários.',
             icon = 'elevator',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 ExecuteCommand('elevador')
@@ -427,7 +410,6 @@ function ManageOptions()
             plugin = 'garage',
             description = 'Crie ou gerencie as garagens criadas do servidor, você pode definir todas as opções in game.',
             icon = 'warehouse',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 -- mri_Qgarage (supporter) replaces rhd_garage from the common base
@@ -439,7 +421,6 @@ function ManageOptions()
             plugin = 'bossmenu',
             description = 'Crie ou gerencie grupos, trabalhos e facções (Jobs e Gangs) in game.',
             icon = 'briefcase',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 MenuJobs()
@@ -454,7 +435,6 @@ function ManageOptions()
             plugin = 'npcs',
             description = 'Crie ou gerencie os NPCs do servidor, você pode colocar animações nos NPCs.',
             icon = 'users-gear',
-            iconAnimation = 'fade',
             arrow = true,
             onSelect = function()
                 ExecuteCommand('npc')
@@ -468,7 +448,6 @@ function ManageOptions()
             title = 'Vinewood',
             description = 'Edite a sua placa de vinewood in game!',
             icon = 'fa-solid fa-cogs',
-            iconAnimation = 'fade',
             onSelect = function()
                 ExecuteCommand('vinewood')
             end
@@ -492,7 +471,6 @@ function MenuJobs()
                 title = 'Criar novo grupo',
                 description = 'Crie um job ou gang',
                 icon = 'square-plus',
-                iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
                     ExecuteCommand('createjob')
@@ -502,7 +480,6 @@ function MenuJobs()
                 title = 'Ver lista',
                 description = 'Veja todos grupos criados.',
                 icon = 'list',
-                iconAnimation = 'fade',
                 arrow = true,
                 onSelect = function()
                     ExecuteCommand('open_jobs')

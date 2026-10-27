@@ -13,7 +13,7 @@ Mri.module({
         respectPlayer = true,
     },
     fields = {
-        { key = 'police', type = 'boolean', label = 'Polícia do GTA', help = 'Viaturas, helicópteros, SWAT, policiais a pé e rádio da polícia. Desligada, ninguém consegue criar policial do GTA, nem menu de cheat.' },
+        { key = 'police', type = 'boolean', label = 'Polícia do GTA', help = 'Viaturas, helicópteros, SWAT, policiais a pé e rádio da polícia. Desligada, o GTA não cria policial nenhum. Policial de script (como a Polícia NPC da Cidade viva) continua aparecendo.' },
         { key = 'roadblock', type = 'boolean', label = 'Barreiras da polícia do GTA' },
         { key = 'parkedCars', type = 'boolean', label = 'Viaturas e motos paradas do GTA', help = 'As que o GTA deixa nas delegacias e na rua.' },
         { key = 'maxWantedLevel', type = 'number', label = 'Nível máximo de procurado', help = '0 = nunca fica procurado.', min = 0, max = 5, step = 1 },
