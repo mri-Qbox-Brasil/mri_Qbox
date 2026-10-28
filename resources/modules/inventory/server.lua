@@ -377,6 +377,69 @@ lib.callback.register('mri_Qbox:inventory:qstashes', function(source)
     return { success = true, stashes = list }
 end)
 
+-- Shops other resources register in ox_inventory (bossmenu, pharmacies, dealers): listed on the Lojas tab, edited where they live.
+local externalShops = {}
+
+local function shortText(value, max)
+    if type(value) == 'number' then value = tostring(value) end
+    if type(value) ~= 'string' then return '' end
+    return value:match('^%s*(.-)%s*$'):sub(1, max)
+end
+
+local function plainCoords(value)
+    local kind = type(value)
+    if kind ~= 'table' and kind ~= 'vector3' and kind ~= 'vector4' then return nil end
+    local x, y, z = tonumber(value.x), tonumber(value.y), tonumber(value.z)
+    return x and y and z and { x = x, y = y, z = z } or nil
+end
+
+---@param list table[] { id, label, coords?, groups?: string[], items?: integer }
+---@param info table? { label: string, plugin?: string } who owns them and the mri_Qadmin tab that edits them
+exports('SetExternalShops', function(list, info)
+    local resource = GetInvokingResource()
+    if not resource then return end
+    info = type(info) == 'table' and info or {}
+    local provider = shortText(info.label, 48)
+    local clean = {}
+    for _, raw in ipairs(type(list) == 'table' and list or {}) do
+        local id = type(raw) == 'table' and shortText(raw.id, 100) or ''
+        if id ~= '' and #clean < 500 then
+            local groups = {}
+            for _, name in ipairs(type(raw.groups) == 'table' and raw.groups or {}) do
+                if type(name) == 'string' and #groups < 20 then groups[#groups + 1] = shortText(name, 64) end
+            end
+            local label = shortText(raw.label, 64)
+            clean[#clean + 1] = {
+                key = ('%s:%s'):format(resource, id),
+                label = label ~= '' and label or id,
+                coords = plainCoords(raw.coords),
+                groups = groups,
+                items = math.max(0, math.floor(tonumber(raw.items) or 0)),
+                provider = provider ~= '' and provider or resource,
+                plugin = shortText(info.plugin, 48),
+            }
+        end
+    end
+    externalShops[resource] = #clean > 0 and clean or nil
+end)
+
+AddEventHandler('onResourceStop', function(resourceName)
+    externalShops[resourceName] = nil
+end)
+
+lib.callback.register('mri_Qbox:inventory:externalShops', function(source)
+    if not isAdmin(source) then return { success = false, message = 'no_permission' } end
+    local all = {}
+    for _, list in pairs(externalShops) do
+        for _, shop in ipairs(list) do all[#all + 1] = shop end
+    end
+    table.sort(all, function(a, b)
+        if a.provider ~= b.provider then return a.provider < b.provider end
+        return a.label:lower() < b.label:lower()
+    end)
+    return { success = true, shops = all }
+end)
+
 exports('GetInventoryEntry', getEntry)
 exports('ListInventoryEntries', listEntries)
 exports('SaveInventoryEntry', saveEntry)

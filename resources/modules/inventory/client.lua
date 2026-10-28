@@ -61,6 +61,18 @@ RegisterNUICallback('inventoryQstashes', function(_, cb)
     cb(lib.callback.await('mri_Qbox:inventory:qstashes', false) or { success = false })
 end)
 
+-- Shops other resources register in ox_inventory, shown on the Lojas tab.
+RegisterNUICallback('inventoryExternalShops', function(_, cb)
+    cb(lib.callback.await('mri_Qbox:inventory:externalShops', false) or { success = false })
+end)
+
+-- The mri_Qadmin tab that edits a shop another resource owns.
+RegisterNUICallback('inventoryOpenPlugin', function(id, cb)
+    cb(true)
+    if type(id) ~= 'string' or id == '' or GetResourceState('mri_Qadmin') ~= 'started' then return end
+    pcall(function() exports.mri_Qadmin:OpenPlugin(id) end)
+end)
+
 -- Inside mri_Qadmin it switches tabs; from the /mriqbox panel it closes that one and opens the stash panel.
 RegisterNUICallback('inventoryOpenQstashes', function(data, cb)
     cb(true)
